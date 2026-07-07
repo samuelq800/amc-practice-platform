@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AMC 10/12 真题练习</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-mastery1" />
+    <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
+    <link rel="stylesheet" href="./styles.css?v=20260707-color1" />
     <script>
       window.MathJax = {
         tex: {
@@ -21,58 +21,65 @@
   </head>
   <body>
     <main id="entryScreen" class="entry-screen">
-      <section class="entry-panel" aria-label="练习模式选择">
+      <section class="entry-panel" aria-label="练习模式选择 / Practice mode selection">
         <div class="entry-hero">
           <div class="entry-copy">
             <div class="brand-lockup">
-              <!-- Updated asset path: moved images to root directory -->
-              <img class="school-logo" src="./school-logo.jpg" alt="学校标识" />
+              <img class="school-logo" src="./assets/school-logo.jpg" alt="学校标识 / School logo" />
               <div>
                 <span class="eyebrow">AMC Practice Center</span>
-                <h1>AMC 10/12 真题练习</h1>
+                <h1>AMC 10/12 真题练习<br />AMC 10/12 Practice</h1>
               </div>
             </div>
-            <p id="entryMeta">Loading...</p>
+            <p id="entryMeta">加载中 / Loading...</p>
+            <div class="entry-stats" aria-label="平台数据 / Platform data">
+              <div><strong>68</strong><span>套 AMC 试卷 / AMC papers</span></div>
+              <div><strong>1700</strong><span>道真题 / problems</span></div>
+              <div><strong>75</strong><span>分钟全卷模拟 / min mock exam</span></div>
+            </div>
           </div>
-          <!-- Updated asset path: moved images to root directory -->
-          <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
+          <img class="ib-logo" src="./assets/ib-programme.jpg" alt="IB Diploma Programme" />
         </div>
 
         <div class="mode-grid">
-          <section class="mode-card">
+          <section class="mode-card mode-card-primary">
             <div>
-              <span class="eyebrow">单题练习</span>
-              <h2>按年份、知识点、难度刷题</h2>
+              <span class="eyebrow">单题练习 / Single Problems</span>
+              <h2>开始单题练习<br />Start Single-Problem Practice</h2>
+              <p>按年份、知识点和难度筛选，适合日常查漏补缺。<br />Filter by year, topic, and difficulty for targeted daily practice.</p>
             </div>
-            <button id="singlePracticeMode" type="button">进入单题练习</button>
+            <button id="singlePracticeMode" type="button">进入单题练习 / Start Practice</button>
           </section>
 
-          <section class="mode-card">
+          <section class="mode-card mode-card-primary">
             <div>
-              <span class="eyebrow">全卷练习</span>
-              <h2>选择一套试卷，75 分钟计时</h2>
+              <span class="eyebrow">全卷模拟 / Full Mock Exam</span>
+              <h2>开始全卷模拟<br />Start Full Mock Exam</h2>
+              <p>选择一套试卷，75 分钟计时，交卷后按 AMC 规则估分。<br />Choose a paper, take a 75-minute timed mock, and receive an AMC-style score.</p>
             </div>
             <label class="exam-pick">
-              <span>试卷</span>
+              <span>试卷 / Paper</span>
               <select id="fullExamSelect"></select>
             </label>
-            <button id="startFullExam" type="button">开始全卷练习</button>
+            <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
           </section>
 
-          <section class="mode-card">
+          <section class="mode-card mode-card-secondary">
             <div>
-              <span class="eyebrow">学习记录</span>
-              <h2>查看已做题目和知识点诊断</h2>
+              <span class="eyebrow">学习记录 / Study Record</span>
+              <h2>学习记录与错题本<br />Study Record & Error Log</h2>
+              <p>查看诊断、收藏题和高优先级错题。<br />Review diagnostics, favorites, and high-priority mistakes.</p>
             </div>
-            <button id="reviewMode" type="button">查看学习记录</button>
+            <button id="reviewMode" type="button">查看学习记录 / View Record</button>
           </section>
 
-          <section class="mode-card">
+          <section class="mode-card mode-card-secondary">
             <div>
-              <span class="eyebrow">平台说明</span>
-              <h2>了解题库来源、功能与反馈方式</h2>
+              <span class="eyebrow">平台说明 / About</span>
+              <h2>平台说明<br />About the Platform</h2>
+              <p>了解维护方、题目来源和反馈方式。<br />Learn about maintenance, sources, and feedback.</p>
             </div>
-            <button id="aboutMode" type="button">查看 About</button>
+            <button id="aboutMode" type="button">查看 About / About</button>
           </section>
         </div>
       </section>
@@ -81,128 +88,136 @@
     <main id="practiceShell" class="app-shell is-hidden">
       <header class="topbar">
         <div class="brand">
-          <!-- Updated asset path: moved images to root directory -->
-          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识" />
+          <img class="school-logo school-logo-small" src="./assets/school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>AMC 10/12 真题练习</h1>
-            <p id="datasetMeta">Loading...</p>
+            <h1>AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
+            <p id="datasetMeta">加载中 / Loading...</p>
           </div>
         </div>
         <div class="top-actions">
-          <div id="timerPanel" class="timer-panel is-hidden" aria-label="全卷倒计时">
+          <div id="timerPanel" class="timer-panel is-hidden" aria-label="全卷倒计时 / Full exam countdown">
             <span id="timerText">75:00</span>
-            <small id="timerLabel">剩余时间</small>
+            <small id="timerLabel">剩余时间 / Time left</small>
           </div>
-          <div class="score-strip" aria-label="练习统计">
-            <div><span id="statTotal">0</span><small>题目</small></div>
-            <div><span id="statAnswered">0</span><small>已答</small></div>
-            <div><span id="statCorrect">0</span><small>正确</small></div>
+          <div class="score-strip" aria-label="练习统计 / Practice stats">
+            <div><span id="statTotal">0</span><small>题目 / Total</small></div>
+            <div><span id="statAnswered">0</span><small>已答 / Answered</small></div>
+            <div><span id="statCorrect">0</span><small>正确 / Correct</small></div>
           </div>
-          <button id="openReview" type="button">学习记录</button>
-          <button id="openAbout" type="button">平台说明</button>
-          <button id="backToEntry" type="button">模式选择</button>
+          <button id="openReview" type="button">学习记录 / Record</button>
+          <button id="openAbout" type="button">平台说明 / About</button>
+          <button id="backToEntry" type="button">模式选择 / Modes</button>
         </div>
       </header>
 
-      <section class="filters" aria-label="筛选">
+      <section class="filters" aria-label="筛选 / Filters">
         <label>
-          <span>年份</span>
+          <span>年份 / Year</span>
           <select id="yearFilter"></select>
         </label>
         <label>
-          <span>考试</span>
+          <span>考试 / Contest</span>
           <select id="levelFilter"></select>
         </label>
         <label>
-          <span>卷别</span>
+          <span>卷别 / Form</span>
           <select id="formFilter"></select>
         </label>
         <label class="wide">
-          <span>试卷</span>
+          <span>试卷 / Paper</span>
           <select id="examFilter"></select>
         </label>
         <label class="wide">
-          <span>知识点</span>
+          <span>知识点 / Topic</span>
           <select id="topicFilter"></select>
         </label>
         <label>
-          <span>难度</span>
+          <span>难度 / Difficulty</span>
           <select id="difficultyFilter"></select>
         </label>
         <label class="search">
-          <span>搜索</span>
-          <input id="searchFilter" type="search" placeholder="题号、年份、关键词" />
+          <span>搜索 / Search</span>
+          <input id="searchFilter" type="search" placeholder="题号、年份、关键词 / number, year, keyword" />
         </label>
-        <button id="resetFilters" type="button">重置</button>
+        <button id="resetFilters" type="button">重置 / Reset</button>
       </section>
 
       <section class="workspace">
-        <aside class="problem-list" aria-label="题目列表">
+        <aside class="problem-list" aria-label="题目列表 / Problem list">
           <div class="list-head">
-            <strong id="listTitle">题目</strong>
-            <button id="randomProblem" type="button">随机</button>
+            <strong id="listTitle">题目 / Problems</strong>
+            <button id="randomProblem" type="button">随机 / Random</button>
           </div>
           <div id="problemList" class="problem-grid"></div>
         </aside>
+
+        <div class="workspace-resizer" data-resize="left" role="separator" aria-orientation="vertical" aria-label="调整题目列表宽度 / Resize problem list" tabindex="0"></div>
 
         <section class="problem-pane" aria-live="polite">
           <div class="problem-head">
             <div>
               <p id="problemKicker">-</p>
-              <h2 id="problemTitle">请选择一道题</h2>
+              <h2 id="problemTitle">请选择一道题 / Select a problem</h2>
             </div>
             <div class="nav-buttons">
-              <button id="prevProblem" type="button">上一题</button>
-              <button id="nextProblem" type="button">下一题</button>
+              <button id="prevProblem" type="button">上一题 / Previous</button>
+              <button id="nextProblem" type="button">下一题 / Next</button>
             </div>
           </div>
 
           <article id="statement" class="statement"></article>
 
-          <div id="choicePanel" class="choice-panel" aria-label="答案选项"></div>
+          <div id="choicePanel" class="choice-panel" aria-label="答案选项 / Answer choices"></div>
 
           <div class="answer-actions">
-            <button id="submitAnswer" type="button">提交</button>
-            <button id="submitExam" type="button" class="is-hidden">提交整卷</button>
-            <button id="revealAnswer" type="button">看答案/解析</button>
-            <button id="favoriteProblem" type="button">收藏</button>
-            <button id="clearAnswer" type="button">清除</button>
+            <button id="submitAnswer" type="button">提交 / Submit</button>
+            <button id="submitExam" type="button" class="is-hidden">提交整卷 / Submit Exam</button>
+            <button id="revealAnswer" type="button">看答案/解析 / Reveal</button>
+            <button id="favoriteProblem" type="button">收藏 / Favorite</button>
+            <button id="clearAnswer" type="button">清除 / Clear</button>
           </div>
         </section>
 
-        <aside class="solution-pane" aria-label="答案和解析">
+        <div class="workspace-resizer" data-resize="right" role="separator" aria-orientation="vertical" aria-label="调整解析栏宽度 / Resize solution panel" tabindex="0"></div>
+
+        <aside class="solution-pane" aria-label="答案和解析 / Answer and solution">
           <div id="examResultSection" class="solution-section exam-result-section is-hidden">
-            <span class="eyebrow">全卷结果</span>
+            <span class="eyebrow">全卷结果 / Exam Result</span>
             <div id="examResultBody" class="exam-result-body"></div>
           </div>
 
           <div class="solution-section">
-            <span class="eyebrow">答案</span>
-            <div id="answerStatus" class="answer-status">未作答</div>
+            <span class="eyebrow">答案 / Answer</span>
+            <div id="answerStatus" class="answer-status">未作答 / Not answered</div>
             <div id="answerDetail" class="answer-detail"></div>
           </div>
 
           <div class="solution-section">
-            <span class="eyebrow">学习状态</span>
+            <span class="eyebrow">学习状态 / Study Status</span>
             <div id="problemStatusTags" class="tag-row"></div>
           </div>
 
           <div class="solution-section">
-            <span class="eyebrow">知识点</span>
+            <span class="eyebrow">知识点 / Topics</span>
             <div id="topicTags" class="tag-row"></div>
           </div>
 
           <div class="solution-section">
-            <span class="eyebrow">解析</span>
+            <span class="eyebrow">解析 / Solution</span>
+            <div id="solutionStageControl" class="solution-stage-control is-hidden" role="group" aria-label="解析阶段 / Solution stages">
+              <button class="solution-stage-button active" type="button" data-stage="idea">初步思路 / Idea</button>
+              <button class="solution-stage-button" type="button" data-stage="key_steps">关键步骤 / Key Steps</button>
+              <button class="solution-stage-button" type="button" data-stage="full_calculation">完整计算 / Full Work</button>
+            </div>
             <div id="solutionBody" class="solution-body"></div>
           </div>
 
           <div class="solution-section">
-            <span class="eyebrow">出处</span>
+            <span class="eyebrow">出处 / Sources</span>
             <div class="source-links">
-              <a id="problemSource" href="#" target="_blank" rel="noreferrer">题目页</a>
-              <a id="answerSource" href="#" target="_blank" rel="noreferrer">答案页</a>
-              <a id="solutionSource" href="#" target="_blank" rel="noreferrer">解析页</a>
+              <a id="problemSource" href="#" target="_blank" rel="noreferrer">题目页 / Problem Page</a>
+              <a id="answerSource" href="#" target="_blank" rel="noreferrer">答案页 / Answer Key</a>
+              <a id="solutionSource" href="#" target="_blank" rel="noreferrer">解析页 / Solution Page</a>
             </div>
           </div>
         </aside>
@@ -212,43 +227,42 @@
     <main id="reviewScreen" class="review-screen is-hidden">
       <header class="topbar">
         <div class="brand">
-          <!-- Updated asset path: moved images to root directory -->
-          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识" />
+          <img class="school-logo school-logo-small" src="./assets/school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>学习记录与知识点诊断</h1>
-            <p id="reviewMeta">基于本机保存的作答记录实时统计</p>
+            <h1>学习记录与知识点诊断 / Study Record & Topic Diagnosis</h1>
+            <p id="reviewMeta">基于本机保存的作答记录实时统计 / Real-time stats from locally saved attempts</p>
           </div>
         </div>
         <div class="top-actions">
-          <button id="reviewToPractice" type="button">继续练习</button>
-          <button id="reviewToAbout" type="button">平台说明</button>
-          <button id="reviewToEntry" type="button">模式选择</button>
+          <button id="reviewToPractice" type="button">继续练习 / Continue</button>
+          <button id="reviewToAbout" type="button">平台说明 / About</button>
+          <button id="reviewToEntry" type="button">模式选择 / Modes</button>
         </div>
       </header>
 
-      <section class="review-grid" aria-label="学习记录">
+      <section class="review-grid" aria-label="学习记录 / Study record">
         <section class="review-panel">
           <div class="review-summary">
-            <div><span id="reviewTotal">0</span><small>已做</small></div>
-            <div><span id="reviewCorrect">0</span><small>正确</small></div>
-            <div><span id="reviewAccuracy">0%</span><small>正确率</small></div>
-            <div><span id="reviewPriority">0</span><small>高优先级错题</small></div>
-            <div><span id="reviewFavorites">0</span><small>收藏题</small></div>
+            <div><span id="reviewTotal">0</span><small>已做 / Answered</small></div>
+            <div><span id="reviewCorrect">0</span><small>正确 / Correct</small></div>
+            <div><span id="reviewAccuracy">0%</span><small>正确率 / Accuracy</small></div>
+            <div><span id="reviewPriority">0</span><small>高优先级错题 / Priority Errors</small></div>
+            <div><span id="reviewFavorites">0</span><small>收藏题 / Favorites</small></div>
           </div>
 
           <div class="diagnosis-section">
             <div class="section-head">
-              <span class="eyebrow">知识点诊断</span>
-              <strong id="diagnosisTitle">暂无记录</strong>
+              <span class="eyebrow">知识点诊断 / Topic Diagnosis</span>
+              <strong id="diagnosisTitle">暂无记录 / No records</strong>
             </div>
             <div class="diagnosis-table-wrap">
               <table class="diagnosis-table">
                 <thead>
                   <tr>
-                    <th>知识点</th>
-                    <th>已做</th>
-                    <th>正确率</th>
-                    <th>建议</th>
+                    <th>知识点 / Topic</th>
+                    <th>已做 / Done</th>
+                    <th>正确率 / Accuracy</th>
+                    <th>建议 / Suggestion</th>
                   </tr>
                 </thead>
                 <tbody id="diagnosisRows"></tbody>
@@ -259,44 +273,44 @@
 
         <section class="review-panel">
           <div class="section-head">
-            <span class="eyebrow">自动错题本</span>
-            <strong id="mistakeTitle">0 题</strong>
+            <span class="eyebrow">自动错题本 / Error Log</span>
+            <strong id="mistakeTitle">0 题 / 0 problems</strong>
           </div>
-          <div class="review-filters" aria-label="错题筛选">
+          <div class="review-filters" aria-label="错题筛选 / Error filters">
             <label>
-              <span>知识点</span>
+              <span>知识点 / Topic</span>
               <select id="mistakeTopicFilter"></select>
             </label>
             <label>
-              <span>年份</span>
+              <span>年份 / Year</span>
               <select id="mistakeYearFilter"></select>
             </label>
             <label>
-              <span>难度</span>
+              <span>难度 / Difficulty</span>
               <select id="mistakeDifficultyFilter"></select>
             </label>
             <label>
-              <span>状态</span>
+              <span>状态 / Status</span>
               <select id="mistakeStatusFilter"></select>
             </label>
           </div>
           <div id="mistakeList" class="answered-list priority-list"></div>
 
           <div class="section-head review-subhead">
-            <span class="eyebrow">收藏题</span>
-            <strong id="favoriteTitle">0 题</strong>
+            <span class="eyebrow">收藏题 / Favorites</span>
+            <strong id="favoriteTitle">0 题 / 0 problems</strong>
           </div>
           <div id="favoriteList" class="answered-list"></div>
 
           <div class="section-head review-subhead">
-            <span class="eyebrow">本周推荐题</span>
-            <strong id="weeklyTitle">数学社精选</strong>
+            <span class="eyebrow">本周推荐题 / Weekly Picks</span>
+            <strong id="weeklyTitle">数学社精选 / Math Club Picks</strong>
           </div>
           <div id="weeklyList" class="answered-list"></div>
 
           <div class="section-head">
-            <span class="eyebrow">已做题目</span>
-            <strong id="answeredTitle">0 题</strong>
+            <span class="eyebrow">已做题目 / Answered Problems</span>
+            <strong id="answeredTitle">0 题 / 0 problems</strong>
           </div>
           <div id="answeredList" class="answered-list"></div>
         </section>
@@ -306,77 +320,82 @@
     <main id="aboutScreen" class="about-screen is-hidden">
       <header class="topbar">
         <div class="brand">
-          <!-- Updated asset path: moved images to root directory -->
-          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识" />
+          <img class="school-logo school-logo-small" src="./assets/school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>平台说明</h1>
+            <h1>平台说明 / About the Platform</h1>
             <p>AMC 10/12 Practice Center</p>
           </div>
         </div>
         <div class="top-actions">
-          <button id="aboutToPractice" type="button">进入练习</button>
-          <button id="aboutToEntry" type="button">模式选择</button>
+          <button id="aboutToPractice" type="button">进入练习 / Practice</button>
+          <button id="aboutToEntry" type="button">模式选择 / Modes</button>
         </div>
       </header>
 
-      <section class="about-page" aria-label="平台说明">
+      <section class="about-page" aria-label="平台说明 / About the platform">
         <div class="about-hero">
           <div>
             <span class="eyebrow">About This Platform</span>
-            <h2>面向 AMC 10/12 备赛的校内数学训练平台</h2>
+            <h2>面向 AMC 10/12 备赛的校内数学训练平台<br />A School-Based AMC 10/12 Training Platform</h2>
             <p>
               本平台由数学社维护，面向准备 AMC 10/12 的同学提供系统化真题练习、全卷模拟和学习表现分析。
               平台重点服务 AMC 前置训练，帮助学生熟悉竞赛题型、建立限时作答节奏，并通过知识点诊断明确下一步复习方向。
+              <br />
+              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 through structured past-paper practice,
+              full-length mock exams, and performance diagnostics. It is designed for AMC readiness training: students can learn the contest format,
+              build timed-exam habits, and identify what to review next.
             </p>
           </div>
-          <!-- Updated asset path: moved images to root directory -->
-          <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
+          <img class="ib-logo" src="./assets/ib-programme.jpg" alt="IB Diploma Programme" />
         </div>
 
         <div class="about-grid">
           <section class="about-card">
-            <span class="eyebrow">维护方</span>
-            <h3>由数学社维护</h3>
-            <p>平台内容整理、功能迭代和使用反馈收集由数学社持续维护，用于支持校内数学学习共同体建设。</p>
+            <span class="eyebrow">维护方 / Maintained By</span>
+            <h3>由数学社维护<br />Maintained by the Math Club</h3>
+            <p>平台内容整理、功能迭代和使用反馈收集由数学社持续维护，用于支持校内数学学习共同体建设。<br />The Math Club maintains content organization, feature updates, and feedback collection to support the school mathematics community.</p>
           </section>
 
           <section class="about-card">
-            <span class="eyebrow">题库范围</span>
-            <h3>收录 AMC 10/12 历年真题</h3>
-            <p>题库覆盖 AMC 10 与 AMC 12 的历年试卷，并按年份、卷别、题号、知识点和难度区间组织，便于针对性训练。</p>
+            <span class="eyebrow">题库范围 / Problem Bank</span>
+            <h3>收录 AMC 10/12 历年真题<br />AMC 10/12 Past Problems</h3>
+            <p>题库覆盖 AMC 10 与 AMC 12 的历年试卷，并按年份、卷别、题号、知识点和难度区间组织，便于针对性训练。<br />The problem bank includes AMC 10 and AMC 12 papers, organized by year, form, problem number, topic, and difficulty band.</p>
           </section>
 
           <section class="about-card">
-            <span class="eyebrow">练习方式</span>
-            <h3>支持单题练习与全卷模拟</h3>
-            <p>单题练习适合按知识点查漏补缺；全卷模拟提供 75 分钟倒计时、统一交卷和 AMC 规则模拟计分，更接近正式比赛体验。</p>
+            <span class="eyebrow">练习方式 / Practice Modes</span>
+            <h3>支持单题练习与全卷模拟<br />Single Practice and Full Mock Exams</h3>
+            <p>单题练习适合按知识点查漏补缺；全卷模拟提供 75 分钟倒计时、统一交卷和 AMC 规则模拟计分，更接近正式比赛体验。<br />Single-problem practice supports targeted review, while full mock exams use a 75-minute timer, exam submission, and AMC-style scoring.</p>
           </section>
 
           <section class="about-card">
-            <span class="eyebrow">学习分析</span>
-            <h3>适合 AMC 前置训练</h3>
-            <p>平台会在本机保存作答记录，并根据正确率生成知识点表现与复习建议，帮助学生从“刷题”走向“有计划地训练”。</p>
+            <span class="eyebrow">学习分析 / Learning Analytics</span>
+            <h3>适合 AMC 前置训练<br />Built for AMC Readiness</h3>
+            <p>平台会在本机保存作答记录，并根据正确率生成知识点表现与复习建议，帮助学生从“刷题”走向“有计划地训练”。<br />The platform stores local attempt data and generates topic-level diagnostics, helping students move from simply doing problems to training with a plan.</p>
           </section>
         </div>
 
         <section class="about-card about-wide">
-          <span class="eyebrow">题目来源说明</span>
-          <h3>题目与答案来源</h3>
+          <span class="eyebrow">题目来源说明 / Source Notice</span>
+          <h3>题目与答案来源<br />Problem and Answer Sources</h3>
           <p>
             本平台所整理的 AMC 10/12 题目、答案与解析链接来源于 Art of Problem Solving（AoPS）公开页面。
             平台仅用于学习与训练目的，并在题目页面保留原始来源链接，便于学生回到 AoPS 查看原始题目、答案页和解析页。
+            <br />
+            AMC 10/12 problems, answer keys, and solution links are organized from publicly available Art of Problem Solving（AoPS）pages.
+            This platform is for learning and practice. Source links are retained so students can review the original AoPS problem, answer key, and solution pages.
           </p>
         </section>
 
         <section class="about-card about-contact">
-          <span class="eyebrow">联系与反馈</span>
-          <h3>反馈入口</h3>
-          <p>如发现题目、答案、解析、知识点标注或页面功能存在问题，请通过邮件反馈。</p>
+          <span class="eyebrow">联系与反馈 / Contact & Feedback</span>
+          <h3>反馈入口<br />Feedback</h3>
+          <p>如发现题目、答案、解析、知识点标注或页面功能存在问题，请通过邮件反馈。<br />If you find an issue with a problem, answer, solution, topic tag, or platform feature, please send feedback by email.</p>
           <a href="mailto:samuel.qian@szzx-intl.cn">samuel.qian@szzx-intl.cn</a>
         </section>
       </section>
     </main>
 
-    <script src="./app.js?v=20260707-mastery1"></script>
+    <script src="./app.js?v=20260707-color1"></script>
   </body>
 </html>

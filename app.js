@@ -1,159 +1,7 @@
-// Use a relative path to load the built-in question dataset. When hosted via GitHub Pages
-// or opened locally, this path refers to a file placed alongside index.html and app.js.
-// URL for external dataset; not used when embedding DATA directly in this file.
-const DATA_URL = "./amc_aops_2010_present.json";
-
-// Embedded dataset for AMC practice platform. This allows the site to function
-// without loading an external JSON file. When updating or expanding the
-// question bank, edit the problems below. Each problem object follows the
-// same schema as the external JSON file. The dataset contains a small
-// sample of problems for demonstration purposes.
-const DATA = {
-  "problems": [
-    {
-      "id": "2026_AMC_10A_1",
-      "year": 2026,
-      "level": 10,
-      "form": "A",
-      "number": 1,
-      "exam_id": "2026_AMC_10A",
-      "statement_text": "Compute $1+1$.",
-      "statement_html": null,
-      "choices": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "answer_choice": "B",
-      "answer_value": "2",
-      "answer_note": null,
-      "problem_url": "#",
-      "answer_key_url": "#",
-      "solution_url": "#",
-      "solution_text": "To compute $1+1$, add the two numbers together to obtain $2$.",
-      "solution_source": "Example Solution",
-      "primary_topic": "prealgebra",
-      "topic_tags": ["prealgebra"],
-      "difficulty": "easy"
-    },
-    {
-      "id": "2026_AMC_10A_2",
-      "year": 2026,
-      "level": 10,
-      "form": "A",
-      "number": 2,
-      "exam_id": "2026_AMC_10A",
-      "statement_text": "What is the area of a circle with radius 1?",
-      "statement_html": null,
-      "choices": {
-        "A": "1",
-        "B": "2",
-        "C": "\\pi",
-        "D": "4",
-        "E": "3"
-      },
-      "answer_choice": "C",
-      "answer_value": "\\pi",
-      "answer_note": null,
-      "problem_url": "#",
-      "answer_key_url": "#",
-      "solution_url": "#",
-      "solution_text": "The area of a circle with radius $r$ is $\\pi r^2$. Substituting $r=1$ gives $\\pi$.",
-      "solution_source": "Example Solution",
-      "primary_topic": "geometry",
-      "topic_tags": ["geometry"],
-      "difficulty": "easy"
-    },
-    {
-      "id": "2026_AMC_10A_3",
-      "year": 2026,
-      "level": 10,
-      "form": "A",
-      "number": 3,
-      "exam_id": "2026_AMC_10A",
-      "statement_text": "Solve for $x$ in the equation $2x - 4 = 0$.",
-      "statement_html": null,
-      "choices": {
-        "A": "-2",
-        "B": "0",
-        "C": "1",
-        "D": "2",
-        "E": "4"
-      },
-      "answer_choice": "D",
-      "answer_value": "2",
-      "answer_note": null,
-      "problem_url": "#",
-      "answer_key_url": "#",
-      "solution_url": "#",
-      "solution_text": "Adding 4 to both sides yields $2x=4$, so dividing by 2 gives $x=2$.",
-      "solution_source": "Example Solution",
-      "primary_topic": "algebra",
-      "topic_tags": ["algebra"],
-      "difficulty": "easy"
-    },
-    {
-      "id": "2026_AMC_12A_1",
-      "year": 2026,
-      "level": 12,
-      "form": "A",
-      "number": 1,
-      "exam_id": "2026_AMC_12A",
-      "statement_text": "If the sequence is defined by $a_1 = 1$ and $a_{n+1} = a_n + 2$ for $n \geq 1$, what is $a_5$?",
-      "statement_html": null,
-      "choices": {
-        "A": "3",
-        "B": "5",
-        "C": "7",
-        "D": "9",
-        "E": "11"
-      },
-      "answer_choice": "D",
-      "answer_value": "9",
-      "answer_note": null,
-      "problem_url": "#",
-      "answer_key_url": "#",
-      "solution_url": "#",
-      "solution_text": "Starting from $a_1=1$ and adding 2 four times gives the sequence 1,3,5,7,9; hence $a_5=9$.",
-      "solution_source": "Example Solution",
-      "primary_topic": "algebra",
-      "topic_tags": ["algebra"],
-      "difficulty": "easy"
-    },
-    {
-      "id": "2026_AMC_12A_2",
-      "year": 2026,
-      "level": 12,
-      "form": "A",
-      "number": 2,
-      "exam_id": "2026_AMC_12A",
-      "statement_text": "Consider the function $f(x) = x^2 - 4x + 3$. What is the sum of the roots of $f(x) = 0$?",
-      "statement_html": null,
-      "choices": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "answer_choice": "D",
-      "answer_value": "4",
-      "answer_note": null,
-      "problem_url": "#",
-      "answer_key_url": "#",
-      "solution_url": "#",
-      "solution_text": "A quadratic $ax^2+bx+c=0$ has the sum of its roots equal to $-b/a$. Here $a=1$ and $b=-4$, so the sum is $4$.",
-      "solution_source": "Example Solution",
-      "primary_topic": "algebra",
-      "topic_tags": ["algebra"],
-      "difficulty": "easy"
-    }
-  ]
-};
+const DATA_URLS = ["./amc_aops_2010_present.json", "../amc_aops_2010_present.json"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
+const LAYOUT_KEY = "amc-practice-layout-v1";
 const FULL_EXAM_SECONDS = 75 * 60;
 
 const weeklyRecommendationIds = [
@@ -164,12 +12,18 @@ const weeklyRecommendationIds = [
 ];
 
 const topicLabels = {
-  algebra: "代数",
-  geometry: "几何",
-  number_theory: "数论",
-  counting_and_probability: "计数与概率",
-  prealgebra: "预代数",
-  precalculus: "预备微积分",
+  algebra: "代数 / Algebra",
+  geometry: "几何 / Geometry",
+  number_theory: "数论 / Number Theory",
+  counting_and_probability: "计数与概率 / Counting & Probability",
+  prealgebra: "预代数 / Prealgebra",
+  precalculus: "预备微积分 / Precalculus",
+};
+
+const solutionStageLabels = {
+  idea: "初步思路 / Idea",
+  key_steps: "关键步骤 / Key Steps",
+  full_calculation: "完整计算 / Full Work",
 };
 
 const els = {
@@ -219,6 +73,8 @@ const els = {
   openReview: document.querySelector("#openReview"),
   openAbout: document.querySelector("#openAbout"),
   filters: document.querySelector(".filters"),
+  workspace: document.querySelector(".workspace"),
+  workspaceResizers: document.querySelectorAll(".workspace-resizer"),
   yearFilter: document.querySelector("#yearFilter"),
   levelFilter: document.querySelector("#levelFilter"),
   formFilter: document.querySelector("#formFilter"),
@@ -247,6 +103,7 @@ const els = {
   answerDetail: document.querySelector("#answerDetail"),
   problemStatusTags: document.querySelector("#problemStatusTags"),
   topicTags: document.querySelector("#topicTags"),
+  solutionStageControl: document.querySelector("#solutionStageControl"),
   solutionBody: document.querySelector("#solutionBody"),
   problemSource: document.querySelector("#problemSource"),
   answerSource: document.querySelector("#answerSource"),
@@ -260,6 +117,7 @@ const state = {
   currentIndex: 0,
   selectedChoice: null,
   revealed: false,
+  solutionStage: "idea",
   mode: "entry",
   activeExamId: null,
   examAnswers: {},
@@ -268,6 +126,7 @@ const state = {
   timerId: null,
   progress: loadProgress(),
   marks: loadMarks(),
+  layout: loadLayout(),
 };
 
 function loadProgress() {
@@ -286,12 +145,32 @@ function loadMarks() {
   }
 }
 
+function loadLayout() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LAYOUT_KEY)) || {};
+    return {
+      listWidth: Number(saved.listWidth) || 230,
+      solutionWidth: Number(saved.solutionWidth) || 380,
+    };
+  } catch {
+    return { listWidth: 230, solutionWidth: 380 };
+  }
+}
+
 function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
 }
 
 function saveMarks() {
   localStorage.setItem(MARKS_KEY, JSON.stringify(state.marks));
+}
+
+function saveLayout() {
+  localStorage.setItem(LAYOUT_KEY, JSON.stringify(state.layout));
+}
+
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function problemMarks(problem) {
@@ -395,8 +274,8 @@ function examById(examId) {
 
 function updateDatasetMeta() {
   const text = state.data
-    ? `${state.data.exams.length} 套试卷 · ${state.data.problems.length} 题 · ${state.data.solution_summary?.solution_text_count || 0} 题内嵌解析`
-    : "Loading...";
+    ? `${state.data.exams.length} 套试卷 / papers · ${state.data.problems.length} 题 / problems · ${state.data.solution_summary?.solution_text_count || 0} 题内嵌解析 / inline solutions`
+    : "加载中 / Loading...";
   els.entryMeta.textContent = text;
   els.datasetMeta.textContent = text;
 }
@@ -405,7 +284,7 @@ function updateTimer() {
   const minutes = Math.floor(state.timerRemaining / 60);
   const seconds = state.timerRemaining % 60;
   els.timerText.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  els.timerLabel.textContent = state.timerRemaining > 0 ? "剩余时间" : "时间到";
+  els.timerLabel.textContent = state.timerRemaining > 0 ? "剩余时间 / Time left" : "时间到 / Time up";
   els.timerPanel.classList.toggle("time-up", state.timerRemaining <= 0);
 }
 
@@ -448,6 +327,7 @@ function showPracticeShell() {
   els.timerPanel.classList.toggle("is-hidden", state.mode !== "exam");
   els.submitExam.classList.toggle("is-hidden", state.mode !== "exam");
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
+  requestAnimationFrame(applyWorkspaceLayout);
 }
 
 function showReview() {
@@ -536,7 +416,7 @@ function prepareMathText(value) {
   const text = String(value || "");
   const withDisplayBlocks = text.replace(
     /(\\begin\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\}[\s\S]*?\\end\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\})/g,
-    "\n$$$$$1$$$$\n"
+    (block) => `\n$$\n${block}\n$$\n`
   );
   if (/[＄$]|\\\(|\\\[/.test(withDisplayBlocks)) return withDisplayBlocks;
   return looksLikeLatex(withDisplayBlocks) ? `\\(${withDisplayBlocks}\\)` : withDisplayBlocks;
@@ -549,7 +429,7 @@ function setMathText(node, value) {
 function renderPlainText(target, text) {
   target.innerHTML = "";
   const parts = String(text || "")
-    .split(/\n{2,}|(?<=\.)\s+(?=(?:We|Thus|Since|The answer|Therefore|Let|Using)\b)/)
+    .split(/\n{2,}/)
     .map((part) => part.trim())
     .filter((part) => !/^Solution(?:\s+\d+)?$/i.test(part))
     .filter(Boolean);
@@ -607,41 +487,41 @@ function initFilters() {
     .sort((a, b) => topicName(a).localeCompare(topicName(b), "zh-CN"))
     .map((topic) => [topic, topicName(topic)]);
 
-  fillSelect(els.yearFilter, years, "全部年份");
-  fillSelect(els.levelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试");
-  fillSelect(els.formFilter, [["A", "A 卷"], ["B", "B 卷"]], "全部卷别");
-  fillSelect(els.examFilter, exams, "全部试卷");
+  fillSelect(els.yearFilter, years, "全部年份 / All Years");
+  fillSelect(els.levelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试 / All Contests");
+  fillSelect(els.formFilter, [["A", "A 卷 / Form A"], ["B", "B 卷 / Form B"]], "全部卷别 / All Forms");
+  fillSelect(els.examFilter, exams, "全部试卷 / All Papers");
   fillExactSelect(els.fullExamSelect, exams);
-  fillSelect(els.topicFilter, topics, "全部知识点");
-  fillSelect(els.mistakeTopicFilter, topics, "全部知识点");
-  fillSelect(els.mistakeYearFilter, years, "全部年份");
+  fillSelect(els.topicFilter, topics, "全部知识点 / All Topics");
+  fillSelect(els.mistakeTopicFilter, topics, "全部知识点 / All Topics");
+  fillSelect(els.mistakeYearFilter, years, "全部年份 / All Years");
   fillSelect(
     els.mistakeDifficultyFilter,
     [
-      ["1-10", "1-10 题"],
-      ["10-18", "10-18 题"],
-      ["19-25", "19-25 题"],
+      ["1-10", "1-10 题 / Problems 1-10"],
+      ["10-18", "10-18 题 / Problems 10-18"],
+      ["19-25", "19-25 题 / Problems 19-25"],
     ],
-    "全部难度"
+    "全部难度 / All Difficulty"
   );
   fillSelect(
     els.mistakeStatusFilter,
     [
-      ["priority", "高优先级"],
-      ["wrong_history", "错题历史"],
-      ["favorite", "收藏"],
-      ["solution_viewed", "看过解析"],
+      ["priority", "高优先级 / High Priority"],
+      ["wrong_history", "错题历史 / Error History"],
+      ["favorite", "收藏 / Favorite"],
+      ["solution_viewed", "看过解析 / Solution Viewed"],
     ],
-    "全部状态"
+    "全部状态 / All Status"
   );
   fillSelect(
     els.difficultyFilter,
     [
-      ["1-10", "1-10 题"],
-      ["10-18", "10-18 题"],
-      ["19-25", "19-25 题"],
+      ["1-10", "1-10 题 / Problems 1-10"],
+      ["10-18", "10-18 题 / Problems 10-18"],
+      ["19-25", "19-25 题 / Problems 19-25"],
     ],
-    "全部难度"
+    "全部难度 / All Difficulty"
   );
 }
 
@@ -719,6 +599,37 @@ function toggleFavorite() {
 function canShowAnswer(progress = null) {
   if (state.mode === "exam") return state.examSubmitted;
   return Boolean(state.revealed || progress);
+}
+
+function solutionStages(problem) {
+  if (!problem?.solution_text) return null;
+  return problem.solution_stages || {
+    idea: problem.solution_text,
+    key_steps: problem.solution_text,
+    full_calculation: problem.solution_text,
+  };
+}
+
+function activeSolutionStage(problem) {
+  const stages = solutionStages(problem);
+  if (!stages) return null;
+  return stages[state.solutionStage] ? state.solutionStage : "full_calculation";
+}
+
+function updateSolutionStageButtons(problem, shouldShowAnswer) {
+  const stages = solutionStages(problem);
+  const canChooseStage = Boolean(shouldShowAnswer && stages);
+  els.solutionStageControl.classList.toggle("is-hidden", !canChooseStage);
+  if (!canChooseStage) return;
+
+  const activeStage = activeSolutionStage(problem);
+  els.solutionStageControl.querySelectorAll(".solution-stage-button").forEach((button) => {
+    const stage = button.dataset.stage;
+    const hasText = Boolean(stages[stage]);
+    button.disabled = !hasText;
+    button.classList.toggle("active", stage === activeStage);
+    button.setAttribute("aria-pressed", String(stage === activeStage));
+  });
 }
 
 function examReport() {
@@ -925,11 +836,11 @@ function topicDiagnosis() {
 
 function diagnosisAdvice(stat) {
   const accuracy = stat.total ? stat.correct / stat.total : 0;
-  if (stat.total < 3) return "样本较少，继续做几题后再判断";
-  if (accuracy < 0.5) return `优先复习 ${topicName(stat.tag)} 基础题`;
-  if (accuracy < 0.7) return "建议复盘错题，再做同类中档题";
-  if (accuracy < 0.85) return "整体稳定，可练中高难题";
-  return "掌握较好，保持限时训练";
+  if (stat.total < 3) return "样本较少，继续做几题后再判断 / Small sample; answer a few more before judging.";
+  if (accuracy < 0.5) return `优先复习 ${topicName(stat.tag)} 基础题 / Prioritize fundamentals in ${topicName(stat.tag)}.`;
+  if (accuracy < 0.7) return "建议复盘错题，再做同类中档题 / Review mistakes, then try similar medium problems.";
+  if (accuracy < 0.85) return "整体稳定，可练中高难题 / Stable; move toward medium-hard problems.";
+  return "掌握较好，保持限时训练 / Strong; maintain timed practice.";
 }
 
 function jumpToProblem(problemId) {
@@ -960,12 +871,12 @@ function jumpToProblem(problemId) {
 
 function statusLabels(problem, progress = null, marks = {}) {
   const labels = [];
-  if (!progress) labels.push("未做");
-  if (progress?.correct) labels.push("做对");
-  if (progress && !progress.correct) labels.push("做错");
-  if (marks.solutionViewed) labels.push("看过解析");
-  if (marks.favorite) labels.push("收藏");
-  if (progress?.needsReview) labels.push("需要复习");
+  if (!progress) labels.push("未做 / Unattempted");
+  if (progress?.correct) labels.push("做对 / Correct");
+  if (progress && !progress.correct) labels.push("做错 / Incorrect");
+  if (marks.solutionViewed) labels.push("看过解析 / Solution Viewed");
+  if (marks.favorite) labels.push("收藏 / Favorite");
+  if (progress?.needsReview) labels.push("需要复习 / Needs Review");
   return labels;
 }
 
@@ -989,14 +900,14 @@ function renderProblemCollection(target, items, emptyText, options = {}) {
       .map((label) => `<em>${label}</em>`)
       .join("");
     const detail = options.detail?.(problem, progress, marks) ||
-      `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 · ${progress?.choice ? `你的答案 ${progress.choice}` : "未作答"}`;
+      `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 / band · ${progress?.choice ? `你的答案 / Your answer ${progress.choice}` : "未作答 / Not answered"}`;
     button.innerHTML = `
       <span>
         <strong>${problem.display_name} #${problem.number}</strong>
         <small>${detail}</small>
         <span class="status-mini-row">${labels}</span>
       </span>
-      <b>${options.badge?.(problem, progress, marks) || (progress?.needsReview ? "复习" : "查看")}</b>
+      <b>${options.badge?.(problem, progress, marks) || (progress?.needsReview ? "复习 / Review" : "查看 / View")}</b>
     `;
     button.addEventListener("click", () => jumpToProblem(problem.id));
     target.appendChild(button);
@@ -1015,19 +926,19 @@ function renderReviewDashboard() {
   els.reviewPriority.textContent = String(priorityMistakes.length);
   els.reviewFavorites.textContent = String(favorites.length);
   els.reviewMeta.textContent = answered.length
-    ? `本机已保存 ${answered.length} 道作答记录，${priorityMistakes.length} 道高优先级错题需要复习`
-    : "本机还没有保存作答记录";
-  els.diagnosisTitle.textContent = answered.length ? `${topicDiagnosis().length} 个知识点` : "暂无记录";
-  els.answeredTitle.textContent = `${answered.length} 题`;
-  els.mistakeTitle.textContent = `${filteredMistakeProblems().length}/${mistakes.length} 题`;
-  els.favoriteTitle.textContent = `${favorites.length} 题`;
-  els.weeklyTitle.textContent = `${weeklyProblems().length} 题`;
+    ? `本机已保存 ${answered.length} 道作答记录，${priorityMistakes.length} 道高优先级错题需要复习 / ${answered.length} local attempts saved; ${priorityMistakes.length} high-priority errors need review.`
+    : "本机还没有保存作答记录 / No local attempt records yet.";
+  els.diagnosisTitle.textContent = answered.length ? `${topicDiagnosis().length} 个知识点 / topics` : "暂无记录 / No records";
+  els.answeredTitle.textContent = `${answered.length} 题 / problems`;
+  els.mistakeTitle.textContent = `${filteredMistakeProblems().length}/${mistakes.length} 题 / problems`;
+  els.favoriteTitle.textContent = `${favorites.length} 题 / problems`;
+  els.weeklyTitle.textContent = `${weeklyProblems().length} 题 / problems`;
 
   els.diagnosisRows.innerHTML = "";
   const diagnosis = topicDiagnosis();
   if (!diagnosis.length) {
     const row = document.createElement("tr");
-    row.innerHTML = '<td colspan="4">提交答案后，这里会自动生成知识点正确率和复习建议。</td>';
+    row.innerHTML = '<td colspan="4">提交答案后，这里会自动生成知识点正确率和复习建议。 / After you submit answers, topic accuracy and review suggestions will appear here.</td>';
     els.diagnosisRows.appendChild(row);
   } else {
     for (const stat of diagnosis) {
@@ -1045,23 +956,23 @@ function renderReviewDashboard() {
   renderProblemCollection(
     els.mistakeList,
     filteredMistakeProblems(),
-    "还没有符合筛选条件的错题。提交错误答案后会自动加入这里。",
+    "还没有符合筛选条件的错题。提交错误答案后会自动加入这里。 / No matching mistakes yet. Incorrect submissions will be added automatically.",
     {
-      badge: (problem, progress) => progress?.needsReview ? `${progress.reviewCorrectStreak || 0}/2` : "已降级",
-      detail: (problem, progress) => `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 · 错 ${progress?.wrongAttempts || 0} 次`,
+      badge: (problem, progress) => progress?.needsReview ? `${progress.reviewCorrectStreak || 0}/2` : "已降级 / Lower Priority",
+      detail: (problem, progress) => `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 / band · 错 ${progress?.wrongAttempts || 0} 次 / wrong ${progress?.wrongAttempts || 0} time(s)`,
     }
   );
-  renderProblemCollection(els.favoriteList, favorites, "还没有收藏题。遇到好题、难题或典型题时点击“收藏”。");
+  renderProblemCollection(els.favoriteList, favorites, "还没有收藏题。遇到好题、难题或典型题时点击“收藏”。 / No favorites yet. Click Favorite on strong, difficult, or representative problems.");
   renderProblemCollection(
     els.weeklyList,
     weeklyProblems(),
-    "本周推荐题暂未配置。",
+    "本周推荐题暂未配置。 / Weekly picks are not configured yet.",
     {
-      badge: () => "推荐",
-      detail: (problem) => `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 · 数学社推荐`,
+      badge: () => "推荐 / Pick",
+      detail: (problem) => `${topicName(problem.primary_topic)} · ${difficultyRange(problem)} 题 / band · 数学社推荐 / Math Club pick`,
     }
   );
-  renderProblemCollection(els.answeredList, answered, "还没有已做题目。先进入单题练习或全卷练习提交答案。");
+  renderProblemCollection(els.answeredList, answered, "还没有已做题目。先进入单题练习或全卷练习提交答案。 / No answered problems yet. Submit answers in single practice or full mock mode first.");
 }
 
 function render() {
@@ -1086,7 +997,7 @@ function renderStats() {
     : String(visibleProgress.filter((item) => item.correct).length);
   if (state.mode === "exam") {
     const exam = examById(state.activeExamId);
-    els.datasetMeta.textContent = exam ? `全卷练习 · ${exam.display_name} · 75 分钟` : "全卷练习";
+    els.datasetMeta.textContent = exam ? `全卷练习 / Full Mock · ${exam.display_name} · 75 分钟 / 75 min` : "全卷练习 / Full Mock";
   } else {
     updateDatasetMeta();
   }
@@ -1094,12 +1005,12 @@ function renderStats() {
 
 function renderList() {
   els.problemList.innerHTML = "";
-  els.listTitle.textContent = `${state.filtered.length} 题`;
+  els.listTitle.textContent = `${state.filtered.length} 题 / problems`;
 
   if (!state.filtered.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
-    empty.textContent = "没有匹配题目";
+    empty.textContent = "没有匹配题目 / No matching problems";
     els.problemList.appendChild(empty);
     return;
   }
@@ -1136,7 +1047,7 @@ function renderProblem() {
   const problem = currentProblem();
   if (!problem) {
     els.problemKicker.textContent = "-";
-    els.problemTitle.textContent = "没有匹配题目";
+    els.problemTitle.textContent = "没有匹配题目 / No matching problems";
     els.statement.innerHTML = "";
     els.choicePanel.innerHTML = "";
     els.favoriteProblem.disabled = true;
@@ -1153,13 +1064,13 @@ function renderProblem() {
   }
 
   els.problemKicker.textContent = `${problem.display_name} · ${topicName(problem.primary_topic)}`;
-  els.problemTitle.textContent = `Problem ${problem.number}`;
+  els.problemTitle.textContent = `Problem ${problem.number} / 第 ${problem.number} 题`;
   els.statement.innerHTML = sanitizeHtml(problem.statement_html || `<p>${problem.statement_text}</p>`);
   renderChoices(problem, progress);
   setAnswerPanel(problem, progress);
   els.prevProblem.disabled = state.currentIndex === 0;
   els.nextProblem.disabled = state.currentIndex === state.filtered.length - 1;
-  els.submitAnswer.textContent = state.mode === "exam" && !state.examSubmitted ? "保存本题" : "提交";
+  els.submitAnswer.textContent = state.mode === "exam" && !state.examSubmitted ? "保存本题 / Save" : "提交 / Submit";
   els.submitAnswer.disabled = state.mode === "exam" && state.examSubmitted;
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
   els.clearAnswer.disabled = state.mode === "exam" && state.examSubmitted;
@@ -1197,28 +1108,29 @@ function setAnswerPanel(problem, progress = null) {
   els.solutionBody.innerHTML = "";
 
   if (!problem) {
-    els.answerStatus.textContent = "未选择题目";
+    els.answerStatus.textContent = "未选择题目 / No problem selected";
+    updateSolutionStageButtons(null, false);
     return;
   }
 
   if (state.mode === "exam" && !state.examSubmitted) {
     if (progress?.pending) {
-      els.answerStatus.textContent = "已记录本题";
+      els.answerStatus.textContent = "已记录本题 / Saved";
       els.answerStatus.classList.add("warn");
     } else {
-      els.answerStatus.textContent = "未作答";
+      els.answerStatus.textContent = "未作答 / Not answered";
     }
   } else if (state.mode === "exam" && state.examSubmitted && !progress) {
-    els.answerStatus.textContent = "空题";
+    els.answerStatus.textContent = "空题 / Blank";
     els.answerStatus.classList.add("warn");
   } else if (progress) {
-    els.answerStatus.textContent = progress.correct ? "回答正确" : "回答错误";
+    els.answerStatus.textContent = progress.correct ? "回答正确 / Correct" : "回答错误 / Incorrect";
     els.answerStatus.classList.add(progress.correct ? "good" : "bad");
   } else if (state.revealed) {
-    els.answerStatus.textContent = "已提前显示答案/解析";
+    els.answerStatus.textContent = "已提前显示答案/解析 / Answer and solution revealed";
     els.answerStatus.classList.add("warn");
   } else {
-    els.answerStatus.textContent = "未作答";
+    els.answerStatus.textContent = "未作答 / Not answered";
   }
 
   els.answerDetail.innerHTML = "";
@@ -1226,13 +1138,13 @@ function setAnswerPanel(problem, progress = null) {
   if (shouldShowAnswer) {
     if (problem.answer_choice) {
       const answerChoice = document.createElement("span");
-      answerChoice.textContent = `答案：${problem.answer_choice}`;
+      answerChoice.textContent = `答案 / Answer: ${problem.answer_choice}`;
       els.answerDetail.appendChild(answerChoice);
     }
     if (problem.answer_value) {
       if (els.answerDetail.childNodes.length) els.answerDetail.append(" · ");
       const answerValue = document.createElement("span");
-      answerValue.append("选项值：");
+      answerValue.append("选项值 / Choice value: ");
       const mathValue = document.createElement("span");
       setMathText(mathValue, problem.answer_value);
       answerValue.appendChild(mathValue);
@@ -1241,7 +1153,7 @@ function setAnswerPanel(problem, progress = null) {
     if (problem.answer_note) {
       if (els.answerDetail.childNodes.length) els.answerDetail.append(" · ");
       const note = document.createElement("span");
-      note.textContent = `备注：${formatAnswerNote(problem.answer_note)}`;
+      note.textContent = `备注 / Note: ${formatAnswerNote(problem.answer_note)}`;
       els.answerDetail.appendChild(note);
     }
   }
@@ -1261,28 +1173,32 @@ function setAnswerPanel(problem, progress = null) {
     els.topicTags.appendChild(chip);
   }
 
+  updateSolutionStageButtons(problem, shouldShowAnswer);
+
   if (!shouldShowAnswer) {
     const prompt = document.createElement("p");
     prompt.textContent = state.mode === "exam"
-      ? "考试模式中答案和解析已锁定，提交整卷后统一显示。"
-      : "提交答案后会自动显示解析；作答前也可以点击“看答案/解析”。";
+      ? "考试模式中答案和解析已锁定，提交整卷后统一显示。 / In exam mode, answers and solutions are locked until you submit the full paper."
+      : "提交答案后会自动显示解析；作答前也可以点击“看答案/解析”。 / The solution appears after submission; you may also reveal it before answering.";
     els.solutionBody.appendChild(prompt);
   } else if (problem.solution_text) {
     const source = document.createElement("div");
     source.className = "solution-source-note";
-    source.textContent = `解析来源：${problem.solution_source || "本地题库"}`;
+    const stage = activeSolutionStage(problem);
+    source.textContent = `解析来源 / Source: ${problem.solution_source || "本地题库 / Local bank"} · ${solutionStageLabels[stage] || "解析 / Solution"}`;
     els.solutionBody.appendChild(source);
     const content = document.createElement("div");
-    renderPlainText(content, problem.solution_text);
+    content.className = "solution-stage-content";
+    renderPlainText(content, solutionStages(problem)[stage] || problem.solution_text);
     els.solutionBody.appendChild(content);
   } else {
     const note = document.createElement("p");
-    note.textContent = "这道题的内嵌解析还未采集，先使用 AoPS 解析页。";
+    note.textContent = "这道题的内嵌解析还未采集，先使用 AoPS 解析页。 / Inline solution is not available yet; please use the AoPS solution page.";
     const link = document.createElement("a");
     link.href = problem.solution_url;
     link.target = "_blank";
     link.rel = "noreferrer";
-    link.textContent = "打开 AoPS 解析";
+    link.textContent = "打开 AoPS 解析 / Open AoPS Solution";
     els.solutionBody.appendChild(note);
     els.solutionBody.appendChild(link);
   }
@@ -1290,7 +1206,7 @@ function setAnswerPanel(problem, progress = null) {
   els.problemSource.href = problem.problem_url;
   els.answerSource.href = problem.answer_key_url;
   els.solutionSource.href = problem.solution_url;
-  els.favoriteProblem.textContent = marks.favorite ? "取消收藏" : "收藏";
+  els.favoriteProblem.textContent = marks.favorite ? "取消收藏 / Unfavorite" : "收藏 / Favorite";
 }
 
 function renderExamResult() {
@@ -1303,10 +1219,10 @@ function renderExamResult() {
     const answered = Object.keys(state.examAnswers).length;
     els.examResultBody.innerHTML = `
       <div class="exam-score-card">
-        <strong>考试进行中</strong>
-        <span>${answered}/${state.filtered.length} 题已保存</span>
+        <strong>考试进行中 / In Progress</strong>
+        <span>${answered}/${state.filtered.length} 题已保存 / saved</span>
       </div>
-      <p>全卷练习中不能提前看解析。提交整卷后，会按 AMC 规则计算模拟分数。</p>
+      <p>全卷练习中不能提前看解析。提交整卷后，会按 AMC 规则计算模拟分数。 / Solutions are locked during the mock exam. Submit the full paper to receive an AMC-style score.</p>
     `;
     return;
   }
@@ -1327,16 +1243,16 @@ function renderExamResult() {
   els.examResultBody.innerHTML = `
     <div class="exam-score-card">
       <strong>${report.score.toFixed(1)}</strong>
-      <span>模拟 AMC 分数</span>
+      <span>模拟 AMC 分数 / Simulated AMC Score</span>
     </div>
     <div class="exam-result-list">
-      <p><b>正确题号：</b>${listText(report.correct)}</p>
-      <p><b>错误题号：</b>${listText(report.incorrect)}</p>
-      <p><b>空题题号：</b>${listText(report.blank)}</p>
+      <p><b>正确题号 / Correct:</b> ${listText(report.correct)}</p>
+      <p><b>错误题号 / Incorrect:</b> ${listText(report.incorrect)}</p>
+      <p><b>空题题号 / Blank:</b> ${listText(report.blank)}</p>
     </div>
     <div class="mini-table-wrap">
       <table class="mini-table">
-        <thead><tr><th>知识点</th><th>作答</th><th>表现</th></tr></thead>
+        <thead><tr><th>知识点 / Topic</th><th>作答 / Answered</th><th>表现 / Performance</th></tr></thead>
         <tbody>${topicRows}</tbody>
       </table>
     </div>
@@ -1345,11 +1261,115 @@ function renderExamResult() {
 
 function formatAnswerNote(note) {
   const notes = {
-    multiple_accepted: "多个答案被接受",
-    no_official_choice_correct: "官方选项无正确答案",
-    full_credit_all_answers: "原题有误，所有答案给满分",
+    multiple_accepted: "多个答案被接受 / Multiple answers accepted",
+    no_official_choice_correct: "官方选项无正确答案 / No official choice is correct",
+    full_credit_all_answers: "原题有误，所有答案给满分 / Flawed problem; all answers receive full credit",
   };
   return notes[note] || note;
+}
+
+function applyWorkspaceLayout() {
+  if (!els.workspace) return;
+  fitWorkspaceLayout();
+  els.workspace.style.setProperty("--list-width", `${state.layout.listWidth}px`);
+  els.workspace.style.setProperty("--solution-width", `${state.layout.solutionWidth}px`);
+}
+
+function fitWorkspaceLayout() {
+  if (!els.workspace) return;
+  const totalWidth = els.workspace.getBoundingClientRect().width;
+  if (!totalWidth || totalWidth < 900) return;
+
+  const minList = 150;
+  const minSolution = 280;
+  const minProblem = Math.min(520, Math.max(320, totalWidth * 0.32));
+  state.layout.listWidth = Math.round(clamp(state.layout.listWidth, minList, Math.min(380, totalWidth * 0.34)));
+  state.layout.solutionWidth = Math.round(clamp(state.layout.solutionWidth, minSolution, Math.min(620, totalWidth * 0.42)));
+
+  const maxSideWidth = totalWidth - minProblem - 24;
+  const sideWidth = state.layout.listWidth + state.layout.solutionWidth;
+  if (sideWidth <= maxSideWidth) return;
+
+  let overflow = sideWidth - maxSideWidth;
+  const solutionReduction = Math.min(overflow, Math.max(0, state.layout.solutionWidth - minSolution));
+  state.layout.solutionWidth -= solutionReduction;
+  overflow -= solutionReduction;
+  if (overflow > 0) {
+    state.layout.listWidth = Math.max(minList, state.layout.listWidth - overflow);
+  }
+}
+
+function updateWorkspaceColumn(side, clientX) {
+  if (!els.workspace) return;
+  const rect = els.workspace.getBoundingClientRect();
+  const totalWidth = rect.width;
+  const minList = 150;
+  const maxList = Math.min(380, Math.max(150, totalWidth * 0.34));
+  const minSolution = 280;
+  const maxSolution = Math.min(620, Math.max(280, totalWidth * 0.42));
+  const minProblem = Math.min(520, Math.max(320, totalWidth * 0.32));
+
+  if (side === "left") {
+    const maxAllowed = Math.max(minList, totalWidth - state.layout.solutionWidth - minProblem - 24);
+    state.layout.listWidth = Math.round(clamp(clientX - rect.left, minList, Math.min(maxList, maxAllowed)));
+  } else {
+    const maxAllowed = Math.max(minSolution, totalWidth - state.layout.listWidth - minProblem - 24);
+    state.layout.solutionWidth = Math.round(clamp(rect.right - clientX, minSolution, Math.min(maxSolution, maxAllowed)));
+  }
+  applyWorkspaceLayout();
+}
+
+function bindWorkspaceResize() {
+  applyWorkspaceLayout();
+  window.addEventListener("resize", applyWorkspaceLayout);
+  els.workspaceResizers.forEach((handle) => {
+    handle.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      const side = handle.dataset.resize;
+      document.body.classList.add("is-resizing");
+      handle.setPointerCapture?.(event.pointerId);
+
+      const onPointerMove = (moveEvent) => {
+        updateWorkspaceColumn(side, moveEvent.clientX);
+      };
+
+      const onPointerUp = () => {
+        document.body.classList.remove("is-resizing");
+        saveLayout();
+        document.removeEventListener("pointermove", onPointerMove);
+        document.removeEventListener("pointerup", onPointerUp);
+        document.removeEventListener("pointercancel", onPointerUp);
+      };
+
+      document.addEventListener("pointermove", onPointerMove);
+      document.addEventListener("pointerup", onPointerUp);
+      document.addEventListener("pointercancel", onPointerUp);
+    });
+
+    handle.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const side = handle.dataset.resize;
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const delta = 18 * direction;
+      updateWorkspaceColumn(side, handle.getBoundingClientRect().left + delta);
+      saveLayout();
+    });
+  });
+}
+
+async function loadProblemBank() {
+  const errors = [];
+  for (const url of DATA_URLS) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+      return response.json();
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  throw new Error(errors.join("；"));
 }
 
 function bindEvents() {
@@ -1385,6 +1405,12 @@ function bindEvents() {
   els.submitAnswer.addEventListener("click", submitAnswer);
   els.submitExam.addEventListener("click", submitWholeExam);
   els.revealAnswer.addEventListener("click", revealAnswer);
+  els.solutionStageControl.querySelectorAll(".solution-stage-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.solutionStage = button.dataset.stage || "idea";
+      renderProblem();
+    });
+  });
   els.favoriteProblem.addEventListener("click", toggleFavorite);
   els.clearAnswer.addEventListener("click", clearAnswer);
   els.prevProblem.addEventListener("click", () => move(-1));
@@ -1394,11 +1420,9 @@ function bindEvents() {
 
 async function init() {
   bindEvents();
+  bindWorkspaceResize();
   try {
-    // Instead of fetching an external JSON file, load the embedded DATA object defined at
-    // the top of this script. This enables offline use and avoids 404 errors when the
-    // JSON file is not present.
-    state.data = DATA;
+    state.data = await loadProblemBank();
     state.problems = state.data.problems.slice().sort((a, b) => (
       b.year - a.year ||
       a.level - b.level ||
@@ -1410,9 +1434,9 @@ async function init() {
     updateDatasetMeta();
     showEntry();
   } catch (error) {
-    els.datasetMeta.textContent = "题库加载失败";
-    els.entryMeta.textContent = "题库加载失败";
-    els.statement.innerHTML = `<p class="empty">无法读取题库文件：${error.message}</p>`;
+    els.datasetMeta.textContent = "题库加载失败 / Problem bank failed to load";
+    els.entryMeta.textContent = "题库加载失败 / Problem bank failed to load";
+    els.statement.innerHTML = `<p class="empty">无法读取题库文件 / Unable to read problem bank file: ${error.message}</p>`;
   }
 }
 
