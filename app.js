@@ -1,4 +1,157 @@
-const DATA_URL = "../amc_aops_2010_present.json";
+// Use a relative path to load the built-in question dataset. When hosted via GitHub Pages
+// or opened locally, this path refers to a file placed alongside index.html and app.js.
+// URL for external dataset; not used when embedding DATA directly in this file.
+const DATA_URL = "./amc_aops_2010_present.json";
+
+// Embedded dataset for AMC practice platform. This allows the site to function
+// without loading an external JSON file. When updating or expanding the
+// question bank, edit the problems below. Each problem object follows the
+// same schema as the external JSON file. The dataset contains a small
+// sample of problems for demonstration purposes.
+const DATA = {
+  "problems": [
+    {
+      "id": "2026_AMC_10A_1",
+      "year": 2026,
+      "level": 10,
+      "form": "A",
+      "number": 1,
+      "exam_id": "2026_AMC_10A",
+      "statement_text": "Compute $1+1$.",
+      "statement_html": null,
+      "choices": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "answer_choice": "B",
+      "answer_value": "2",
+      "answer_note": null,
+      "problem_url": "#",
+      "answer_key_url": "#",
+      "solution_url": "#",
+      "solution_text": "To compute $1+1$, add the two numbers together to obtain $2$.",
+      "solution_source": "Example Solution",
+      "primary_topic": "prealgebra",
+      "topic_tags": ["prealgebra"],
+      "difficulty": "easy"
+    },
+    {
+      "id": "2026_AMC_10A_2",
+      "year": 2026,
+      "level": 10,
+      "form": "A",
+      "number": 2,
+      "exam_id": "2026_AMC_10A",
+      "statement_text": "What is the area of a circle with radius 1?",
+      "statement_html": null,
+      "choices": {
+        "A": "1",
+        "B": "2",
+        "C": "\\pi",
+        "D": "4",
+        "E": "3"
+      },
+      "answer_choice": "C",
+      "answer_value": "\\pi",
+      "answer_note": null,
+      "problem_url": "#",
+      "answer_key_url": "#",
+      "solution_url": "#",
+      "solution_text": "The area of a circle with radius $r$ is $\\pi r^2$. Substituting $r=1$ gives $\\pi$.",
+      "solution_source": "Example Solution",
+      "primary_topic": "geometry",
+      "topic_tags": ["geometry"],
+      "difficulty": "easy"
+    },
+    {
+      "id": "2026_AMC_10A_3",
+      "year": 2026,
+      "level": 10,
+      "form": "A",
+      "number": 3,
+      "exam_id": "2026_AMC_10A",
+      "statement_text": "Solve for $x$ in the equation $2x - 4 = 0$.",
+      "statement_html": null,
+      "choices": {
+        "A": "-2",
+        "B": "0",
+        "C": "1",
+        "D": "2",
+        "E": "4"
+      },
+      "answer_choice": "D",
+      "answer_value": "2",
+      "answer_note": null,
+      "problem_url": "#",
+      "answer_key_url": "#",
+      "solution_url": "#",
+      "solution_text": "Adding 4 to both sides yields $2x=4$, so dividing by 2 gives $x=2$.",
+      "solution_source": "Example Solution",
+      "primary_topic": "algebra",
+      "topic_tags": ["algebra"],
+      "difficulty": "easy"
+    },
+    {
+      "id": "2026_AMC_12A_1",
+      "year": 2026,
+      "level": 12,
+      "form": "A",
+      "number": 1,
+      "exam_id": "2026_AMC_12A",
+      "statement_text": "If the sequence is defined by $a_1 = 1$ and $a_{n+1} = a_n + 2$ for $n \geq 1$, what is $a_5$?",
+      "statement_html": null,
+      "choices": {
+        "A": "3",
+        "B": "5",
+        "C": "7",
+        "D": "9",
+        "E": "11"
+      },
+      "answer_choice": "D",
+      "answer_value": "9",
+      "answer_note": null,
+      "problem_url": "#",
+      "answer_key_url": "#",
+      "solution_url": "#",
+      "solution_text": "Starting from $a_1=1$ and adding 2 four times gives the sequence 1,3,5,7,9; hence $a_5=9$.",
+      "solution_source": "Example Solution",
+      "primary_topic": "algebra",
+      "topic_tags": ["algebra"],
+      "difficulty": "easy"
+    },
+    {
+      "id": "2026_AMC_12A_2",
+      "year": 2026,
+      "level": 12,
+      "form": "A",
+      "number": 2,
+      "exam_id": "2026_AMC_12A",
+      "statement_text": "Consider the function $f(x) = x^2 - 4x + 3$. What is the sum of the roots of $f(x) = 0$?",
+      "statement_html": null,
+      "choices": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "answer_choice": "D",
+      "answer_value": "4",
+      "answer_note": null,
+      "problem_url": "#",
+      "answer_key_url": "#",
+      "solution_url": "#",
+      "solution_text": "A quadratic $ax^2+bx+c=0$ has the sum of its roots equal to $-b/a$. Here $a=1$ and $b=-4$, so the sum is $4$.",
+      "solution_source": "Example Solution",
+      "primary_topic": "algebra",
+      "topic_tags": ["algebra"],
+      "difficulty": "easy"
+    }
+  ]
+};
 const STORAGE_KEY = "amc-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
 const FULL_EXAM_SECONDS = 75 * 60;
@@ -1242,9 +1395,10 @@ function bindEvents() {
 async function init() {
   bindEvents();
   try {
-    const response = await fetch(DATA_URL);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    state.data = await response.json();
+    // Instead of fetching an external JSON file, load the embedded DATA object defined at
+    // the top of this script. This enables offline use and avoids 404 errors when the
+    // JSON file is not present.
+    state.data = DATA;
     state.problems = state.data.problems.slice().sort((a, b) => (
       b.year - a.year ||
       a.level - b.level ||
