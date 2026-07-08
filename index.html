@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-color1" />
+    <link rel="stylesheet" href="./styles.css?v=20260708-title2" />
     <script>
       window.MathJax = {
         tex: {
@@ -27,15 +27,18 @@
             <div class="brand-lockup">
               <img class="school-logo" src="./school-logo.jpg" alt="学校标识 / School logo" />
               <div>
-                <span class="eyebrow">AMC Practice Center</span>
-                <h1>AMC 10/12 真题练习<br />AMC 10/12 Practice</h1>
+                <span class="eyebrow">Math Contest Practice Center</span>
+                <h1>
+                  <span class="title-line">AMC 10/12 + BMO1 真题训练</span>
+                  <span class="title-line">AMC 10/12 + BMO1 Practice</span>
+                </h1>
               </div>
             </div>
             <p id="entryMeta">加载中 / Loading...</p>
             <div class="entry-stats" aria-label="平台数据 / Platform data">
-              <div><strong>68</strong><span>套 AMC 试卷 / AMC papers</span></div>
-              <div><strong>1700</strong><span>道真题 / problems</span></div>
-              <div><strong>75</strong><span>分钟全卷模拟 / min mock exam</span></div>
+              <div><strong>AMC+BMO</strong><span>双题库 / banks</span></div>
+              <div><strong>1845</strong><span>道真题 / problems</span></div>
+              <div><strong>75</strong><span>分钟 AMC 模拟 / AMC mock</span></div>
             </div>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -44,42 +47,60 @@
         <div class="mode-grid">
           <section class="mode-card mode-card-primary">
             <div>
-              <span class="eyebrow">单题练习 / Single Problems</span>
-              <h2>开始单题练习<br />Start Single-Problem Practice</h2>
-              <p>按年份、知识点和难度筛选，适合日常查漏补缺。<br />Filter by year, topic, and difficulty for targeted daily practice.</p>
+              <span class="eyebrow">AMC 单题练习 / AMC Single Problems</span>
+              <h2>开始 AMC 单题练习<br />Start AMC Practice</h2>
+              <p>练习 AMC 10/12 选择题，按年份、卷别、知识点和难度筛选。<br />Practice AMC 10/12 multiple-choice problems by year, form, topic, and difficulty.</p>
             </div>
-            <button id="singlePracticeMode" type="button">进入单题练习 / Start Practice</button>
+            <button id="singlePracticeMode" type="button">进入 AMC 单题 / Start AMC</button>
           </section>
 
           <section class="mode-card mode-card-primary">
             <div>
-              <span class="eyebrow">全卷模拟 / Full Mock Exam</span>
-              <h2>开始全卷模拟<br />Start Full Mock Exam</h2>
+              <span class="eyebrow">AMC 全卷模拟 / AMC Full Mock Exam</span>
+              <h2>开始 AMC 全卷模拟<br />Start AMC Mock Exam</h2>
               <p>选择一套试卷，75 分钟计时，交卷后按 AMC 规则估分。<br />Choose a paper, take a 75-minute timed mock, and receive an AMC-style score.</p>
             </div>
             <label class="exam-pick">
               <span>试卷 / Paper</span>
               <select id="fullExamSelect"></select>
             </label>
-            <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
+            <button id="startFullExam" type="button">开始 AMC 全卷 / Start AMC Mock</button>
+          </section>
+
+          <section class="mode-card mode-card-primary">
+            <div>
+              <span class="eyebrow">BMO1 训练 / BMO1 Practice</span>
+              <h2>开始 BMO1 训练<br />Start BMO1 Practice</h2>
+              <p>按年份、知识点和难度练习 BMO1 证明题；答案区直接显示来源状态。<br />Practice BMO1 proof problems by year, topic, and difficulty; answer status is shown directly.</p>
+            </div>
+            <button id="bmoPracticeMode" type="button">进入 BMO1 训练 / Start BMO1</button>
           </section>
 
           <section class="mode-card mode-card-secondary">
             <div>
-              <span class="eyebrow">学习记录 / Study Record</span>
+              <span class="eyebrow">AMC/BMO 学习记录 / Study Record</span>
               <h2>学习记录与错题本<br />Study Record & Error Log</h2>
-              <p>查看诊断、收藏题和高优先级错题。<br />Review diagnostics, favorites, and high-priority mistakes.</p>
+              <p>查看 AMC 与 BMO 的练习记录、知识点诊断、收藏题和高优先级错题。<br />Review AMC/BMO records, topic diagnostics, favorites, and priority mistakes.</p>
             </div>
             <button id="reviewMode" type="button">查看学习记录 / View Record</button>
           </section>
 
           <section class="mode-card mode-card-secondary">
             <div>
-              <span class="eyebrow">平台说明 / About</span>
+              <span class="eyebrow">AMC/BMO 平台说明 / About</span>
               <h2>平台说明<br />About the Platform</h2>
-              <p>了解维护方、题目来源和反馈方式。<br />Learn about maintenance, sources, and feedback.</p>
+              <p>了解 AMC 与 BMO 题库范围、题目来源、维护方和反馈方式。<br />Learn about AMC/BMO scope, sources, maintenance, and feedback.</p>
             </div>
             <button id="aboutMode" type="button">查看 About / About</button>
+          </section>
+
+          <section class="mode-card mode-card-secondary">
+            <div>
+              <span class="eyebrow">AMC/BMO 导出报告 / Export Report</span>
+              <h2>导出学习记录<br />Export Study Report</h2>
+              <p>下载 AMC 与 BMO 完整作答数据，包含知识点、难度、正确率和全卷模拟情况。<br />Download AMC/BMO practice data with topics, difficulty, accuracy, and mock exam results.</p>
+            </div>
+            <button id="exportReportMode" type="button">导出报告 / Export Report</button>
           </section>
         </div>
       </section>
@@ -90,7 +111,7 @@
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
+            <h1>AMC 10/12 + BMO1 真题训练 / AMC 10/12 + BMO1 Practice</h1>
             <p id="datasetMeta">加载中 / Loading...</p>
           </div>
         </div>
@@ -205,8 +226,8 @@
           <div class="solution-section">
             <span class="eyebrow">解析 / Solution</span>
             <div id="solutionStageControl" class="solution-stage-control is-hidden" role="group" aria-label="解析阶段 / Solution stages">
-              <button class="solution-stage-button active" type="button" data-stage="idea">初步思路 / Idea</button>
-              <button class="solution-stage-button" type="button" data-stage="key_steps">关键步骤 / Key Steps</button>
+              <button class="solution-stage-button active" type="button" data-stage="idea">思路 / Idea</button>
+              <button class="solution-stage-button" type="button" data-stage="key_steps">主要步骤 / Main Steps</button>
               <button class="solution-stage-button" type="button" data-stage="full_calculation">完整计算 / Full Work</button>
             </div>
             <div id="solutionBody" class="solution-body"></div>
@@ -234,6 +255,7 @@
           </div>
         </div>
         <div class="top-actions">
+          <button id="exportStudyRecord" type="button">导出记录 / Export</button>
           <button id="reviewToPractice" type="button">继续练习 / Continue</button>
           <button id="reviewToAbout" type="button">平台说明 / About</button>
           <button id="reviewToEntry" type="button">模式选择 / Modes</button>
@@ -322,8 +344,8 @@
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>平台说明 / About the Platform</h1>
-            <p>AMC 10/12 Practice Center</p>
+            <h1>AMC/BMO 平台说明 / About the Platform</h1>
+            <p>AMC 10/12 + BMO1 Practice Center</p>
           </div>
         </div>
         <div class="top-actions">
@@ -336,14 +358,13 @@
         <div class="about-hero">
           <div>
             <span class="eyebrow">About This Platform</span>
-            <h2>面向 AMC 10/12 备赛的校内数学训练平台<br />A School-Based AMC 10/12 Training Platform</h2>
+            <h2>面向 AMC 10/12 与 BMO1 备赛的校内数学训练平台<br />A School-Based AMC 10/12 and BMO1 Training Platform</h2>
             <p>
-              本平台由数学社维护，面向准备 AMC 10/12 的同学提供系统化真题练习、全卷模拟和学习表现分析。
-              平台重点服务 AMC 前置训练，帮助学生熟悉竞赛题型、建立限时作答节奏，并通过知识点诊断明确下一步复习方向。
+              本平台由数学社维护，面向准备 AMC 10/12 与 BMO1 的同学提供系统化真题练习、AMC 全卷模拟和学习表现分析。
+              AMC 模块用于选择题训练与限时模拟；BMO1 模块用于证明题分类训练，并与 AMC 题库清晰分开。
               <br />
-              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 through structured past-paper practice,
-              full-length mock exams, and performance diagnostics. It is designed for AMC readiness training: students can learn the contest format,
-              build timed-exam habits, and identify what to review next.
+              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 and BMO1 through structured past-paper practice,
+              AMC full mock exams, and performance diagnostics. The AMC module focuses on multiple-choice practice and timed mocks; the BMO1 module is a separate proof-problem practice bank.
             </p>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -358,20 +379,20 @@
 
           <section class="about-card">
             <span class="eyebrow">题库范围 / Problem Bank</span>
-            <h3>收录 AMC 10/12 历年真题<br />AMC 10/12 Past Problems</h3>
-            <p>题库覆盖 AMC 10 与 AMC 12 的历年试卷，并按年份、卷别、题号、知识点和难度区间组织，便于针对性训练。<br />The problem bank includes AMC 10 and AMC 12 papers, organized by year, form, problem number, topic, and difficulty band.</p>
+            <h3>收录 AMC 10/12 与 BMO1 训练题<br />AMC 10/12 and BMO1 Practice</h3>
+            <p>AMC 题库按年份、卷别、题号、知识点和难度区间组织；BMO1 题库作为独立训练入口，按年份、知识点和难度整理。<br />AMC problems are organized by year, form, problem number, topic, and difficulty band; BMO1 has a separate practice entry organized by year, topic, and difficulty.</p>
           </section>
 
           <section class="about-card">
             <span class="eyebrow">练习方式 / Practice Modes</span>
-            <h3>支持单题练习与全卷模拟<br />Single Practice and Full Mock Exams</h3>
-            <p>单题练习适合按知识点查漏补缺；全卷模拟提供 75 分钟倒计时、统一交卷和 AMC 规则模拟计分，更接近正式比赛体验。<br />Single-problem practice supports targeted review, while full mock exams use a 75-minute timer, exam submission, and AMC-style scoring.</p>
+            <h3>支持 AMC 练习与 BMO 训练<br />AMC Practice and BMO Training</h3>
+            <p>AMC 单题练习适合按知识点查漏补缺；AMC 全卷模拟提供 75 分钟倒计时和模拟计分。BMO1 训练作为独立入口展示证明题，导出报告会同时保留 AMC 与 BMO1 的学习记录。<br />AMC single practice supports targeted review, and AMC full mock exams include a 75-minute timer and scoring. BMO1 training is a separate proof-problem entry, while export reports retain both AMC and BMO1 learning records.</p>
           </section>
 
           <section class="about-card">
             <span class="eyebrow">学习分析 / Learning Analytics</span>
-            <h3>适合 AMC 前置训练<br />Built for AMC Readiness</h3>
-            <p>平台会在本机保存作答记录，并根据正确率生成知识点表现与复习建议，帮助学生从“刷题”走向“有计划地训练”。<br />The platform stores local attempt data and generates topic-level diagnostics, helping students move from simply doing problems to training with a plan.</p>
+            <h3>适合 AMC 与 BMO1 阶段训练<br />Built for AMC and BMO1 Readiness</h3>
+            <p>平台会在本机保存 AMC 与 BMO1 作答记录，并根据正确率生成知识点表现与复习建议，帮助学生从“刷题”走向“有计划地训练”。<br />The platform stores local AMC and BMO1 attempt data and generates topic-level diagnostics, helping students move from simply doing problems to training with a plan.</p>
           </section>
         </div>
 
@@ -384,6 +405,10 @@
             <br />
             AMC 10/12 problems, answer keys, and solution links are organized from publicly available Art of Problem Solving（AoPS）pages.
             This platform is for learning and practice. Source links are retained so students can review the original AoPS problem, answer key, and solution pages.
+            <br /><br />
+            BMO1 训练题来自用户提供的《BMO1分类题库2000-2023》PDF，并参考 BMOS/UKMT 官方公开页面整理来源链接。未找到开放官方答案的题目会明确标注，不进行自动判分。
+            <br />
+            BMO1 practice problems are imported from the provided BMO1 classified PDF, with source links organized from public BMOS/UKMT pages where available. Problems without open official answers are marked clearly and are not auto-graded.
           </p>
         </section>
 
@@ -396,6 +421,6 @@
       </section>
     </main>
 
-    <script src="./app.js?v=20260707-color1"></script>
+    <script src="./app.js?v=20260708-title2"></script>
   </body>
 </html>

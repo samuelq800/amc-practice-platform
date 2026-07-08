@@ -1,0 +1,1257 @@
+id,type,year,year_label,problem_number,category,topic,difficulty,difficulty_level,statement,answer,solution,answer_status
+bmo1-2000-p4-数列-3,BMO1,2000,2000,4,代数与函数,数列,较难,3,"4. Define the sequence (a, ) by
+an ="" + {Vn }s
+where n is a positive integer and {xz} denotes the nearest
+integer to x, where halves are rounded up if necessary.
+Determine the smallest integer k for which the terms
+ky Qk+1,-- +, Ak+2000 form a sequence of 2001 consecutive
+integers.",,,not_found_open_official
+bmo1-2000-p4-整除与同余-8,BMO1,2000,2000,4,数论部分,整除与同余,较难,3,"4. Find all positive integers n such that n x 2"" + 1 is a square.
+2000",,,not_found_open_official
+bmo1-2000-p5-排列与组合-1,BMO1,2000,2000,5,排列组合,排列与组合,高难,4,"5. Two solid cylinders are mathematically similar. The sum of their heights is 1. The
+sum of their surface areas is 87. The sum of their volumes is 27. Find all possibilities
+for the dimensions of each cylinder.
+. A,
+i: HFHES
+2000",,,not_found_open_official
+bmo1-2000-p6-圆-3,BMO1,2000,2000,6,几何部分,圆,高难,4,"6. For some integer n > 4 a convex polygon has vertices vi, va, ..., v, in that
+cyclic order. All its edges are the same length. It also has the property that
+the lengths of the diagonals viv4, vavs,..., Vy—3Vy, Vy—aVi, Vp—1v2 and v, v3
+are all equal.
+For which n is it necessarily the case that the polygon has equal angles?
+Ye
+2 | y
+»",,,not_found_open_official
+bmo1-2000-px-三角形与多边形-1,BMO1,2000,2000,,几何部分,三角形与多边形,未分级,,"<< _Jriangle ABC has a right angle at A. Among all points P on
+the perimeter of the triangle, find the position of P such that
+AP + BP + CP
+is minimized.",,,not_found_open_official
+bmo1-2001-p1-不定方程-3,BMO1,2001,2001,1,数论部分,不定方程,基础,1,"1. Find all positive integers m,n, where n is odd, that satisfy
+1 + 4 1
+m nn 12",,,not_found_open_official
+bmo1-2001-p1-圆-4,BMO1,2001,2001,1,几何部分,圆,基础,1,"1. Two intersecting circles Cy and Cy have a common tangent
+which touches C7; at P and Cy at Q. The two circles intersect
+at M and N, where N is nearer to PQ) than M is. The line
+PN meets the circle Cy again at R. Prove that MQ bisects
+angle PMR.
+»
+won (OX",,,not_found_open_official
+bmo1-2001-p1-整除与同余-1,BMO1,2001,2001,1,数论部分,整除与同余,基础,1,"1. Find all two-digit integers N for which the sum of the digits
+of 10 — N is divisible by 170.",,,not_found_open_official
+bmo1-2001-p1-计数-5,BMO1,2001,2001,1,排列组合,计数,基础,1,"1. An unreliable typist can guarantee that when they try to type a word with
+different letters, every letter of the word will appear exactly once in what
+they type, and each letter will occur at most one letter late (though it may
+occur more than one letter early). Thus, when trying to type MATHS, the
+typist may type MATHS, MTAHS or TMASH, but not ATMSH.
+Determine, with proof, the number of possible spellings of OLYMPIADS
+that might be typed.",,,not_found_open_official
+bmo1-2001-p2-圆-5,BMO1,2001,2001,2,几何部分,圆,中等,2,"2. Circle S lies inside circle T' and touches it at A. From a
+point P (distinct from A) on T', chords PQ and PR of T
+are drawn touching S at X and Y respectively. Show that
+[QAR =2/X AY.
+2001",,,not_found_open_official
+bmo1-2001-p2-高斯函数-3,BMO1,2001,2001,2,代数与函数,高斯函数,中等,2,"2. The sequence of integers ao, a1, . . . has the property that for each > 2, a;
+is either 2a;_; — a;—» or 2a;,_» — a;_.
+Given that a,p3 and asgy4 are consecutive integers, prove that ag and a; are
+consecutive integers.
+(Note that 6 and 7 are consecutive integers, as are 7 and 6.)
+& h
+X/",,,not_found_open_official
+bmo1-2001-p4-数列-4,BMO1,2001,2001,4,代数与函数,数列,较难,3,"4. Determine the least possible value of the largest term in an arithmetic
+progression of seven distinct primes.",,,not_found_open_official
+bmo1-2001-p5-抽象函数-1,BMO1,2001,2001,5,代数与函数,抽象函数,高难,4,"5. f is a function from Z% to Z*, where Z* is the set of non-negative
+integers, which has the following properties:-
+a) f(n+1)> f(n) for each n € ZT,
+b) f(n+ f(m)) = f(n)+m+1 for all m,n € Z*.
+Find all possible values of f(2001).
+2007/8",,,not_found_open_official
+bmo1-2001-p5-排列与组合-2,BMO1,2001,2001,5,排列组合,排列与组合,高难,4,"5. The seven dwarfs decide to form four teams to compete in the
+Millennium Quiz. Of course, the sizes of the teams will not all
+be equal. For instance, one team might consist of Doc alone,
+one of Dopey alone, one of Sleepy, Happy & Grumpy, and one
+of Bashful & Sneezy. In how many ways can the four teams
+be made up? (The order of the teams or of the dwarfs within
+the teams does not matter, but each dwarf must be in exactly
+one of the teams.)
+Suppose Snow-White agreed to take part as well. In how many
+ways could the four teams then be formed?
+<",,,not_found_open_official
+bmo1-2001-px-三角形与多边形-2,BMO1,2001,2001,,几何部分,三角形与多边形,未分级,,"\ triangle has sides of length a,b,c and its circumcircle has
+adius R. Prove that the triangle is right-angled if and only
+if a2 b% + ¢* = 8R2.",,,not_found_open_official
+bmo1-2002-p1-整除与同余-2,BMO1,2002,2002/3,1,数论部分,整除与同余,基础,1,"1. Given that
+34! = 295232799 ¢d9 604 140 847 618 609 643 5ab 000 000,
+determine the digits a,b, c,d.",,,not_found_open_official
+bmo1-2002-p2-圆-6,BMO1,2002,2002/3,2,几何部分,圆,中等,2,"2. The quadrilateral ABCD is inscribed in a circle. The diagonals
+AC, BD meet at Q. The sides DA, extended beyond A, and CB,
+extended beyond B, meet at P.
+Given that CD = CP = DQ, prove that ZC AD = 60°.
+2002/3",,,not_found_open_official
+bmo1-2002-p3-不等式-6,BMO1,2002,2002/3,3,代数与函数,不等式,较难,3,"3. Let x,y, z be positive real numbers such that z? + y% + 22 = 1.
+Prove that
+2 2 2 1
+Tyz + xyz + xyz” < 3
+2006/7",,,not_found_open_official
+bmo1-2002-p4-排列与组合-3,BMO1,2002,2002/3,4,排列组合,排列与组合,较难,3,"4. Twelve people are seated around a circular table. In how many ways
+can six pairs of people engage in handshakes so that no arms cross?
+(Nobody is allowed to shake hands with more than one person at once.)
+v
+/ ANAND",,,not_found_open_official
+bmo1-2002-p5-不定方程-4,BMO1,2002,2002/3,5,数论部分,不定方程,高难,4,"5. Find all solutions in positive integers a, b, c to the equation
+ald! =a! +b! +c!",,,not_found_open_official
+bmo1-2003-p2-方程组求解-4,BMO1,2003,2003,2,代数与函数,方程组求解,中等,2,"2. For each positive real number x, we define {z} to be the greater of =
+and 1/z, with {1} = 1. Find, with proof, all positive real numbers y
+such that
+Sy{8y}{25y} = 1.
+4 )
+ow )~
+003 yo 78",,,not_found_open_official
+bmo1-2003-p3-计数-1,BMO1,2003,2003/4,3,排列组合,计数,较难,3,"3. A tetromino is a figure made up of four unit squares connected
+by common edges.
+(i) If we do not distinguish between the possible rotations of
+a tetromino within its plane, prove that there are seven
+distinct tetrominoes.
+(ii) Prove or disprove the statement: It is possible to pack all
+seven distinct tetrominoes into a 4x7 rectangle without
+overlapping.
+2003/4 \",,,not_found_open_official
+bmo1-2003-p4-排列与组合-4,BMO1,2003,2003/4,4,排列组合,排列与组合,较难,3,"4. Let m and n be integers greater than 1. Consider an m xn rectangular
+grid of points in the plane. Some k of these points are coloured red
+in such a way that no three red points are the vertices of a right-
+angled triangle two of whose sides are parallel to the sides of the grid.
+Determine the greatest possible value of k.
+7,
+206565",,,not_found_open_official
+bmo1-2003-px-三角形与多边形-3,BMO1,2003,2003/4,,几何部分,三角形与多边形,未分级,,"ABCD is a rectangle, P is the midpoint of AB, and @ is the point
+on PD such that CQ is perpendicular to PD.
+Prove that the triangle BQC' is isosceles.
+<
+5. Let G be a convex quadrilateral. Show that there is a point X in the
+plane of G with the property that every straight line through X divides
+G into two regions of equal area if and only if G is a parallelogram.
+PE",,,not_found_open_official
+bmo1-2003-px-整除与同余-3,BMO1,2003,2003/4,,数论部分,整除与同余,未分级,,"dN
+5. Let p,q and r be prime numbers. It is given that p divides gr — 1,
+q divides rp — 1, and r divides pg — 1.
+Determine all possible values of pgr.",,,not_found_open_official
+bmo1-2004-p2-圆-1,BMO1,2004,2004/5,2,几何部分,圆,中等,2,"2. Let ABC be an acute-angled triangle, and let D, E be the feet of the
+perpendiculars from A, B to BC, C'A respectively. Let P be the point
+where the line AD meets the semicircle constructed outwardly on BC,
+and @ be the point where the line BE meets the semicircle constructed
+outwardly on AC. Prove that CP = CQ.
+~~»",,,not_found_open_official
+bmo1-2004-p3-计数-2,BMO1,2004,2004/5,3,排列组合,计数,较难,3,"3. Alice and Barbara play a game with a pack of 2n cards, on each of
+which is written a positive integer. The pack is shuffled and the cards
+laid out in a row, with the numbers facing upwards. Alice starts, and
+the girls take turns to remove one card from either end of the row,
+until Barbara picks up the final card. Each girl's score is the sum of
+the numbers on her chosen cards at the end of the game.
+Prove that Alice can always obtain a score at least as great as
+Barbara's.
+“
+Zs \|",,,not_found_open_official
+bmo1-2004-p5-整除与同余-4,BMO1,2004,2004/5,5,数论部分,整除与同余,高难,4,"5. Let S be a set of rational numbers with the following properties:
+i) ies;
+ii) Ifz eS, then both 17 € Sand 2; € S.
+Prove that S contains all rational numbers in the interval 0 < z < 1.",,,not_found_open_official
+bmo1-2004-px-不定方程-5,BMO1,2004,2004/5,,数论部分,不定方程,未分级,,,,,not_found_open_official
+bmo1-2004-px-数列-5,BMO1,2004,2004/5,,代数与函数,数列,未分级,,,,,not_found_open_official
+bmo1-2005-p1-整除与同余-5,BMO1,2005,2005/6,1,数论部分,整除与同余,基础,1,"1. Let n be an integer greater than 6. Prove that if n — 1 and n+ 1 are
+both prime, then n?(n? + 16) is divisible by 720. Is the converse true?",,,not_found_open_official
+bmo1-2005-p2-三角形与多边形-4,BMO1,2005,2005/6,2,几何部分,三角形与多边形,中等,2,"2. Iyfthe convex quadrilateral ABCD, points M,N lie on the side AB
+uch that AM = MN = NB, and points P,Q lie on the side C'D such
+that CP = PQ = QD. Prove that
+Area of AMCP = Area of MNPQ = : Area of ABCD.
+G65,
+5. Let P be an internal point of triangle ABC. The line through P
+parallel to AB meets BC at L, the line through P parallel to BC
+meets CA at M, and the line through P parallel to CA meets AB at
+N. Prove that
+LC MA NB ™ 8
+and locate the position of P in triangle ABC when equality holds.",,,not_found_open_official
+bmo1-2005-p4-排列与组合-5,BMO1,2005,2005/6,4,排列组合,排列与组合,较难,3,"4. A set of positive integers is defined to be wicked if it contains no
+three consecutive integers. We count the empty set, which contains
+no elements at all, as a wicked set.
+Find the number of wicked subsets of the set
+{1,2,3,4,5,6,7,8,9,10}.
+2005/6",,,not_found_open_official
+bmo1-2005-p6-排列与组合-1,BMO1,2005,2005/6,6,排列组合,排列与组合,高难,4,"6. Let T be a set of 2005 coplanar points with no three collinear. Show
+that, for any of the 2005 points, the number of triangles it lies strictly
+within, whose vertices are points in 7’, is even.",,,not_found_open_official
+bmo1-2005-px-圆-2,BMO1,2005,2005/6,,几何部分,圆,未分级,,"\/
+3. In the cyclic quadrilateral ABCD, the diagonal AC bisects the angle
+DAB. The side AD is extended beyond D to a point E. Show that
+CE =CA if and only if DE = AB.
+a.",,,not_found_open_official
+bmo1-2005-px-排列与组合-3,BMO1,2005,2005/6,,排列组合,排列与组合,未分级,,"A
+4. The equilateral triangle ABC has sides of integer length N. The
+triangle is completely divided (by drawing lines parallel to the sides of
+the triangle) into equilateral triangular cells of side length 1.
+A continuous route is chosen, starting inside the cell with vertex A
+and always crossing from one cell to another through an edge shared
+by the two cells. No cell is visited more than once. Find, with proof,
+the greatest number of cells which can be visited.
+NN P4",,,not_found_open_official
+bmo1-2006-p1-整除与同余-6,BMO1,2006,2006/7,1,数论部分,整除与同余,基础,1,"1. Find four prime numbers less than 100 which are factors of 33? — 232,",,,not_found_open_official
+bmo1-2006-p6-不定方程-1,BMO1,2006,2006/7,6,数论部分,不定方程,高难,4,"6. Let n be an integer. Show that, if 2 + 2v/1 + 12n? is an integer, then
+it is a perfect square.",,,not_found_open_official
+bmo1-2006-px-三角形与多边形-5,BMO1,2006,2006/7,,几何部分,三角形与多边形,未分级,,,,,not_found_open_official
+bmo1-2006-px-不等式-7,BMO1,2006,2006/7,,代数与函数,不等式,未分级,,,,,not_found_open_official
+bmo1-2006-px-圆-3,BMO1,2006,2006/7,,几何部分,圆,未分级,,"A
+4. Two touching circles S and T share a common tangent which meets
+S at A and T at B. Let AP be a diameter of S and let the tangent
+from P to T touch it at Q. Show that AP = PQ.
+q",,,not_found_open_official
+bmo1-2006-px-排列与组合-2,BMO1,2006,2006/7,,排列组合,排列与组合,未分级,,"a
+3. The number 916238457 is an example of a nine-digit number which
+contains each of the digits 1 to 9 exactly once. It also has the property
+that the digits 1 to 5 occur in their natural order, while the digits 1
+to 6 do not. How many such numbers are there?
+Ld",,,not_found_open_official
+bmo1-2007-p1-基本计算-1,BMO1,2007,2007/8,1,代数与函数,基本计算,基础,1,"1. Find the value of
+14 420074 + 2008*
+12 + 20072 + 20082 &",,,not_found_open_official
+bmo1-2007-p2-不定方程-2,BMO1,2007,2007/8,2,数论部分,不定方程,中等,2,"2. Find all solutions in positive integers z,y,z to the simultaneous
+equations
+T+y—z=12
+224+? — 22 =12.",,,not_found_open_official
+bmo1-2007-p4-整除与同余-7,BMO1,2007,2007/8,4,数论部分,整除与同余,较难,3,"4. Let S be a subset of the set of numbers {1,2, 3, ..., 2008} which consists
+of 756 distinct numbers. Show that there are two distinct elements a, b
+of S such that a + b is divisible by 8.",,,not_found_open_official
+bmo1-2007-p6-抽象函数-2,BMO1,2007,2007/8,6,代数与函数,抽象函数,高难,4,"6. The function f is defined on the set of positive integers by f(1) = 1,
+f(2n) =2f(n), and nf(2n +1) = (2n + 1)(f(n) + n) for all n > 1.
+i) Prove that f(n) is always an integer.
+ii) For how many positive integers less than 2007 is f(n) =2n ?
+2009/10 ~\Vv",,,not_found_open_official
+bmo1-2007-px-三角形与多边形-6,BMO1,2007,2007/8,,几何部分,三角形与多边形,未分级,,,,,not_found_open_official
+bmo1-2007-px-圆-4,BMO1,2007,2007/8,,几何部分,圆,未分级,,",
+3. Let ABC be a triangle, with an obtuse angle at A. Let @ be a point
+(other than A, B or C) on the circumcircle of the triangle, on the same
+side of chord BC as A, and let P be the other end of the diameter
+through @. Let V and W be the feet of the perpendiculars from @ onto
+CA and AB respectively. Prove that the triangles PBC and AWYV
+are similar. [Note: the circumcircle of the triangle ABC is the circle
+which passes through the vertices A, B and C']",,,not_found_open_official
+bmo1-2008-p1-排列与组合-4,BMO1,2008,2008/9,1,排列组合,排列与组合,基础,1,"1. Consider a standard 8 x 8 chessboard consisting of 64 small squares
+coloured in the usual pattern, so 32 are black and 32 are white. A
+zig-zag path across the board is a collection of eight white squares,
+one in each row, which meet at their corners. How many zig-zag paths
+are there?
+VAS",,,not_found_open_official
+bmo1-2008-p1-方程组求解-5,BMO1,2008,2008/9,1,代数与函数,方程组求解,基础,1,"1. Solve the simultaneous equations
+ab+c+d=3, bc+d+a=5 cd+a+b=2 da+b+c=06,
+where a,b, ¢,d are real numbers.
+2008/9 DD",,,not_found_open_official
+bmo1-2008-p4-整除与同余-8,BMO1,2008,2008/9,4,数论部分,整除与同余,较难,3,"4. Find all positive integers n such that both n + 2008 divides n? + 2008
+and n + 2009 divides n? + 2009.",,,not_found_open_official
+bmo1-2008-px-三角形与多边形-7,BMO1,2008,2008/9,,几何部分,三角形与多边形,未分级,,,,,not_found_open_official
+bmo1-2008-px-圆-5,BMO1,2008,2008/9,,几何部分,圆,未分级,,"CV IN
+3. Let ABPC be a parallelogram such that ABC is an acute-angled
+triangle. The circumcircle of triangle ABC meets the line CP again
+at QQ. Prove that PQQ = AC if, and only if, /ZBAC = 60°. The
+circumcircle of a triangle is the circle which passes through its vertices.",,,not_found_open_official
+bmo1-2008-px-数列-6,BMO1,2008,2008/9,,代数与函数,数列,未分级,,,,,not_found_open_official
+bmo1-2009-p1-不定方程-3,BMO1,2009,2009/10,1,数论部分,不定方程,基础,1,"1. Find all integers x,y and z such that
+22+? +22 =2(yz+1) and z + y + z = 4018.
+7 hd",,,not_found_open_official
+bmo1-2009-p2-圆-6,BMO1,2009,2009/10,2,几何部分,圆,中等,2,"2. Points A, B,C, D and FE lie, in that order, on a circle and the lines
+AB and ED are parallel. Prove that ZABC = 90° if, and only if,
+AC? = BD? + CE.",,,not_found_open_official
+bmo1-2009-p2-方程组求解-6,BMO1,2009,2009/10,2,代数与函数,方程组求解,中等,2,"2. Find all real values of x,y and z such that
+(z+ 1)yz=12, (y+ 1)zz =4 and (z+ 1)zy = 4.
+VS",,,not_found_open_official
+bmo1-2009-p3-排列与组合-5,BMO1,2009,2009/10,3,排列组合,排列与组合,较难,3,"3. Isaac attempts all six questions on an Olympiad paper in order. Each
+question is marked on a scale from 0 to 10. He never scores more
+in a later question than in any earlier question. How many different
+possible sequences of six marks can he achieve?",,,not_found_open_official
+bmo1-2009-p5-抽象函数-3,BMO1,2009,2009/10,5,代数与函数,抽象函数,高难,4,"5. Find all functions f, defined on the real numbers and taking real
+values, which satisfy the equation f(z)f(y) = f(z + y) + xy for all
+real numbers x and y.
+sonar 54)",,,not_found_open_official
+bmo1-2009-px-圆-7,BMO1,2009,2009/10,,几何部分,圆,未分级,,,,,not_found_open_official
+bmo1-2010-p1-不定方程-4,BMO1,2010,2010/11,1,数论部分,不定方程,基础,1,"1. One number is removed from the set of integers from 1 to n. The
+average of the remaining numbers is 403. Which integer was removed?
+. _",,,not_found_open_official
+bmo1-2010-p3-圆-2,BMO1,2010,2010/11,3,几何部分,圆,较难,3,"3. Let ABC be a triangle with ZC AB a right-angle. The point L lies on
+the side BC between B and C. The circle ABL meets the line AC
+again at M and the circle CAL meets the line AB again at N. Prove
+that L, M and N lie on a straight line.
+~N",,,not_found_open_official
+bmo1-2010-p4-圆-1,BMO1,2010,2010/11,4,几何部分,圆,较难,3,"4. Two circles, of different radius, with centres at B and C, touch
+externally at A. A common tangent, not through A, touches the
+first circle at D and the second at FE. The line through A which
+is perpendicular to DE and the perpendicular bisector of BC meet at
+F. Prove that BC = 2AF.
+2010/11",,,not_found_open_official
+bmo1-2010-p5-不等式-1,BMO1,2010,2010/11,5,代数与函数,不等式,高难,4,"5. For positive real numbers a, b, ¢, prove that
+(@ +b) >(a+b+c)a+b—c)(b+c—a)(c+a—b).
+2010/11",,,not_found_open_official
+bmo1-2010-px-不定方程-5,BMO1,2010,2010/11,,数论部分,不定方程,未分级,,"« 2
+2. Let s be an integer greater than 6. A solid cube of side s has a square
+hole of side x < 6 drilled directly through from one face to the opposite
+face (so the drill removes a cuboid). The volume of the remaining solid
+is numerically equal to the total surface area of the remaining solid.
+Determine all possible integer values of x.
+\d",,,not_found_open_official
+bmo1-2010-px-排列与组合-6,BMO1,2010,2010/11,,排列组合,排列与组合,未分级,,,,,not_found_open_official
+bmo1-2011-p3-计数-3,BMO1,2011,2011/12,3,排列组合,计数,较难,3,"3. Determine the least natural number n for which the following
+result holds:
+No matter how the elements of the set {1,2,...,n} are coloured red
+or blue, there are integers x,y, z, w in the set (not necessarily distinct)
+of the same colour such that = + y + z = w.
+eZ
+a »>",,,not_found_open_official
+bmo1-2011-p5-不定方程-6,BMO1,2011,2011/12,5,数论部分,不定方程,高难,4,"5. Prove that the product of four consecutive positive integers cannot be
+equal to the product of two consecutive positive integers.",,,not_found_open_official
+bmo1-2011-p5-圆-3,BMO1,2011,2011/12,5,几何部分,圆,高难,4,"5. Circles S; and Sy meet at L and M. Let P be a point on S,. Let PL
+and PM meet S; again at @Q and R respectively. The lines QM and
+RL meet at K. Show that, as P varies on Sz, K lies on a fixed circle.
+2011/12 { 2D",,,not_found_open_official
+bmo1-2011-p6-三角形与多边形-1,BMO1,2011,2011/12,6,几何部分,三角形与多边形,高难,4,"6. Let ABC be an acute-angled triangle. The feet of the altitudes from
+A,B and C are D, E and F respectively. Prove that DE+ DF < BC
+and determine the triangles for which equality holds.
+The altitude from A is the line through A which is perpendicular to
+BC. The foot of this altitude is the point D where it meets BC. The
+other altitudes are similarly defined.
+~-",,,not_found_open_official
+bmo1-2011-p6-不等式-2,BMO1,2011,2011/12,6,代数与函数,不等式,高难,4,"6. Let a,b and c be the lengths of the sides of a triangle. Suppose that
+ab + be + ca = 1. Show that (a+ 1)(b+1)(c +1) < 4.
+2011/12",,,not_found_open_official
+bmo1-2011-px-整除与同余-9,BMO1,2011,2011/12,,数论部分,整除与同余,未分级,,,,,not_found_open_official
+bmo1-2012-p1-排列与组合-1,BMO1,2012,2012/13,1,排列组合,排列与组合,基础,1,"1. Isaac places some counters onto the squares of an 8 by 8 chessboard so
+that there is at most one counter in each of the 64 squares. Determine,
+with justification, the maximum number that he can place without
+having five or more counters in the same row, or in the same column,
+or on either of the two long diagonals.",,,not_found_open_official
+bmo1-2012-p2-圆-5,BMO1,2012,2012/13,2,几何部分,圆,中等,2,"2. Two circles S and T touch at X. They have a common tangent which
+meets S at A and T at B. The points A and B are different. Let AP
+be a diameter of S. Prove that B, X and P lie on a straight line.
+2012/13 KH",,,not_found_open_official
+bmo1-2012-p3-圆-4,BMO1,2012,2012/13,3,几何部分,圆,较难,3,"3. Consider a circle S. The point P lies outside S and a line is drawn
+through P, cutting S at distinct points X and Y. Circles S; and Ss
+are drawn through P which are tangent to S at X and Y respectively.
+Prove that the difference of the radii of S; and S2 is independent of
+the positions of P, X and Y. B
+2012/13 AR)",,,not_found_open_official
+bmo1-2012-p4-不定方程-7,BMO1,2012,2012/13,4,数论部分,不定方程,较难,3,"4. Find all positive integers n such that 12n—119 and 75n — 539 are both
+perfect squares.",,,not_found_open_official
+bmo1-2012-p5-三角形与多边形-2,BMO1,2012,2012/13,5,几何部分,三角形与多边形,高难,4,"5. A triangle has sides of length at most 2, 3 and 4 respectively.
+Determine, with proof, the maximum possible area of the triangle.",,,not_found_open_official
+bmo1-2012-p6-方程组求解-7,BMO1,2012,2012/13,6,代数与函数,方程组求解,高难,4,"6. Long John Silverman has captured a treasure map from Adam
+McBones. Adam has buried the treasure at the point (z,y) with
+integer co-ordinates (not necessarily positive). He has indicated on the
+map the values of 22 + y and x + 32, and these numbers are distinct.
+Prove that Long John has to dig only in one place to find the treasure.
+2012/13",,,not_found_open_official
+bmo1-2013-p1-基本计算-2,BMO1,2013,2013/14,1,代数与函数,基本计算,基础,1,1. Calculate the value of,,,not_found_open_official
+bmo1-2013-p1-整除与同余-1,BMO1,2013,2013/14,1,数论部分,整除与同余,基础,1,"1. Find all (positive or negative) integers n for which n?+20n+11is a
+perfect square. Remember that you must justify that you have found
+them all.
+2013/14",,,not_found_open_official
+bmo1-2013-p2-三角形与多边形-3,BMO1,2013,2013/14,2,几何部分,三角形与多边形,中等,2,"2. In the acute-angled triangle ABC, the foot of the perpendicular from
+B to CAis E. Let I be the tangent to the circle ABC at B. The foot
+of the perpendicular from C to [ is F. Prove that EF is parallel to
+AB. ~",,,not_found_open_official
+bmo1-2013-p4-排列与组合-2,BMO1,2013,2013/14,4,排列组合,排列与组合,较难,3,"4. Isaac is planning a nine-day holiday. Every day he will go surfing,
+or water skiing, or he will rest. On any given day he does just one of
+these three things. He never does different water-sports on consecutive
+days. How many schedules are possible for the holiday?",,,not_found_open_official
+bmo1-2013-p5-三角形与多边形-4,BMO1,2013,2013/14,5,几何部分,三角形与多边形,高难,4,"5. Let ABC be an equilateral triangle, and P be a point inside this
+triangle. Let D, E and F be the feet of the perpendiculars from P to
+the sides BC, C'A and AB respectively. Prove that
+a) AF + BD + CE = AE + BF + CD and
+b) [APF] + [BPD] + [CPE] = [APE] + [BPF] + [CPD].
+The area of triangle XY Z is denoted [XY Z].",,,not_found_open_official
+bmo1-2013-p6-三角形与多边形-5,BMO1,2013,2013/14,6,几何部分,三角形与多边形,高难,4,"6. The angles A, B and C of a triangle are measured in degrees, and the
+lengths of the opposite sides are a,b and c respectively. Prove that
+A+bB
+60 < aA +bB +cC < 90.
+a+b+c",,,not_found_open_official
+bmo1-2014-p3-幂指对函数-4,BMO1,2014,2014/15,3,代数与函数,幂指对函数,较难,3,"3. Find all positive real solutions to the equation
++[g]=131+ 15]
+x —| == —,
+6 2 3
+where |t] denotes the largest integer less than or equal to the real
+number t.
+2014/15",,,not_found_open_official
+bmo1-2014-p3-整除与同余-2,BMO1,2014,2014/15,3,数论部分,整除与同余,较难,3,"3. A number written in base 10 is a string of 3293 digit 3s. No other
+digit appears. Find the highest power of 3 which divides this number.
+2014/15",,,not_found_open_official
+bmo1-2014-p6-圆-6,BMO1,2014,2014/15,6,几何部分,圆,高难,4,"6. Let ABC be a triangle. Let S be the circle through B tangent to CA
+at A and let T be the circle through C tangent to AB at A. The
+circles S and T intersect at A and D. Let FE be the point where the
+line AD meets the circle ABC. Prove that D is the midpoint of AE.
+ye
+Sx",,,not_found_open_official
+bmo1-2014-p6-抽象函数-4,BMO1,2014,2014/15,6,代数与函数,抽象函数,高难,4,"6. Determine all functions f(n) from the positive integers to the positive
+integers which satisfy the following condition: whenever a, b and c are
+positive integers such that 1/a + 1/b = 1/¢, then
+1/f(a) +1/f(b) = 1/f(c).
+201 ~
+09 ANAND",,,not_found_open_official
+bmo1-2014-px-不定方程-8,BMO1,2014,2014/15,,数论部分,不定方程,未分级,,,,,not_found_open_official
+bmo1-2014-px-排列与组合-3,BMO1,2014,2014/15,,排列组合,排列与组合,未分级,,"A >
+3. A hotel has ten rooms along each side of a corridor. An olympiad
+team leader wishes to book seven rooms on the corridor so that no
+two reserved rooms on the same side of the corridor are adjacent. In
+how many ways can this be done?
+-_",,,not_found_open_official
+bmo1-2015-p2-整除与同余-3,BMO1,2015,2015/16,2,数论部分,整除与同余,中等,2,"2. Positive integers p, a and b satisfy the equation p? + a? = b%. Prove
+that if p is a prime greater than 3, then a is a multiple of 12 and
+2(p+ a +1) is a perfect square.
+~~
+2015/16 NY",,,not_found_open_official
+bmo1-2015-p5-三角形与多边形-6,BMO1,2015,2015/16,5,几何部分,三角形与多边形,高难,4,"5. Let ABC be a triangle, and let D, E and F be the feet of the
+perpendiculars from A, B and C to BC, CA and AB respectively.
+Let P, Q, R and S be the feet of the perpendiculars from D to BA,
+BE, CF and CA respectively. Prove that P, QQ, R and S are collinear.",,,not_found_open_official
+bmo1-2015-p5-圆-7,BMO1,2015,2015/16,5,几何部分,圆,高难,4,"5. Let ABCD be a cyclic quadrilateral. Let F' be the midpoint of the arc
+AB of its circumcircle which does not contain C' or D. Let the lines
+DF and AC meet at P and the lines CF and BD meet at QQ. Prove
+that the lines PQ and AB are parallel.
+2015/16",,,not_found_open_official
+bmo1-2015-p5-数列-1,BMO1,2015,2015/16,5,代数与函数,数列,高难,4,"5. Determine the sequences ag, a, as, ... which satisfy all of the following
+conditions:
+a) apy = 2a2 — 1 for every integer n > 0,
+b) ag is a rational number and
+c) a; = a; for some i,j with i # j.
+2015/16",,,not_found_open_official
+bmo1-2015-px-基本计算-3,BMO1,2015,2015/16,,代数与函数,基本计算,未分级,,,,,not_found_open_official
+bmo1-2015-px-排列与组合-4,BMO1,2015,2015/16,,排列组合,排列与组合,未分级,,"/\ \
+4. James has a red jar, a blue jar and a pile of 100 pebbles. Initially both
+jars are empty. A move consists of moving a pebble from the pile into
+one of the jars or returning a pebble from one of the jars to the pile.
+The numbers of pebbles in the red and blue jars determine the state
+of the game. The following conditions must be satisfied:
+a) The red jar may never contain fewer pebbles than the blue jar;
+b) The game may never be returned to a previous state.
+What is the maximum number of moves that James can make?
+3»",,,not_found_open_official
+bmo1-2016-p2-不等式-3,BMO1,2016,2016/17,2,代数与函数,不等式,中等,2,"2. Consider the numbers 1,2,...,n. Find, in terms of n, the largest
+integer t such that these numbers can be arranged in a row so that all
+consecutive terms differ by at least ¢.
+~N
+2016/17 NN",,,not_found_open_official
+bmo1-2016-p3-不定方程-2,BMO1,2016,2016/17,3,数论部分,不定方程,较难,3,"3. Determine all pairs (m, n) of positive integers which satisfy the
+equation n? — 6n = m? +m — 10.
+2016/17",,,not_found_open_official
+bmo1-2016-p4-不定方程-1,BMO1,2016,2016/17,4,数论部分,不定方程,较难,3,"4. Let x be a real number such that t = x + 7! is an integer greater
+than 2. Prove that t, = z™ + 27"" is an integer for all positive
+integers n. Determine the values of n for which t divides t,,.
+2016/17",,,not_found_open_official
+bmo1-2016-p4-计数-4,BMO1,2016,2016/17,4,排列组合,计数,较难,3,"4. Initially there are m balls in one bag, and n in the other, where m,n >",,,not_found_open_official
+bmo1-2016-p5-圆-1,BMO1,2016,2016/17,5,几何部分,圆,高难,4,"5. Let ABC be a triangle with ZA < /B < 90° and let I"" be the circle
+through A, B and C. The tangents to I"" at A and C meet at P. The
+line segments AB and PC produced meet at @). It is given that
+[ACP] = [ABC] = [BQC].
+Prove that /ZBCA = 90°. Here [XY Z] denotes the area of triangle
+XYZ.
+2018",,,not_found_open_official
+bmo1-2016-px-基本计算-4,BMO1,2016,2016/17,,代数与函数,基本计算,未分级,,,,,not_found_open_official
+bmo1-2017-p1-基本计算-5,BMO1,2017,2017/18,1,代数与函数,基本计算,基础,1,"1. On Thursday 1st January 2015, Anna buys one book and one shelf.
+For the next two years, she buys one book every day and one shelf on
+alternate Thursdays, so she next buys a shelf on 15th January 2015.
+On how many days in the period Thursday 1st January 2015 until
+(and including) Saturday 31st December 2016 is it possible for Anna
+to put all her books on all her shelves, so that there is an equal number
+of books on each shelf?",,,not_found_open_official
+bmo1-2017-p1-排列与组合-5,BMO1,2017,2017/18,1,排列组合,排列与组合,基础,1,"1. A list of five two-digit positive integers is written in increasing order on a blackboard.
+Each of the five integers is a multiple of 3, and each digit 0,1,2,3,4,5,6,7,8,9 appears
+exactly once on the blackboard. In how many ways can this be done? Note that a
+two-digit number cannot begin with the digit 0.",,,not_found_open_official
+bmo1-2017-p3-数列-2,BMO1,2017,2017/18,3,代数与函数,数列,较难,3,"3. Suppose that a sequence tg, t1,ts,... is defined by a formula ¢, =
+An? + Bn + C for all integers n > 0. Here A, B and C are real
+constants with A # 0. Determine values of A, B and C which give the
+greatest possible number of successive terms of the sequence which
+are also successive terms of the Fibonacci sequence. The Fibonacci
+sequence is defined by Fy = 0, Fy; = 1 and F,,, = F,,_1 + F,,_» for
+m > 2.
+2017/18 ~\VvY",,,not_found_open_official
+bmo1-2017-p5-计数-1,BMO1,2017,2017/18,5,排列组合,计数,高难,4,"5. If we take a 2 x 100 (or 100 x 2) grid of unit squares, and remove
+alternate squares from a long side, the remaining 150 squares form a
+100-comb. Henry takes a 200 x 200 grid of unit squares, and chooses
+k of these squares and colours them so that James is unable to choose
+150 uncoloured squares which form a 100-comb. What is the smallest
+possible value of k?",,,not_found_open_official
+bmo1-2017-p6-不定方程-3,BMO1,2017,2017/18,6,数论部分,不定方程,高难,4,"6. Consecutive positive integers m, m+1, m+2 and m+ 3 are divisible by
+consecutive odd positive integers n,n +2,n +4 and n + 6 respectively.
+Determine the smallest possible m in terms of n.
+2017/18 XX /",,,not_found_open_official
+bmo1-2017-p6-整除与同余-4,BMO1,2017,2017/18,6,数论部分,整除与同余,高难,4,"6. A positive integer is called charming if it is equal to 2 or is of the form
+3'57 where i and j are non-negative integers. Prove that every positive
+integer can be written as a sum of different charming integers.
+3% 7.",,,not_found_open_official
+bmo1-2017-p6-计数-2,BMO1,2017,2017/18,6,排列组合,计数,高难,4,"6. Matthew has a deck of 300 cards numbered 1 to 300. He takes cards
+out of the deck one at a time, and places the selected cards in a row,
+with each new card added at the right end of the row. Matthew must
+arrange that, at all times, the mean of the numbers on the cards in
+the row is an integer. If, at some point, there is no card remaining in
+the deck which allows Matthew to continue, then he stops.
+When Matthew has stopped, what is the smallest possible number of
+cards that he could have placed in the row? Give an example of such
+a row.",,,not_found_open_official
+bmo1-2017-px-三角形与多边形-7,BMO1,2017,2017/18,,几何部分,三角形与多边形,未分级,,,,,not_found_open_official
+bmo1-2018-p1-基本计算-6,BMO1,2018,2018,1,代数与函数,基本计算,基础,1,"1. The integers 1,2,3,...,2016 are written down in base 10, each
+appearing exactly once. Each of the digits from 0 to 9 appears many
+times in the list. How many of the digits in the list are odd? For
+example, 8 odd digits appear in the list 1,2,3,...,11.
+Pa.
+HK
+1. Helen divides 365 by each of 1,2,3,...,365 in turn, writing down a list
+of the 365 remainders. Then Phil divides 366 by each of 1,2,3,...,366
+in turn, writing down a list of the 366 remainders. Whose list of
+remainders has the greater sum and by how much?",,,not_found_open_official
+bmo1-2018-p3-方程组求解-8,BMO1,2018,2018,3,代数与函数,方程组求解,较难,3,"3. Find all real numbers z,y and z which satisfy the simultaneous
+equations 22 —4y +7=0,y?> —6z+14=0 and 22 — 22 — 7 = 0.
+2018",,,not_found_open_official
+bmo1-2018-p4-圆-2,BMO1,2018,2018,4,几何部分,圆,较难,3,"4. Let I' be a semicircle with diameter AB. The point C lies on the diameter AB and
+points E and D lie on the arc BA, with E between B and D. Let the tangents to I"" at D
+and E meet at F. Suppose that ZACD = LECB.
+Prove that ZEFD = LACD + ECB.
+2019 ~\Vv",,,not_found_open_official
+bmo1-2018-px-排列与组合-6,BMO1,2018,2018,,排列组合,排列与组合,未分级,,,,,not_found_open_official
+bmo1-2019-p1-基本计算-1,BMO1,2019,2019,1,代数与函数,基本计算,基础,1,"1. Alice and Bob take it in turns to write numbers on a blackboard. Alice starts
+by writing an integer a between —100 and 100 inclusive on the board. On
+each of Bob’s turns he writes twice the number Alice wrote last. On each of
+Alice’s subsequent turns she writes the number 45 less than the number Bob
+wrote last. At some point, the number a is written on the board for a second
+time. Find the possible values of a.
+~-",见下方官方报告解析,"For the first part, p = 5, 11 and 101 all work, since all the numbers
+5, 7, 11, 13, 17
+11, 13, 17, 19, 23
+101, 103, 107, 109, 113
+are all prime.
+For the second part, q = 5 works, since the first sequence above can be continued on with 19.
+This is the only possibility. Clearly q 2, and the odd numbers q, q +12, q +14, q +6 and
+q + 8 cover all possible odd last digits, so one must end in a 5. Thus one of these numbers
+must be equal to 5, since they are all prime, and the only possibility is that q = 5. (If one uses
+instead the list q, q+2, q+14, q+6, q+8, one needs to rule out the possibility that q+2 = 5
+by, for example, observing that if q +2 = 5, then q +6 = 9 is not prime.)",official_report_extracted
+bmo1-2019-p2-整除与同余-5,BMO1,2019,2019,2,数论部分,整除与同余,中等,2,"2. In a 100-day period, each of six friends goes swimming on exactly 75
+days. There are n days on which at least five of the friends swim.
+What are the largest and smallest possible values of n?
+KL «Kv
+ve",见下方官方报告解析,"We start by factorising the expression involving the a i to obtain (2a n+1 − a n )2 −1 = 0.
+From here we can either add 1 to both sides and take a square root to find (2a n+1 −a n ) = ±1, or
+factorise the difference of two squares to see that (2a n+1 − a n −1)(2a n+1 − a n +1) = 0.
+Either way we have a n+1 = 1 2 (a n ±1). (This can also be obtained by viewing the equation as a
+quadratic in a n+1 , using the quadratic formula and simplifying.)
+If a is even then a will not be an integer.
+1 2
+If a n is odd, then the two possible values of a n+1 are consecutive integers. Thus we can choose
+a n+1 to be an odd integer. In particular, for any odd integer a 1 there exists a possible sequence
+consisting entirely of odd integers.",official_report_extracted
+bmo1-2019-p3-不定方程-4,BMO1,2019,2019,3,数论部分,不定方程,较难,3,"3. Ares multiplies two integers which differ by 9. Grace multiplies two integers which
+differ by 6. They obtain the same product 7. Determine all possible values of 7"".
+<7
+A",见下方官方报告解析,"Let AC and BD intersect at X, and let the common tangent at P intersect AB atY as shown.
+Let ∠DCA = γ and ∠BDC = δ. By the alternate segment theorem ∠YPA = ∠PAY = γ and
+∠YBP = ∠BPY = δ. The angles in triangle BPA sum to 2γ +2δ so γ + δ = 90◦.
+Now looking at the angles in triangle DXC shows that ∠DXC = 90◦ as required.",official_report_extracted
+bmo1-2019-p3-圆-3,BMO1,2019,2019,3,几何部分,圆,较难,3,"3. Two circles S; and S$, are tangent at P. A common tangent, not through P,
+touches Sp at A and S; at B. Points C and D, on S; and S$; respectively, are
+outside the triangle APB and are such that P is on the line CD.
+Prove that AC is perpendicular to BD.
+NF, Xe
+Zs \|",见下方官方报告解析,"Let AC and BD intersect at X, and let the common tangent at P intersect AB atY as shown.
+Let ∠DCA = γ and ∠BDC = δ. By the alternate segment theorem ∠YPA = ∠PAY = γ and
+∠YBP = ∠BPY = δ. The angles in triangle BPA sum to 2γ +2δ so γ + δ = 90◦.
+Now looking at the angles in triangle DXC shows that ∠DXC = 90◦ as required.",official_report_extracted
+bmo1-2019-p4-数列-3,BMO1,2019,2019,4,代数与函数,数列,较难,3,"4. Consider sequences ay, as, as, ... of positive real numbers with a; = 1
+and such that
+Ap+41 +a, = (an+1 - an)?
+for each positive integer n. How many possible values can azo17 take?
+<",见下方官方报告解析,"We begin by noting that the largest m < n which divides n is equal to n divided by its smallest
+factor (other than 1). Clearly this smallest factor must be prime.
+For part (a) we claim that the penguins that end up somewhere behind 2 are precisely the larger
+powers of 2. Penguin 3 goes in front of 2, so the claim holds when only three penguins have
+arrived. Now suppose the claim holds when k −1 penguins have arrived and consider penguin
+k. If k is a power of 2, then its largest proper factor is also a power of 2, so it goes directly
+behind that factor and hence somewhere behind 2. If k is prime it goes directly behind 1 and
+thus somewhere in front of 2. Finally, if k has smallest prime factor p and another prime factor
+q > 2, then k/p is a multiple of q and not a power of 2. Penguin k goes directly behind k/p
+and we already know k/p is somewhere in front of 2, so k goes somewhere in front of 2. The
+claim implies that when 2019 penguins have arrived, only penguins 4, 8, 16, 32, 64, 128, 256,
+512 and 1024 are behind 2. So the remaining 2009 penguins are in front of penguin 2.
+For part (b) we first consider the penguins who stand directly in front of penguin 33 at some
+stage in the queuing process. When 33 arrives 11 is directly in front of it and 22 is behind it.
+The next multiple of 11, namely 44, stands behind 22. Later 55 comes and stands directly in
+front of 33. The next penguin to come between 55 and 33 is the next available multiple of 55,
+namely 110. Now we forget about penguin 55 and focus on who comes in between 110 and 33.
+It is the next available multiple 110, namely 220. Continuing in this way we see that 440, then
+880 and finally 1760 occupy the spot directly in front of 33.
+Finally we turn to the penguins who stand directly behind 33 at some stage. Their numbers
+must be of the form 33k for some k. However, if k > 3 then 11k > 33 so the only numbers that
+ever stand directly behind 33 and 33k for k ≤ 3. On arrival, penguin 66 stands directly behind
+33, but is later replaced by penguin 99, who stays directly behind 33 from then on.",official_report_extracted
+bmo1-2019-p6-抽象函数-5,BMO1,2019,2019,6,代数与函数,抽象函数,高难,4,"6. A function f is called good if it assigns an integer value f(m,n) to every
+ordered pair of integers (m,n) in such a way that for every pair of integers
+(m,n) we have:
+2f(mn) = f(m—nn—m)+m+n= f(m+ Ln) + f(mn+1)—1.
+Find all good functions.
+>",见下方官方报告解析,"We write L, M and R for the left, middle and right parts of the displayed equations.
+Note first that, by substituting m = n = 0 into L = M, we get f(0,0) = 0.
+Now, writing g(m) for f(m,−m), the equation L = M gives f(m,n) = 1(g(m − n) + m + n).
+Making this substitution on equation L = R gives
+g(m −n)+m +n =
+1(g(m +1−n)+m +1+n)+ 1(g(m −n−1)+m +n+1)−1,
+2 2
+and taking n = 0 then gives
+g(m)+m = 1(g(m +1)+m +1)+ 1(g(m −1)+m +1)−1,
+2 2
+which simplifies to g(m) = 1(g(m +1)+g(m −1)).
+This says that g(m) is linear; since we determined at the start that g(0) = 0, we get g(m) = am,
+and hence f(m,n) = 1((1+ a)m +(1− a)n). By taking m = 1,n = 0, we see that a should be
+odd; taking a = 2b+1 gives f(m,n) = (b+1)m−bn. It can readily be checked that this works
+for any value of b.",official_report_extracted
+bmo1-2019-p6-排列与组合-1,BMO1,2019,2019,6,排列组合,排列与组合,高难,4,"6. Ada the ant starts at a point O on a plane. At the start of each minute she chooses
+North, South, East or West, and marches 1 metre in that direction. At the end of 2018
+minutes she finds herself back at O. Let n be the number of possible journeys which
+she could have made. What is the highest power of 10 which divides n?
+2019",见下方官方报告解析,"We write L, M and R for the left, middle and right parts of the displayed equations.
+Note first that, by substituting m = n = 0 into L = M, we get f(0,0) = 0.
+Now, writing g(m) for f(m,−m), the equation L = M gives f(m,n) = 1(g(m − n) + m + n).
+Making this substitution on equation L = R gives
+g(m −n)+m +n =
+1(g(m +1−n)+m +1+n)+ 1(g(m −n−1)+m +n+1)−1,
+2 2
+and taking n = 0 then gives
+g(m)+m = 1(g(m +1)+m +1)+ 1(g(m −1)+m +1)−1,
+2 2
+which simplifies to g(m) = 1(g(m +1)+g(m −1)).
+This says that g(m) is linear; since we determined at the start that g(0) = 0, we get g(m) = am,
+and hence f(m,n) = 1((1+ a)m +(1− a)n). By taking m = 1,n = 0, we see that a should be
+odd; taking a = 2b+1 gives f(m,n) = (b+1)m−bn. It can readily be checked that this works
+for any value of b.",official_report_extracted
+bmo1-2019-px-计数-3,BMO1,2019,2019,5,排列组合,计数,未分级,,"AND)
+5. Six children are evenly spaced around a circular table. Initially, one has a pile
+of n > 0 sweets in front of them, and the others have nothing. If a child has
+at least four sweets in front of them, they may perform the following move:
+eat one sweet and give one sweet to each of their immediate neighbours and
+to the child directly opposite them. An arrangement is called perfect if there
+is a sequence of moves which results in each child having the same number
+of sweets in front of them. For which values of 7 is the initial arrangement
+perfect?
+|)",见下方官方报告解析,"The initial arrangement is perfect if and only if n is divisible by 28. We number the children
+from 1 to 6 around the table, and assume child 1 starts with the sweets.
+Suppose n = 28k, for k > 0, and consider the following sequence of moves:
+(1) Child 1 makes 7k moves. This leaves all the odd-numbered children without any sweets,
+and all of the even-numbered children with 7k sweets.
+(2) Each even-numbered child now make k moves. This leaves each child with 3k sweets so
+the arrangement is perfect.
+It remains to show that if the initial arrangement is perfect, then n must be divisible by 28.
+There are various possible approaches.
+Call the odd-numbered children ‘Team O’ and the even-numbered children ‘Team E’. Now
+considerthedifferencebetweenthetotalnumberofsweetsheldbyTeamOandthetotalnumber
+held by Team E. Initially this difference is n. Once all children have the same number of sweets
+this difference is 0, and any move changes the difference by exactly 7. Thus 7 divides n.
+Next consider the difference between the number of sweets held by child 1 and the number
+held by child 3. At the start this difference is n and at the end this difference is zero. Moves by
+children 2, 4, 5 and 6 do not change this difference, while moves by children 1 and 3 change it
+by exactly four each time. Thus 4 divides n.
+Since n is a multiple of 4 and 7, we conclude that it must be a multiple of 28 as required.",official_report_extracted
+bmo1-2020-p1-整除与同余-6,BMO1,2020,2020,1,数论部分,整除与同余,基础,1,"1. Show that there are at least three prime numbers p less than 200 for which
+p+2,p+6,p+8and p+ 12 are all prime. Show also that there is only one
+prime number gq for which ¢ +2, ¢ +6, g +8, g + 12 and ¢g + 14 are all prime.
+202
+020 a 2 AN/4",见下方官方报告解析,"There are four possible starting numbers 𝑎 which generate a repeat: 0, 30, 42 and 45.
+We call the terms of the sequence written on the board 𝑎 ,𝑎 ,𝑎 ,... where 𝑎 = 𝑎. We will
+1 2 3 1
+consider a more general version of the problem by writing 𝑠 in place of 45. Now the sequence
+is determined by the rules 𝑎 = 2𝑎 and 𝑎 = 𝑎 − 𝑠 for 𝑛 ≥ 1.
+2𝑛 2𝑛−1 2𝑛+1 2𝑛
+The sequence begins 𝑎,2𝑎,2𝑎 − 𝑠,4𝑎 −2𝑠,4𝑎 −3𝑠,8𝑎 −6𝑠,8𝑎 −7𝑠,....
+In general we see that 𝑎 = 2𝑘𝑎 − (2𝑘 − 2)𝑠 while 𝑎 = 2𝑘𝑎 − (2𝑘 − 1)𝑠. These can be
+2𝑘 2𝑘+1
+proved formally by induction, but this is obviously not required for the question.
+We now have two cases to consider:
+Case 1: 𝑎 2𝑘 = 𝑎 for some 𝑘 ≥ 0.
+In this case (2𝑘 −1)𝑎 = (2𝑘 −2)𝑠. The numbers 2𝑘 −1 and 2𝑘 −2 cannot share any factors
+great than one since any factor of both would divide their difference. Thus we must have 2𝑘 −1
+is a factor of 𝑠.
+Turning to the specific problem at hand, we need 2𝑘 −1 to be a factor 45. The possible factors
+are 1 = 21 − 1,3 = 22 − 1 and 15 = 24 − 1. These correspond to 𝑎 = 0,𝑎 = 30 and 𝑎 = 42
+respectively, all of which work.
+Case 2: 𝑎 2𝑘+1 = 𝑎 for some 𝑘 ≥ 1.
+In this case we have (2𝑘 −1)𝑎 = (2𝑘 −1)𝑠 and, since 𝑘 ≠ 0, this implies 𝑎 = 𝑠 = 45 which also
+works.",official_report_extracted
+bmo1-2020-p2-数列-4,BMO1,2020,2020,2,代数与函数,数列,中等,2,"2. A sequence of integers aj, as, as, . . . satisfies the relation:
+dat, —4dapap+ + a’ -1=0
+for all positive integers n. What are the possible values of a;?
+2020 INN",见下方官方报告解析,"We have that 𝑃 = 2𝑎 + 𝑏 and, by Pythagoras’ theorem, the height is 𝑎2 − 𝑏2 which means
+
+that 𝐴 = 𝑏 𝑎2 − 𝑏2.
+2 4
+
+The condition in the question gives us the equation 2𝑎 + 𝑏 = 𝑏2 𝑎2 − 𝑏2 .
+4 4
+Thus 16(2𝑎 + 𝑏) = 𝑏2 (4𝑎2 − 𝑏2 ) = 𝑏2 (2𝑎 − 𝑏)(2𝑎 + 𝑏).
+We may divide by the (positive) 2𝑎 + 𝑏 to get 𝑏2 (2𝑎 − 𝑏) = 16. (If 𝑎 = 𝑏 = 0 we do get a
+solution to the equation, but this corresponds to a single point rather than a triangle.)
+Since 𝑏 and (2𝑎 − 𝑏) = 𝑃 − 2𝑏 are both integers, 𝑏2 must be a square factor of 16. The
+possible values are 1, 4 and 16 and we can substitute these into the equation in turn to find that
+(𝑎,𝑏) = ( 17,1),(3,2) or ( 5,4).
+2 2",official_report_extracted
+bmo1-2020-p4-整除与同余-7,BMO1,2020,2020,4,数论部分,整除与同余,较难,3,"4. In the equation
+AM + AA = B,BBC,DED,BEE,BBB,BBE
+the letters A,B, C, D and E represent different base 10 digits (so the right
+hand side is a sixteen digit number and AA is a two digit number). Given
+that C=9, find A,B, D and E.
+2020",见下方官方报告解析,"First notice that 222 = 2 · 221 = 2 · 87 ≤ 2 · 107 so 2 < 𝐴.
+Also 444 = 288 ≥ 280 = (210 ) 8 ≥ (103 ) 8 = 1024 so 𝐴 < 4. Therefore 𝐴 = 3.
+Wecannowcalculatethelasttwodigitsof333 +33tofind 𝐵 and 𝐸. Thiscanbedoneefficiently
+by repeatedly squaring to find the last two digits of 32,34,38,316 and 332.
+The last two digits of 32 are 09.
+The last two digits of 34 are 81.
+The last two digits of 38 = 6561 are 61.
+The last two digits of 316 are the same as the last two digits of 612 = 3721, namely 21.
+The last two digits of 332 are the same as those of 212 = 441, namely 41.
+Multiplying by 3 and adding 33 shows that 𝐵𝐸 = 56.
+Next we note that 333 +33 is a multiple of 3, so the digit sum on the right hand side must also
+be a multiple of 3. Since 𝐶 = 9 we may ignore it and the same applies to 𝐸 = 6. There are
+exactly 9 𝐵s so these can also be ignored. We conclude that 2𝐷 must be a multiple of 3.
+The digits 3,6 and 9 are already spoken for so 𝐷 = 0.
+Therefore (𝐴,𝐵,𝐷,𝐸) = (3,5,0,6).",official_report_extracted
+bmo1-2020-p5-圆-4,BMO1,2020,2020,5,几何部分,圆,高难,4,"5. Let points A, B and C lie on a circle I'. Circle A is tangent to AC at A. It
+meets I"" again at D and the line AB again at P. The point A lies between
+points B and P. Prove that if AD = DP, then BP = AC.
+INT
+201 AN",见下方官方报告解析,"𝐴𝐷 = 𝑃𝐷 is given.
+By the alternate segment theorem in Δ, we have ∠𝐶𝐴𝐷 = ∠𝐵𝑃𝐷.
+Then ∠𝐷𝐶𝐴 = ∠𝐷𝐵𝐴 = ∠𝐷𝐵𝑃 by angles in the same segment in Γ.
+These two angles show that triangles 𝐷𝐶𝐴 and 𝐷𝐵𝑃 are similar.
+Then we have 𝐴𝐷 = 𝑃𝐷, and so this similarity is a congruence.
+So 𝐶𝐴𝐷 is congruent to 𝐵𝑃𝐷 (by ‘Side-Angle-Side’) and 𝐵𝑃 = 𝐴𝐶.",official_report_extracted
+bmo1-2020-px-计数-4,BMO1,2020,2020,,排列组合,计数,未分级,,,,,not_found_open_official
+bmo1-2021-p2-不定方程-5,BMO1,2021,2021,2,数论部分,不定方程,中等,2,"2. A triangle has side lengths a, a and b. It has perimeter P and area A. Given
+that » and P are integers, and that P is numerically equal to A, find all
+possible pairs (a, b).
+- AR",见下方官方报告解析,"In order for Arun to be able to win 30% of N games, N must be a multiple of 10. The same
+holds for 70%, so the number of games must be at least 20.
+But 20 is not possible: if it were, Arun would have to win either 30% of the first 10 games and
+then 70% of all 20, or 70% of the first 10 games and then 30% of all 20. In the first case the
+wins must go from 3/10 to 14/20 which requires 11 wins in 10 games; in the second case the
+wins go from 7/10 to 6/20 which requires −1 wins in 10 games.
+So 30% and 70% alone cannot be achieved without reaching 30 games.
+But 30 games is enough: for example, scores along the way could be 2/5, 3/10, 7/14, 12/20,
+21/30 achieving 40%, 30%, 50%, 60%, 70% in that order.",official_report_extracted
+bmo1-2021-p2-基本计算-2,BMO1,2021,2021,2,代数与函数,基本计算,中等,2,"2. One day Arun and Disha played several games of table tennis. At five points
+during the day, Arun calculated the percentage of the games played so far
+that he had won. The results of these calculations were exactly 30%, exactly
+40%, exactly 50%, exactly 60% and exactly 70% in some order. What is the
+smallest possible number of games they played?
+< 9) No
+= AK
+4 Foretth positive integer k£ > 1, define the sequence {a,} by
+ap=1 and a, =kn+(-1)""a,—1 for each n> 1.
+Determine all values of k for which 2000 is a term of the
+sequence.
+<4",见下方官方报告解析,"In order for Arun to be able to win 30% of N games, N must be a multiple of 10. The same
+holds for 70%, so the number of games must be at least 20.
+But 20 is not possible: if it were, Arun would have to win either 30% of the first 10 games and
+then 70% of all 20, or 70% of the first 10 games and then 30% of all 20. In the first case the
+wins must go from 3/10 to 14/20 which requires 11 wins in 10 games; in the second case the
+wins go from 7/10 to 6/20 which requires −1 wins in 10 games.
+So 30% and 70% alone cannot be achieved without reaching 30 games.
+But 30 games is enough: for example, scores along the way could be 2/5, 3/10, 7/14, 12/20,
+21/30 achieving 40%, 30%, 50%, 60%, 70% in that order.",official_report_extracted
+bmo1-2021-p3-数列-5,BMO1,2021,2021,3,代数与函数,数列,较难,3,"3. A square piece of paper is folded in half along a line of symmetry. The
+resulting shape is then folded in half along a line of symmetry of the new
+shape. This process is repeated until n folds have been made, giving a
+sequence of n+ 1 shapes. If we do not distinguish between congruent shapes,
+find the number of possible sequences when:
+(a) n=3;
+(b) n=6;
+(c)n=9.
+(When n = 1 there are two possible sequences.)
+2021",见下方官方报告解析,"Suppose there are f(n) ways to choose n grams worth of gold. We begin by finding some small
+values of f(n).
+n f(n) collections of coins
+1 1 {1}
+2 2 {1,1}, {2}
+3 2 {1,1,1}, {1,2}
+4 3 {1,1,2}, {2,2}, {4}
+5 3 {1,1,1,2}, {1,2,2}, {1,4}
+6 4 {1,1,2,2}, {1,1,4}, {2,2,2},{2,4}
+This suggests that f(2k +1) = f(2k) = k +1, which in turn suggests that f(2021) = 1011. It
+remains to prove that this pattern continues.
+If n = 2k there are either 0 or 2 pieces weighing one gram. In the first case we can halve
+each weight to give a way of choosing k grams, while in the second we can remove the two
+smallest coins and halve the remaining weights to give a way of choosing k −1 grams, thus
+f(2k) = f(k)+ f(k −1).
+The fact that f(2k +1) = f(k)+ f(k −1) can be shown analogously, by removing the one or
+three coins weighing one gram and halving the remaining weights.
+Havingshownthat f(2k+1) = f(2k) = f(k)+ f(k−1)wecanprovethat f(2k+1) = f(2k) =
+k +1 by induction using the following four steps.
+f(4k +3) = f(2k +1)+ f(2k) = (k +1)+(k +1)
+f(4k +2) = f(2k +1)+ f(2k) = (k +1)+(k +1)
+f(4k +1) = f(2k)+ f(2k −1) = (k +1)+ k
+f(4k) = f(2k)+ f(2k −1) = (k +1)+ k.
+Thus 2021 grams of gold can be chosen in 1011 ways.",official_report_extracted
+bmo1-2021-p3-计数-1,BMO1,2021,2021,3,排列组合,计数,较难,3,"3. For each integer 0 < n < 11, Eliza has exactly three identical pieces of gold
+that weigh 2"" grams. In how many different ways can she form a pile of gold
+weighing 2021 grams?
+(Two piles are different if they contain different numbers of gold pieces of
+some weight. The arrangement of the pieces in the piles is irrelevant.)",见下方官方报告解析,"Suppose there are f(n) ways to choose n grams worth of gold. We begin by finding some small
+values of f(n).
+n f(n) collections of coins
+1 1 {1}
+2 2 {1,1}, {2}
+3 2 {1,1,1}, {1,2}
+4 3 {1,1,2}, {2,2}, {4}
+5 3 {1,1,1,2}, {1,2,2}, {1,4}
+6 4 {1,1,2,2}, {1,1,4}, {2,2,2},{2,4}
+This suggests that f(2k +1) = f(2k) = k +1, which in turn suggests that f(2021) = 1011. It
+remains to prove that this pattern continues.
+If n = 2k there are either 0 or 2 pieces weighing one gram. In the first case we can halve
+each weight to give a way of choosing k grams, while in the second we can remove the two
+smallest coins and halve the remaining weights to give a way of choosing k −1 grams, thus
+f(2k) = f(k)+ f(k −1).
+The fact that f(2k +1) = f(k)+ f(k −1) can be shown analogously, by removing the one or
+three coins weighing one gram and halving the remaining weights.
+Havingshownthat f(2k+1) = f(2k) = f(k)+ f(k−1)wecanprovethat f(2k+1) = f(2k) =
+k +1 by induction using the following four steps.
+f(4k +3) = f(2k +1)+ f(2k) = (k +1)+(k +1)
+f(4k +2) = f(2k +1)+ f(2k) = (k +1)+(k +1)
+f(4k +1) = f(2k)+ f(2k −1) = (k +1)+ k
+f(4k) = f(2k)+ f(2k −1) = (k +1)+ k.
+Thus 2021 grams of gold can be chosen in 1011 ways.",official_report_extracted
+bmo1-2021-p4-圆-5,BMO1,2021,2021,4,几何部分,圆,较难,3,"4. Two circles I'} and I""; have centres O; and O; respectively. They pass
+through each other’s centres and intersect at A and B. The point C lies on
+the minor arc BO; of I'1. The points D and E lie on the line O,C such that
+LAO \D = DOC and COE = LEOB. Prove that triangle DOE is
+equilateral.
+(A minor arc of a circle is the shorter of the two arcs with given endpoints.)
+202K",见下方官方报告解析,"It suffices to show that two of the angles in triangle DO E are equal to 60°.
+𝐴
+Γ Γ
+1 2
+𝐷
+𝛽
+𝑂 𝛽 𝑂
+𝜃
+𝛼
+𝛼
+𝜃
+𝐶
+𝐸
+𝐵
+Thetriangles AO O and BO O arebothequilateralsincetheirsidesallequaltheradiusO O .
+1 2 1 2 1 2
+They therefore have angles of 60°.
+The question give us that ∠BO E = ∠EO C, which we will call α, and also that ∠CO D =
+1 1 1
+∠DO A, which we will call β. It is clear that 2α +2β = 120°, so EO D = α + β = 60°.
+1 1
+To complete the problem we must show that one of the other angles DO E is 60°.
+There are a wide variety of possible approaches.
+The triangle CO O is isosceles since two of its sides are radii.
+1 2
+Therefore ∠O O C = ∠O CO which we will call θ.
+1 2 2 1
+Now 2β = ∠O O A+ ∠CO O = 60°+(180°−2θ), so β = 120− θ.
+2 1 1 2
+Considering the sum of the angles in triangle DO C, we see that
+∠O DC = 180°− θ −(120°− θ) = 60° as required.",official_report_extracted
+bmo1-2021-p4-排列与组合-2,BMO1,2021,2021,4,排列组合,排列与组合,较难,3,"4. There are 2019 penguins waddling towards their favourite restaurant. As
+the penguins arrive, they are handed tickets numbered in ascending order
+from 1 to 2019, and told to join the queue. The first penguin starts the queue.
+For each n > 1 the penguin holding ticket number # finds the greatest m < n
+which divides n and enters the queue directly behind the penguin holding
+ticket number m. This continues until all 2019 penguins are in the queue.
+(a) How many penguins are in front of the penguin with ticket number 2?
+(b) What numbers are on the tickets held by the penguins just in front of
+and just behind the penguin holding ticket 33?
+2021 \ 7 SN",见下方官方报告解析,"It suffices to show that two of the angles in triangle DO E are equal to 60°.
+𝐴
+Γ Γ
+1 2
+𝐷
+𝛽
+𝑂 𝛽 𝑂
+𝜃
+𝛼
+𝛼
+𝜃
+𝐶
+𝐸
+𝐵
+Thetriangles AO O and BO O arebothequilateralsincetheirsidesallequaltheradiusO O .
+1 2 1 2 1 2
+They therefore have angles of 60°.
+The question give us that ∠BO E = ∠EO C, which we will call α, and also that ∠CO D =
+1 1 1
+∠DO A, which we will call β. It is clear that 2α +2β = 120°, so EO D = α + β = 60°.
+1 1
+To complete the problem we must show that one of the other angles DO E is 60°.
+There are a wide variety of possible approaches.
+The triangle CO O is isosceles since two of its sides are radii.
+1 2
+Therefore ∠O O C = ∠O CO which we will call θ.
+1 2 2 1
+Now 2β = ∠O O A+ ∠CO O = 60°+(180°−2θ), so β = 120− θ.
+2 1 1 2
+Considering the sum of the angles in triangle DO C, we see that
+∠O DC = 180°− θ −(120°− θ) = 60° as required.",official_report_extracted
+bmo1-2022-p1-不定方程-6,BMO1,2022,2022,1,数论部分,不定方程,基础,1,"1. Find three even numbers less than 400, each of which can be expressed as a
+sum of consecutive positive odd numbers in at least six different ways.
+(Two expressions are considered to be different if they contain different
+numbers. The order of the numbers forming a sum is irrelevant.)
+2022 Co \ 0/4",见下方官方报告解析,"We consider the three cases 𝑛 < 200, 200 ≤ 𝑛 < 300 and 300 ≤ 𝑛 separately.
+Case I
+There are eleven houses among the first 99 whose numbers begin with a 2, house 2 and houses
+20 to 29 inclusive.
+Thus if 𝑛 < 200, we have 1 = 11. This shows that 𝑛 is a multiple of 11. There are nine
+𝑘 𝑛
+possibilities, namely 𝑛 = 110,121,132,143,154,165,176,187,198.
+Case II
+If 200 ≤ 𝑛 < 300 we may write 𝑛 = 199+𝑥 for some integer 1 ≤ 𝑥 ≤ 100.
+We have that 1 = 11+𝑥 so 𝑘 = 199+𝑥 = 1+ 188 . This implies that 𝑘 −1 = 188 so 11+𝑥 must
+𝑘 199+𝑥 11+𝑥 11+𝑥 11+𝑥
+be a factor of 188 (since 𝑘 −1 is an integer).
+Thus,weneedtofindfactorsof188whicharebetween12and111inclusive. Since,188 = 22×47
+its factors are 1,2,4,47,94 and 188. Of these we need only consider 47 and 94 which give
+(𝑥,𝑛) = (36,235) and (83,282) respectively.
+Case III
+There are 111 houses among the first 299 whose numbers begin with a 2, the eleven already
+counted and those numbered 200 to 299 inclusive.
+Thus if 𝑛 ≥ 300, we have 1 = 111. This shows that 𝑛 is a multiple of 111. There are seven
+𝑘 𝑛
+possibilities, namely 𝑛 = 333,444,555,666,777,888,999.",official_report_extracted
+bmo1-2022-p3-三角形与多边形-1,BMO1,2022,2022,3,几何部分,三角形与多边形,较难,3,"3. The triangle ABC has AB = CA and BC is its longest side. The
+point N is on the side BC' and BN = AB. The line perpendicular
+to AB which passes through N meets AB at M. Prove that the line
+MN divides both the area and the perimeter of triangle ABC into
+equal parts.
+2022",见下方官方报告解析,"Extend 𝐴𝐹 and 𝐴𝐺 to meet 𝐵𝐶 at 𝐹′ and 𝐺′ respectively. As a consequence of ASA, we have
+the following congruent triangles:
+ ∠𝐹𝐶𝐴 = ∠𝐹′𝐶𝐹  ∠𝐺𝐵𝐴 = ∠𝐺′𝐵𝐺
+ 
+ 
+ 
+𝐶𝐹 = 𝐶𝐹 ⇒ △𝐴𝐹𝐶 △𝐹′𝐹𝐶 𝐵𝐺 = 𝐵𝐺 ⇒ △𝐴𝐺𝐵 △𝐺′𝐺𝐵
+   ∠𝐴𝐹𝐶 = 90◦ = ∠𝐶𝐹𝐹′    ∠𝐴𝐺𝐵 = 90◦ = ∠𝐵𝐺𝐺′
+ 
+Therefore, 𝐴𝐹 = 𝐹𝐹′ and 𝐴𝐺 = 𝐺𝐺′ so 𝐹,𝐺,𝐵 ,𝐶 are the midpoints of 𝐴𝐹′, 𝐴𝐺′, 𝐴𝐶, 𝐴𝐵
+1 1
+respectively. This means:
+𝐴𝐹 𝐴𝐺 𝐴𝐵 𝐴𝐶 1
+1 1
+= = = =
+𝐴𝐹′ 𝐴𝐺′ 𝐴𝐶 𝐴𝐵 2
+So if we consider an enlargement with scale factor 1 at 𝐴, then the line passing through
+𝐵,𝐺′,𝐶,𝐹′ maps to a line passing through 𝐶 ,𝐺,𝐵 ,𝐹 proving these four points are collinear.
+1 1",official_report_extracted
+bmo1-2022-p5-排列与组合-3,BMO1,2022,2022,5,排列组合,排列与组合,高难,4,"5. An N-set is a set of different positive integers including a given positive
+integer N. Let m(N) be the smallest possible mean of any N-set. For how
+many values of N less than 2021 is m(N) an integer?
+bo 780",见下方官方报告解析,"We start by noting that 𝑓(1) = 1 since (1) is the only possible list.
+For any given 𝑛 > 1, we can count the number of allowed lists according to the penultimate
+number, 𝑑, in the list. Clearly 𝑑 is a factor of 𝑛 and the number of lists of the form (...,𝑑,𝑛) is
+𝑓(𝑑).
+Thus
+∑︁
+𝑓(𝑛) = 𝑓(𝑑) (†)
+𝑑|𝑛, 𝑑≠𝑛
+For example, 𝑓(2) = 𝑓(1) = 1, 𝑓(4) = 𝑓(2) + 𝑓(1) = 2, 𝑓(8) = 𝑓(4) + 𝑓(2) + 𝑓(1) = 4.
+Further experimentation with small cases leads to the conjecture that
+𝑓(𝑝𝑚
+) = 2
+𝑚−1
+for any
+prime 𝑝 and positive integer 𝑘.
+This claim can be proved by induction on 𝑚.
+In clearly holds for 𝑚 = 1 as 𝑓(𝑝) = 1.
+If we assume it holds for all integers 𝑚 up to some integer 𝑘 we may consider 𝑓(𝑝𝑘+1).
+𝑓(𝑝𝑘+1) = 𝑓(𝑝𝑘 ) + 𝑓(𝑝𝑘−1) + ··· + 𝑓(𝑝) + 𝑓(1)
+= (2
+𝑘−1
++2
+𝑘−2
++ ··· +1) +1
+𝑘
+= (2 −1) +1
+Here the first line uses the recurrence (†), the second uses the inductive hypothesis and the
+third uses the sum of a geometric progression.
+This is enough to prove the claim for 𝑚 = 𝑘 +1 and thus, by induction, for all 𝑚 ≥ 1.
+Next we claim that 𝑓(𝑝𝑚𝑞) = (𝑚 +2) ×2 𝑚−1 for different primes 𝑝,𝑞 with 𝑚 ≥ 1. Again we
+proceed by induction on 𝑚.
+If𝑚 = 1wemustcheckthat 𝑓(𝑝𝑞) = 𝑓(𝑝)+ 𝑓(𝑞)+ 𝑓(1) = 1+1+1 = (1+2)×20 asrequired.
+Now we assume the claims for all 𝑚 ≤ 𝑘 and consider 𝑓(𝑝𝑘+1𝑞).
+The key thing note is that the proper factors of
+𝑝𝑘+1𝑞
+are
+𝑝𝑘𝑞, 𝑝𝑘+1
+and a collection of other
+factors which are precisely the proper factors of
+𝑝𝑘𝑞.
+Thus
+𝑓(𝑝𝑘+1𝑞)
+=
+𝑓(𝑝𝑘𝑞)
++
+𝑓(𝑝𝑘+1)
++
+𝑓(𝑝𝑘𝑞)
+= (𝑘 +2)2 𝑘−1 +2 𝑘 + (𝑘 +2)2 𝑘−1
+= (𝑘 +3)2 𝑘
+
+Here the first line uses (†) (rather cunningly) and the second uses the inductive hypothesis and
+our first claim.
+Now for a given 𝑁 we may choose any pair of primes 𝑝,𝑞 and set 𝑛 = 𝑝𝑁−2𝑞.",official_report_extracted
+bmo1-2022-p5-整除与同余-1,BMO1,2022,2022,5,数论部分,整除与同余,高难,4,"5. For each integer n > 1, let f(r) be the number of lists of different positive
+integers starting with 1 and ending with n, in which each term except the last
+divides its successor. Prove that for each integer N > 1 there is an integer
+n > 1 such that N divides f(n).
+(So f(1)=1,f(2)=1and f(6) =3.)
++
+%
+YX",见下方官方报告解析,"We start by noting that 𝑓(1) = 1 since (1) is the only possible list.
+For any given 𝑛 > 1, we can count the number of allowed lists according to the penultimate
+number, 𝑑, in the list. Clearly 𝑑 is a factor of 𝑛 and the number of lists of the form (...,𝑑,𝑛) is
+𝑓(𝑑).
+Thus
+∑︁
+𝑓(𝑛) = 𝑓(𝑑) (†)
+𝑑|𝑛, 𝑑≠𝑛
+For example, 𝑓(2) = 𝑓(1) = 1, 𝑓(4) = 𝑓(2) + 𝑓(1) = 2, 𝑓(8) = 𝑓(4) + 𝑓(2) + 𝑓(1) = 4.
+Further experimentation with small cases leads to the conjecture that
+𝑓(𝑝𝑚
+) = 2
+𝑚−1
+for any
+prime 𝑝 and positive integer 𝑘.
+This claim can be proved by induction on 𝑚.
+In clearly holds for 𝑚 = 1 as 𝑓(𝑝) = 1.
+If we assume it holds for all integers 𝑚 up to some integer 𝑘 we may consider 𝑓(𝑝𝑘+1).
+𝑓(𝑝𝑘+1) = 𝑓(𝑝𝑘 ) + 𝑓(𝑝𝑘−1) + ··· + 𝑓(𝑝) + 𝑓(1)
+= (2
+𝑘−1
++2
+𝑘−2
++ ··· +1) +1
+𝑘
+= (2 −1) +1
+Here the first line uses the recurrence (†), the second uses the inductive hypothesis and the
+third uses the sum of a geometric progression.
+This is enough to prove the claim for 𝑚 = 𝑘 +1 and thus, by induction, for all 𝑚 ≥ 1.
+Next we claim that 𝑓(𝑝𝑚𝑞) = (𝑚 +2) ×2 𝑚−1 for different primes 𝑝,𝑞 with 𝑚 ≥ 1. Again we
+proceed by induction on 𝑚.
+If𝑚 = 1wemustcheckthat 𝑓(𝑝𝑞) = 𝑓(𝑝)+ 𝑓(𝑞)+ 𝑓(1) = 1+1+1 = (1+2)×20 asrequired.
+Now we assume the claims for all 𝑚 ≤ 𝑘 and consider 𝑓(𝑝𝑘+1𝑞).
+The key thing note is that the proper factors of
+𝑝𝑘+1𝑞
+are
+𝑝𝑘𝑞, 𝑝𝑘+1
+and a collection of other
+factors which are precisely the proper factors of
+𝑝𝑘𝑞.
+Thus
+𝑓(𝑝𝑘+1𝑞)
+=
+𝑓(𝑝𝑘𝑞)
++
+𝑓(𝑝𝑘+1)
++
+𝑓(𝑝𝑘𝑞)
+= (𝑘 +2)2 𝑘−1 +2 𝑘 + (𝑘 +2)2 𝑘−1
+= (𝑘 +3)2 𝑘
+
+Here the first line uses (†) (rather cunningly) and the second uses the inductive hypothesis and
+our first claim.
+Now for a given 𝑁 we may choose any pair of primes 𝑝,𝑞 and set 𝑛 = 𝑝𝑁−2𝑞.",official_report_extracted
+bmo1-2022-p6-圆-6,BMO1,2022,2022,6,几何部分,圆,高难,4,"6. A circle I"" has radius 1. A line / is such that the perpendicular distance from
+1 to the centre of I"" is strictly between 0 and 2. A frog chooses a point on I""
+whose perpendicular distance from / is less than 1 and sits on that point. It
+then performs a sequence of jumps. Each jump has length 1 and if a jump
+starts on I"" it must end on / and vice versa. Prove that after some finite
+number of jumps the frog returns to a point it has been on before.
+;",见下方官方报告解析,"Let 𝑂 be the centre of Γ and let the points sat on by the frog be 𝑎 ,𝑎 ,𝑎 ,... in that order.
+0 1 2
+If the Frog ever jumps straight back to the point it just left we are done, so from now on we
+may assume this is not the case. That is, that 𝑎 𝑖+2 ≠ 𝑎 𝑖.
+Since all the jumps have length 1, and 𝑎 ,𝑎 are on Γ, we see that 𝑂𝑎 𝑎 𝑎 is a rhombus, so
+0 2 0 1 2
+𝑎 𝑎 is parallel to 𝑎 0.
+0 1 2
+Similarly 𝑂𝑎 𝑎 𝑎 is a rhombus, so 𝑎 𝑎 is parallel to 𝑎 0.
+2 3 4 3 4 2
+This means that 𝑎 𝑎 𝑎 𝑎 is a parallelogram since |𝑎 𝑎 | = |𝑎 𝑎 | = 1.
+0 1 3 4 0 1 3 4
+Now 𝑎 and 𝑎 are both on 𝑙, so the line 𝑎 𝑎 is parallel to 𝑙.
+1 3 0 4
+Adding 4 to all the indices and repeating the above argument, we see that the line 𝑎 𝑎 is also
+4 8
+parallelto𝑙. However,theuniquelinethrough 𝑎 parallelto𝑙 intersects Γ in(atmost)oneother
+point, so 𝑎 = 𝑎 . Thus the frog revisits a previously visited point after at most eight jumps.
+0 8
+There is another way to clinch the argument. Once you establish that the vectors 𝑎 𝑎 , 𝑂𝑎
+0 1 2
+and 𝑎 𝑎 are equal, translation by this vector carries triangle △𝑎 𝑂𝑎 to the congruent triangle
+4 3 0 4
+△𝑎 𝑎 𝑎 and so the line 𝑎 𝑎 is parallel to the line 𝑎 𝑎 which is 𝑙.
+1 2 3 0 4 1 3",official_report_extracted
+bmo1-2022-p6-数列-1,BMO1,2022,2022,6,代数与函数,数列,高难,4,"6. Marvin has been tasked with writing down every list of integers with the
+following properties:
+(i) The list contains 71 terms.
+(ii) The first term is 1.
+(iii) Every term after the first is equal to either the previous term, or the sum
+of all previous terms.
+When Marvin is finished, how many of the lists will have a sum equal to
+999,999?
+2022 ~\",见下方官方报告解析,"Let 𝑂 be the centre of Γ and let the points sat on by the frog be 𝑎 ,𝑎 ,𝑎 ,... in that order.
+0 1 2
+If the Frog ever jumps straight back to the point it just left we are done, so from now on we
+may assume this is not the case. That is, that 𝑎 𝑖+2 ≠ 𝑎 𝑖.
+Since all the jumps have length 1, and 𝑎 ,𝑎 are on Γ, we see that 𝑂𝑎 𝑎 𝑎 is a rhombus, so
+0 2 0 1 2
+𝑎 𝑎 is parallel to 𝑎 0.
+0 1 2
+Similarly 𝑂𝑎 𝑎 𝑎 is a rhombus, so 𝑎 𝑎 is parallel to 𝑎 0.
+2 3 4 3 4 2
+This means that 𝑎 𝑎 𝑎 𝑎 is a parallelogram since |𝑎 𝑎 | = |𝑎 𝑎 | = 1.
+0 1 3 4 0 1 3 4
+Now 𝑎 and 𝑎 are both on 𝑙, so the line 𝑎 𝑎 is parallel to 𝑙.
+1 3 0 4
+Adding 4 to all the indices and repeating the above argument, we see that the line 𝑎 𝑎 is also
+4 8
+parallelto𝑙. However,theuniquelinethrough 𝑎 parallelto𝑙 intersects Γ in(atmost)oneother
+point, so 𝑎 = 𝑎 . Thus the frog revisits a previously visited point after at most eight jumps.
+0 8
+There is another way to clinch the argument. Once you establish that the vectors 𝑎 𝑎 , 𝑂𝑎
+0 1 2
+and 𝑎 𝑎 are equal, translation by this vector carries triangle △𝑎 𝑂𝑎 to the congruent triangle
+4 3 0 4
+△𝑎 𝑎 𝑎 and so the line 𝑎 𝑎 is parallel to the line 𝑎 𝑎 which is 𝑙.
+1 2 3 0 4 1 3",official_report_extracted
+bmo1-2023-p1-不定方程-7,BMO1,2023,2023,1,数论部分,不定方程,基础,1,"1. A road has houses numbered from 1 to n, where n is a three-digit number.
+Exactly of the numbers start with the digit 2, where k is a positive integer.
+Find the possible values of n.",见下方官方报告解析,"The answer is 28 = 256.
+For a word with 𝑁 letters, the condition of the problem is equivalent to the statement that for
+every positive integer 𝑛 < 𝑁, the 𝑛th letter of the word is typed somewhere in the first 𝑛 +1
+places.
+In our problem, we take the letters of OLYMPIADS in order from the left and look at where
+they might appear in the typist’s version. The letter 𝑂 must appear either first or second: 2
+possibilities.
+Next the letter 𝐿 must appear somewhere in the first three places. One of those three places has
+already been taken by the 𝑂, so there are 2 remaining possibilities for the position of the 𝑂,
+hence 2×2 = 4 possibilities for the positions of the 𝑂 and 𝐿.
+If we have identified the positions of the first 𝑛−1 letters for some positive integer 𝑛 satisfying
+2 < 𝑛 < 9, we know that in the typist’s version, the 𝑛th letter occurs somewhere in the first
+𝑛 +1 places, and 𝑛 −1 of those have already been used for the first 𝑛 −1 letters, so there are 2
+possibilities for the position of the 𝑛th letter.
+Thiscontinuesuntilwehaveidentifiedthepositionofthefirst8letters. Thefinal 𝑆 mustappear
+in the one remaining position, wherever that is.
+So the total number of ways that the typist could type OLYMPIADS is 28 = 256.",official_report_extracted
+bmo1-2023-p2-数列-2,BMO1,2023,2023,2,代数与函数,数列,中等,2,"2. A sequence of positive integers a, begins with a; = a and a, = b for positive
+integers a and b. Subsequent terms in the sequence satisfy the following
+two rules for all positive integers n:
+Apel = A2pA2n-1,  A2p42 = Ape) +4
+Exactly m of the numbers a, as, as, . . ., ay; are square numbers. What is
+the maximum possible value of m? Note that m depends on a and b, so the
+maximum is over all possible choices of a and b.
+NT. N
+2023 NY. ‘Qa",见下方官方报告解析,"We would like to prove by induction that for all 0 ≤ 𝑖 ≤ 2023, 𝑎 and 𝑎 are consecutive.
+𝑖 𝑖+1
+Base case: 𝑎 and 𝑎 are consecutive.
+2023 2024
+Inductive step: Suppose that for some𝑖, 𝑎 and 𝑎 are consecutive.
+𝑖 𝑖+1
+If𝑎 = 𝑎 +1theneither𝑎 = 𝑎 +1 = 2𝑎 −𝑎 ,so𝑎 = 𝑎 −1or𝑎 = 𝑎 +1 = 2𝑎 −𝑎
+𝑖+1 𝑖 𝑖+1 𝑖 𝑖 𝑖−1 𝑖−1 𝑖 𝑖+1 𝑖 𝑖−1 𝑖
+so 𝑎 = (2𝑎 +1)/2, contradiction, as all terms are integers. So 𝑎 = 𝑎 −1.
+𝑖−1 𝑖 𝑖−1 𝑖
+Similarly, if 𝑎 = 𝑎 − 1 then either 𝑎 = 𝑎 − 1 = 2𝑎 − 𝑎 , so 𝑎 = 𝑎 + 1 or
+𝑖+1 𝑖 𝑖+1 𝑖 𝑖 𝑖−1 𝑖−1 𝑖
+𝑎 = 𝑎 −1 = 2𝑎 − 𝑎 so 𝑎 = (2𝑎 −1)/2, contradiction, as all terms are integers. So
+𝑖+1 𝑖 𝑖−1 𝑖 𝑖−1 𝑖
+𝑎 = 𝑎 +1.
+𝑖−1 𝑖
+In either event, 𝑎 and 𝑎 are consecutive.
+𝑖−1 𝑖
+As 𝑎 and 𝑎 are consecutive and we showed that if 𝑎 and 𝑎 are consecutive then so
+2024 2023 𝑖 𝑖+1
+are 𝑎 and 𝑎 , we have proved that 𝑎 and 𝑎 are consecutive.
+𝑖−1 𝑖 0 1",official_report_extracted
+bmo1-2023-p3-三角形与多边形-2,BMO1,2023,2023,3,几何部分,三角形与多边形,较难,3,"3. In an acute, non-isosceles triangle ABC the midpoints of AC and AB are
+Bj and Cj respectively. A point D lies on BC with C between B and D.
+The point F is such that ZAFC is aright angle and ZDCF = /FCA. The
+point G is such that ZAGB is aright angle and ZCBG = /GBA. Prove that
+Bi, C1, F and G are collinear.
+~~
+2023 \%¢ ,",见下方官方报告解析,"𝐴
+𝑍
+𝑋
+2𝜃
+𝜃
+𝐵 𝐶
+𝜃
+𝑌
+To construct an accurate figure for this question we must note that 𝐴, 𝑋 and𝑌 all lie on a circle
+This means, amongst other things, that triangle 𝐴𝐵𝑋 is isosceles with apex 𝐵.
+We let ∠𝑍𝐵𝐴 = 𝜃 as shown.
+We add segments 𝐵𝑋 and 𝐴𝑌 (shown in blue).
+Now ∠𝑍𝑌𝐴 = 𝜃 (Angles in the same segment in circle 𝐴𝐵𝑌𝑍.)
+Also ∠𝑋𝐵𝐴 = 2𝜃 (Angle at centre 2× angle at circumference in circle 𝐴𝑌𝑋.)
+Thus 𝐵𝑍 is an (internal) angle bisector in the (isosceles) triangle 𝑋𝐵𝐴, so 𝐵𝑍 is perpendicular
+to 𝑋𝐴.",official_report_extracted
+bmo1-2023-p4-排列与组合-4,BMO1,2023,2023,4,排列组合,排列与组合,较难,3,"4. Alex and Katy play a game on an 8 x 8 square grid made of 64 unit cells.
+They take it in turns to play, with Alex going first. On Alex’s turn, he writes
+‘A’ in an empty cell. On Katy’s turn, she writes ‘K’ in two empty cells that
+share an edge. The game ends when one player cannot move. Katy’s score
+is the number of Ks on the grid at the end of the game. What is the highest
+score Katy can be sure to get if she plays well, no matter what Alex does?
+2023 MN / Ad",见下方官方报告解析,"Let 𝑎 > 0 be an integer such that 𝑛 ×2𝑛 +1 = 𝑎2. It follows that 2𝑛𝑛 = (𝑎 −1)(𝑎 +1). The
+integers 𝑎 −1 and 𝑎 +1 have the same parity and their product is even, so both must be even.
+Moreover, since 𝑎 − 1 and 𝑎 + 1 are consecutive even integers, one of them is twice an odd
+number, so the other divisible by 2𝑛−1.
+Thus 𝑎 +1 ≥ 2𝑛−1 which means 𝑎 −1 ≤ 2𝑛. This implies that 2𝑛 +2 ≥ 𝑎 +1 ≥ 2𝑛−1.
+We claim that this false for 𝑛 ≥ 5, so we only need to check 𝑛 = 1,2,3 and 4.
+When 𝑛 = 5, we have 12 = 2𝑛 +2 < 2𝑛−1 = 16, so the claim holds for 𝑛 = 5.
+If we know that 2𝑘 +2 < 2𝑘−1 for some positive 𝑘, we can consider:
+𝑘 +2 𝑘 +2
+2(𝑘 +1) +2 = (2𝑘 +2) × < 2𝑘−1 × < 2𝑘−1 ×2 = 2(𝑘+1)−1
+𝑘 +1 𝑘 +1
+so if the claim holds for 𝑘, it holds for 𝑘 +1.
+Checking 𝑛 = 1,2,3 and 4, we find that the values of 𝑛×2𝑛 +1 are 3,9,25 and 65 respectively.
+Hence 𝑛 = 2 and 𝑛 = 3 work and 𝑛 = 1,4 do not.",official_report_extracted
+bmo1-2023-p5-计数-2,BMO1,2023,2023,5,排列组合,计数,高难,4,"5. An artist arranges 1000 dots evenly around a circle, with each dot being
+either red or blue. A critic looks at the artwork and counts faults: each time
+two red dots are adjacent is one fault, and each time two blue dots are exactly
+two apart (that is, they have exactly one dot in between them) is another.
+What is the smallest number of faults the critic could find?
+L 4 >
+NTIS
+1 FETE",见下方官方报告解析,"Placing red then blue dots two at a time round the circle (...𝑅𝑅𝐵𝐵𝑅𝑅𝐵𝐵...), gives 250 ‘red’
+faults and no ‘blue’ faults.
+It remains to prove that every possible configuration contains at least 250 faults.
+In every five consecutive dots there must be at least one fault (if any of the middle 3 dots are
+red, then either that dot has a red neighbour or both its neighbours are blue, both giving a fault;
+if none of the middle 3 dots are red, then we have 2 blue dots that are 2 apart, giving a fault).
+Now divide the 1000 dots into blocks of five consecutive dots, each block overlapping by one
+dot at each end. There are 250 such blocks, each containing at least one fault. Since each fault
+consist of at least two dots, and blocks overlap by at most one dot, it is impossible to count the
+same fault in two blocks. Hence, there must be at least 250 faults.
+A slight variation on this argument is to divide the 1000 dots into non-overlapping blocks of
+four dots and argue that each such block either contains a fault, which we will call an internal
+fault, or is 𝑅𝐵𝐵𝑅. In the latter case then the dot that comes directly after the block will be
+the second dot in a red fault if it is red and will be the second dot in a blue fault if it is blue.
+Either way we have a fault the first of whose dots is in our block, which we call an external
+fault. Since each of the 250 blocks contributes either an internal or an external fault, there must
+be at least 250 faults in any configuration.",official_report_extracted
+bmo1-2023-px-圆-7,BMO1,2023,2023,3,几何部分,圆,未分级,,,见下方官方报告解析,"𝐴
+𝑍
+𝑋
+2𝜃
+𝜃
+𝐵 𝐶
+𝜃
+𝑌
+To construct an accurate figure for this question we must note that 𝐴, 𝑋 and𝑌 all lie on a circle
+This means, amongst other things, that triangle 𝐴𝐵𝑋 is isosceles with apex 𝐵.
+We let ∠𝑍𝐵𝐴 = 𝜃 as shown.
+We add segments 𝐵𝑋 and 𝐴𝑌 (shown in blue).
+Now ∠𝑍𝑌𝐴 = 𝜃 (Angles in the same segment in circle 𝐴𝐵𝑌𝑍.)
+Also ∠𝑋𝐵𝐴 = 2𝜃 (Angle at centre 2× angle at circumference in circle 𝐴𝑌𝑋.)
+Thus 𝐵𝑍 is an (internal) angle bisector in the (isosceles) triangle 𝑋𝐵𝐴, so 𝐵𝑍 is perpendicular
+to 𝑋𝐴.",official_report_extracted

@@ -1,7 +1,9 @@
-const DATA_URLS = ["./amc_aops_2010_present.json", "../amc_aops_2010_present.json"];
+const AMC_DATA_URLS = ["./amc_aops_2010_present.json", "../amc_aops_2010_present.json"];
+const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json", "../bmo1_2000_2023_import.json"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
 const LAYOUT_KEY = "amc-practice-layout-v1";
+const EXAM_HISTORY_KEY = "amc-practice-exam-history-v1";
 const FULL_EXAM_SECONDS = 75 * 60;
 
 const weeklyRecommendationIds = [
@@ -18,11 +20,15 @@ const topicLabels = {
   counting_and_probability: "计数与概率 / Counting & Probability",
   prealgebra: "预代数 / Prealgebra",
   precalculus: "预备微积分 / Precalculus",
+  "代数与函数": "代数与函数 / Algebra & Functions",
+  "几何部分": "几何 / Geometry",
+  "数论部分": "数论 / Number Theory",
+  "排列组合": "排列组合 / Combinatorics",
 };
 
 const solutionStageLabels = {
-  idea: "初步思路 / Idea",
-  key_steps: "关键步骤 / Key Steps",
+  idea: "思路 / Idea",
+  key_steps: "主要步骤 / Main Steps",
   full_calculation: "完整计算 / Full Work",
 };
 
@@ -31,10 +37,12 @@ const els = {
   practiceShell: document.querySelector("#practiceShell"),
   entryMeta: document.querySelector("#entryMeta"),
   singlePracticeMode: document.querySelector("#singlePracticeMode"),
+  bmoPracticeMode: document.querySelector("#bmoPracticeMode"),
   fullExamSelect: document.querySelector("#fullExamSelect"),
   startFullExam: document.querySelector("#startFullExam"),
   reviewMode: document.querySelector("#reviewMode"),
   aboutMode: document.querySelector("#aboutMode"),
+  exportReportMode: document.querySelector("#exportReportMode"),
   aboutScreen: document.querySelector("#aboutScreen"),
   aboutToPractice: document.querySelector("#aboutToPractice"),
   aboutToEntry: document.querySelector("#aboutToEntry"),
@@ -59,6 +67,7 @@ const els = {
   weeklyList: document.querySelector("#weeklyList"),
   answeredTitle: document.querySelector("#answeredTitle"),
   answeredList: document.querySelector("#answeredList"),
+  exportStudyRecord: document.querySelector("#exportStudyRecord"),
   reviewToPractice: document.querySelector("#reviewToPractice"),
   reviewToAbout: document.querySelector("#reviewToAbout"),
   reviewToEntry: document.querySelector("#reviewToEntry"),
@@ -113,6 +122,7 @@ const els = {
 const state = {
   data: null,
   problems: [],
+  bmoProblems: [],
   filtered: [],
   currentIndex: 0,
   selectedChoice: null,
@@ -122,11 +132,13 @@ const state = {
   activeExamId: null,
   examAnswers: {},
   examSubmitted: false,
+  examStartedAt: null,
   timerRemaining: FULL_EXAM_SECONDS,
   timerId: null,
   progress: loadProgress(),
   marks: loadMarks(),
   layout: loadLayout(),
+  examHistory: loadExamHistory(),
 };
 
 function loadProgress() {
@@ -157,6 +169,14 @@ function loadLayout() {
   }
 }
 
+function loadExamHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(EXAM_HISTORY_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
 function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
 }
@@ -167,6 +187,10 @@ function saveMarks() {
 
 function saveLayout() {
   localStorage.setItem(LAYOUT_KEY, JSON.stringify(state.layout));
+}
+
+function saveExamHistory() {
+  localStorage.setItem(EXAM_HISTORY_KEY, JSON.stringify(state.examHistory));
 }
 
 function clamp(value, min, max) {
@@ -184,6 +208,7 @@ function ensureMarks(problem) {
 }
 
 function difficultyRange(problem) {
+  if (problem.difficulty_label) return problem.difficulty_label;
   const number = Number(problem.number);
   if (number >= 1 && number <= 10) return "1-10";
   if (number >= 11 && number <= 18) return "10-18";
@@ -192,8 +217,11 @@ function difficultyRange(problem) {
 
 function recordSubmission(problem, choice, extra = {}) {
   const previous = problemProgress(problem) || {};
-  const correct = answerMatches(problem, choice) || problem.answer_note === "full_credit_all_answers";
-  const wrongAttempts = (previous.wrongAttempts || 0) + (correct ? 0 : 1);
+  const isGradable = problem.answer_mode !== "free_response" && (problem.answer_choices_accepted || []).length;
+  const correct = isGradable
+    ? answerMatches(problem, choice) || problem.answer_note === "full_credit_all_answers"
+    : null;
+  const wrongAttempts = (previous.wrongAttempts || 0) + (isGradable && !correct ? 1 : 0);
   const correctAttempts = (previous.correctAttempts || 0) + (correct ? 1 : 0);
   const reviewCorrectStreak = correct
     ? (previous.needsReview || previous.everWrong ? (previous.reviewCorrectStreak || 0) + 1 : previous.reviewCorrectStreak || 0)
@@ -208,8 +236,8 @@ function recordSubmission(problem, choice, extra = {}) {
     attempts: (previous.attempts || 0) + 1,
     wrongAttempts,
     correctAttempts,
-    everWrong: Boolean(previous.everWrong || !correct),
-    needsReview: correct ? reviewCorrectStreak < 2 && Boolean(previous.everWrong || previous.needsReview) : true,
+    everWrong: isGradable ? Boolean(previous.everWrong || !correct) : Boolean(previous.everWrong),
+    needsReview: isGradable ? (correct ? reviewCorrectStreak < 2 && Boolean(previous.everWrong || previous.needsReview) : true) : Boolean(previous.needsReview),
     reviewCorrectStreak,
   };
   return state.progress[problem.id];
@@ -265,7 +293,10 @@ function topicName(topic) {
 }
 
 function examSort(a, b) {
-  return b.year - a.year || b.level - a.level || a.form.localeCompare(b.form);
+  return b.year - a.year ||
+    String(a.contest || "").localeCompare(String(b.contest || "")) ||
+    Number(b.level || 0) - Number(a.level || 0) ||
+    String(a.form || "").localeCompare(String(b.form || ""));
 }
 
 function examById(examId) {
@@ -274,7 +305,7 @@ function examById(examId) {
 
 function updateDatasetMeta() {
   const text = state.data
-    ? `${state.data.exams.length} 套试卷 / papers · ${state.data.problems.length} 题 / problems · ${state.data.solution_summary?.solution_text_count || 0} 题内嵌解析 / inline solutions`
+    ? `${state.data.exams.length} 套 AMC 试卷 / AMC papers · ${state.problems.length} 道 AMC 题 · ${state.bmoProblems.length} 道 BMO1 题 · ${state.data.solution_summary?.solution_text_count || 0} 题内嵌解析 / inline solutions`
     : "加载中 / Loading...";
   els.entryMeta.textContent = text;
   els.datasetMeta.textContent = text;
@@ -330,6 +361,12 @@ function showPracticeShell() {
   requestAnimationFrame(applyWorkspaceLayout);
 }
 
+function setFilterVisibility({ level = true, form = true, exam = true } = {}) {
+  els.levelFilter.closest("label")?.classList.toggle("is-hidden", !level);
+  els.formFilter.closest("label")?.classList.toggle("is-hidden", !form);
+  els.examFilter.closest("label")?.classList.toggle("is-hidden", !exam);
+}
+
 function showReview() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
@@ -358,6 +395,20 @@ function enterSinglePractice() {
   stopTimer();
   state.mode = "single";
   state.activeExamId = null;
+  initFilters("amc");
+  setFilterVisibility({ level: true, form: true, exam: true });
+  showPracticeShell();
+  applyFilters();
+}
+
+function enterBmoPractice() {
+  stopTimer();
+  state.mode = "bmo";
+  state.activeExamId = null;
+  state.examSubmitted = false;
+  state.solutionStage = "full_calculation";
+  initFilters("bmo");
+  setFilterVisibility({ level: false, form: false, exam: false });
   showPracticeShell();
   applyFilters();
 }
@@ -370,6 +421,7 @@ function enterFullExam() {
   state.activeExamId = examId;
   state.examAnswers = {};
   state.examSubmitted = false;
+  state.examStartedAt = new Date().toISOString();
   state.filtered = state.problems
     .filter((problem) => problem.exam_id === examId)
     .sort((a, b) => a.number - b.number);
@@ -382,6 +434,7 @@ function enterFullExam() {
 }
 
 function inDifficultyRange(problem, range) {
+  if (problem.difficulty_label) return problem.difficulty_label === range;
   const number = Number(problem.number);
   if (!Number.isFinite(number)) return false;
   if (range === "1-10") return number >= 1 && number <= 10;
@@ -432,12 +485,22 @@ function renderPlainText(target, text) {
     .split(/\n{2,}/)
     .map((part) => part.trim())
     .filter((part) => !/^Solution(?:\s+\d+)?$/i.test(part))
+    .filter((part) => !isDiagramOnlyText(part))
     .filter(Boolean);
   for (const part of parts.length ? parts : [text]) {
     const paragraph = document.createElement("p");
     setMathText(paragraph, part);
     target.appendChild(paragraph);
   }
+}
+
+function isDiagramOnlyText(text) {
+  const value = String(text || "").trim();
+  if (!value) return true;
+  if (/^(diagram|figure|image|图示|配图|示意图)\b[:：]?/i.test(value)) return true;
+  if (/^\[?(diagram|figure|image|图示|配图|示意图)\]?$/i.test(value)) return true;
+  if (/<img\b|!\[[^\]]*\]\([^)]*\)/i.test(value)) return true;
+  return false;
 }
 
 function sanitizeHtml(html) {
@@ -475,15 +538,24 @@ function getFilters() {
   };
 }
 
-function initFilters() {
-  const years = uniqueValues(state.problems, (p) => p.year)
+function activeProblemPool() {
+  return state.mode === "bmo" ? state.bmoProblems : state.problems;
+}
+
+function initFilters(mode = state.mode === "bmo" ? "bmo" : "amc") {
+  const pool = mode === "bmo" ? state.bmoProblems : state.problems;
+  const years = uniqueValues(pool, (p) => p.year)
     .sort((a, b) => b - a)
     .map((year) => [String(year), String(year)]);
   const exams = state.data.exams
     .slice()
     .sort(examSort)
     .map((exam) => [exam.id, exam.display_name]);
-  const topics = uniqueValues(state.problems, (p) => p.primary_topic)
+  const fullExamEntries = state.data.exams
+    .slice()
+    .sort(examSort)
+    .map((exam) => [exam.id, exam.display_name]);
+  const topics = uniqueValues(pool, (p) => p.primary_topic)
     .sort((a, b) => topicName(a).localeCompare(topicName(b), "zh-CN"))
     .map((topic) => [topic, topicName(topic)]);
 
@@ -491,36 +563,46 @@ function initFilters() {
   fillSelect(els.levelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试 / All Contests");
   fillSelect(els.formFilter, [["A", "A 卷 / Form A"], ["B", "B 卷 / Form B"]], "全部卷别 / All Forms");
   fillSelect(els.examFilter, exams, "全部试卷 / All Papers");
-  fillExactSelect(els.fullExamSelect, exams);
+  fillExactSelect(els.fullExamSelect, fullExamEntries);
   fillSelect(els.topicFilter, topics, "全部知识点 / All Topics");
-  fillSelect(els.mistakeTopicFilter, topics, "全部知识点 / All Topics");
-  fillSelect(els.mistakeYearFilter, years, "全部年份 / All Years");
-  fillSelect(
-    els.mistakeDifficultyFilter,
-    [
-      ["1-10", "1-10 题 / Problems 1-10"],
-      ["10-18", "10-18 题 / Problems 10-18"],
-      ["19-25", "19-25 题 / Problems 19-25"],
-    ],
-    "全部难度 / All Difficulty"
-  );
-  fillSelect(
-    els.mistakeStatusFilter,
-    [
-      ["priority", "高优先级 / High Priority"],
-      ["wrong_history", "错题历史 / Error History"],
-      ["favorite", "收藏 / Favorite"],
-      ["solution_viewed", "看过解析 / Solution Viewed"],
-    ],
-    "全部状态 / All Status"
-  );
+  if (mode === "amc") {
+    fillSelect(els.mistakeTopicFilter, topics, "全部知识点 / All Topics");
+    fillSelect(els.mistakeYearFilter, years, "全部年份 / All Years");
+    fillSelect(
+      els.mistakeDifficultyFilter,
+      [
+        ["1-10", "1-10 题 / Problems 1-10"],
+        ["10-18", "10-18 题 / Problems 10-18"],
+        ["19-25", "19-25 题 / Problems 19-25"],
+      ],
+      "全部难度 / All Difficulty"
+    );
+    fillSelect(
+      els.mistakeStatusFilter,
+      [
+        ["priority", "高优先级 / High Priority"],
+        ["wrong_history", "错题历史 / Error History"],
+        ["favorite", "收藏 / Favorite"],
+        ["solution_viewed", "看过解析 / Solution Viewed"],
+      ],
+      "全部状态 / All Status"
+    );
+  }
   fillSelect(
     els.difficultyFilter,
-    [
-      ["1-10", "1-10 题 / Problems 1-10"],
-      ["10-18", "10-18 题 / Problems 10-18"],
-      ["19-25", "19-25 题 / Problems 19-25"],
-    ],
+    mode === "bmo"
+      ? [
+        ["基础", "基础 / Foundation"],
+        ["中等", "中等 / Medium"],
+        ["较难", "较难 / Hard"],
+        ["高难", "高难 / Olympiad"],
+        ["未分级", "未分级 / Unrated"],
+      ]
+      : [
+        ["1-10", "1-10 题 / Problems 1-10"],
+        ["10-18", "10-18 题 / Problems 10-18"],
+        ["19-25", "19-25 题 / Problems 19-25"],
+      ],
     "全部难度 / All Difficulty"
   );
 }
@@ -528,11 +610,11 @@ function initFilters() {
 function applyFilters(keepCurrent = false) {
   const previousId = currentProblem()?.id;
   const filters = getFilters();
-  state.filtered = state.problems.filter((problem) => {
+  state.filtered = activeProblemPool().filter((problem) => {
     if (filters.year !== "all" && String(problem.year) !== filters.year) return false;
-    if (filters.level !== "all" && String(problem.level) !== filters.level) return false;
-    if (filters.form !== "all" && problem.form !== filters.form) return false;
-    if (filters.exam !== "all" && problem.exam_id !== filters.exam) return false;
+    if (state.mode !== "bmo" && filters.level !== "all" && String(problem.level) !== filters.level) return false;
+    if (state.mode !== "bmo" && filters.form !== "all" && problem.form !== filters.form) return false;
+    if (state.mode !== "bmo" && filters.exam !== "all" && problem.exam_id !== filters.exam) return false;
     if (filters.topic !== "all" && !problem.topic_tags.includes(filters.topic)) return false;
     if (filters.difficulty !== "all" && !inDifficultyRange(problem, filters.difficulty)) return false;
     if (filters.search) {
@@ -540,6 +622,8 @@ function applyFilters(keepCurrent = false) {
         problem.id,
         problem.display_name,
         problem.number,
+        problem.contest,
+        problem.category,
         problem.primary_topic,
         problem.statement_text,
       ].join(" ").toLowerCase();
@@ -568,6 +652,7 @@ function problemProgress(problem) {
 
 function currentProgress(problem) {
   if (!problem) return null;
+  if (state.mode === "bmo") return null;
   if (state.mode === "exam" && !state.examSubmitted) {
     const answer = state.examAnswers[problem.id];
     return answer ? { choice: answer.choice, pending: true } : null;
@@ -580,6 +665,7 @@ function answerMatches(problem, choice) {
 }
 
 function markSolutionViewed(problem) {
+  if (state.mode === "bmo") return;
   if (!problem || state.mode === "exam" && !state.examSubmitted) return;
   ensureMarks(problem).solutionViewed = true;
   ensureMarks(problem).solutionViewedAt = new Date().toISOString();
@@ -588,6 +674,7 @@ function markSolutionViewed(problem) {
 
 function toggleFavorite() {
   const problem = currentProblem();
+  if (state.mode === "bmo") return;
   if (!problem) return;
   const marks = ensureMarks(problem);
   marks.favorite = !marks.favorite;
@@ -597,6 +684,7 @@ function toggleFavorite() {
 }
 
 function canShowAnswer(progress = null) {
+  if (state.mode === "bmo") return true;
   if (state.mode === "exam") return state.examSubmitted;
   return Boolean(state.revealed || progress);
 }
@@ -617,19 +705,48 @@ function activeSolutionStage(problem) {
 }
 
 function updateSolutionStageButtons(problem, shouldShowAnswer) {
-  const stages = solutionStages(problem);
-  const canChooseStage = Boolean(shouldShowAnswer && stages);
-  els.solutionStageControl.classList.toggle("is-hidden", !canChooseStage);
-  if (!canChooseStage) return;
+  els.solutionStageControl.classList.add("is-hidden");
+}
 
-  const activeStage = activeSolutionStage(problem);
-  els.solutionStageControl.querySelectorAll(".solution-stage-button").forEach((button) => {
-    const stage = button.dataset.stage;
-    const hasText = Boolean(stages[stage]);
-    button.disabled = !hasText;
-    button.classList.toggle("active", stage === activeStage);
-    button.setAttribute("aria-pressed", String(stage === activeStage));
-  });
+function renderAllSolutionStages(problem) {
+  const stages = solutionStages(problem);
+  const orderedStages = [
+    ["idea", "初步思路 / Idea"],
+    ["key_steps", "主要步骤 / Main Steps"],
+    ["full_calculation", "完整计算 / Full Calculation"],
+  ];
+  const hasAnyStage = stages && orderedStages.some(([key]) => String(stages[key] || "").trim());
+  const source = document.createElement("div");
+  source.className = "solution-source-note";
+  source.textContent = `解析来源 / Source: ${problem.solution_source || "本地题库 / Local bank"}`;
+  els.solutionBody.appendChild(source);
+
+  if (!hasAnyStage) {
+    const section = document.createElement("section");
+    section.className = "solution-stage-block";
+    section.innerHTML = "<h4>完整计算 / Full Calculation</h4>";
+    const content = document.createElement("div");
+    content.className = "solution-stage-content";
+    renderPlainText(content, problem.solution_text);
+    section.appendChild(content);
+    els.solutionBody.appendChild(section);
+    return;
+  }
+
+  for (const [key, label] of orderedStages) {
+    const text = String(stages[key] || "").trim();
+    if (!text) continue;
+    const section = document.createElement("section");
+    section.className = "solution-stage-block";
+    const heading = document.createElement("h4");
+    heading.textContent = label;
+    const content = document.createElement("div");
+    content.className = "solution-stage-content";
+    renderPlainText(content, text);
+    section.appendChild(heading);
+    section.appendChild(content);
+    els.solutionBody.appendChild(section);
+  }
 }
 
 function examReport() {
@@ -730,6 +847,7 @@ function submitWholeExam() {
   stopTimer();
   state.examSubmitted = true;
   const submittedAt = new Date().toISOString();
+  const report = examReport();
   for (const problem of state.filtered) {
     const answer = state.examAnswers[problem.id];
     if (!answer?.choice) continue;
@@ -739,12 +857,195 @@ function submitWholeExam() {
       examId: state.activeExamId,
     });
   }
+  recordExamSession(submittedAt, report);
   const current = currentProblem();
   state.selectedChoice = currentProgress(current)?.choice || null;
   state.revealed = true;
   saveProgress();
+  saveExamHistory();
   renderReviewDashboard();
   render();
+}
+
+function problemExportMeta(problem) {
+  const topicTags = problem.topic_tags?.length ? problem.topic_tags : [problem.primary_topic].filter(Boolean);
+  return {
+    id: problem.id,
+    type: problem.type || problem.contest || "AMC",
+    year: problem.year,
+    contest: problem.contest || "",
+    level: problem.level || "",
+    form: problem.form || "",
+    exam_id: problem.exam_id || "",
+    exam_name: problem.display_name || "",
+    problem_number: problem.number,
+    title: `${problem.display_name || problem.exam_id || ""} #${problem.number || ""}`.trim(),
+    primary_topic: problem.primary_topic || "",
+    primary_topic_label: topicName(problem.primary_topic || ""),
+    topic_tags: topicTags,
+    topic_labels: topicTags.map(topicName),
+    difficulty: difficultyRange(problem),
+    difficulty_label: problem.difficulty_label || difficultyRange(problem),
+    difficulty_level: problem.difficulty_level || null,
+    source_url: problem.problem_url || problem.source_url || "",
+    answer_key_url: problem.answer_key_url || "",
+    solution_url: problem.solution_url || "",
+  };
+}
+
+function progressExportRecord(problem, progress) {
+  return {
+    ...problemExportMeta(problem),
+    user_answer: progress.choice || "",
+    correct: progress.correct,
+    correct_label: progress.correct === null ? "ungraded" : progress.correct ? "correct" : "incorrect",
+    attempts: progress.attempts || 0,
+    correct_attempts: progress.correctAttempts || 0,
+    wrong_attempts: progress.wrongAttempts || 0,
+    ever_wrong: Boolean(progress.everWrong),
+    needs_review: Boolean(progress.needsReview),
+    review_correct_streak: progress.reviewCorrectStreak || 0,
+    source: progress.source || "single_practice",
+    exam_id_from_attempt: progress.examId || "",
+    submitted_at: progress.submittedAt || "",
+    official_answer_choice: problem.answer_choice || "",
+    official_answer_value: problem.answer_value || "",
+  };
+}
+
+function summarizeRecords(records, keyGetter) {
+  const stats = new Map();
+  for (const record of records) {
+    const keys = keyGetter(record).filter(Boolean);
+    for (const key of keys) {
+      if (!stats.has(key)) {
+        stats.set(key, { key, total: 0, gradable: 0, correct: 0, incorrect: 0, ungraded: 0, attempts: 0 });
+      }
+      const stat = stats.get(key);
+      stat.total += 1;
+      stat.attempts += record.attempts || 0;
+      if (record.correct === null) {
+        stat.ungraded += 1;
+      } else {
+        stat.gradable += 1;
+        if (record.correct) stat.correct += 1;
+        else stat.incorrect += 1;
+      }
+    }
+  }
+  return [...stats.values()]
+    .map((stat) => ({
+      ...stat,
+      accuracy: stat.gradable ? Number((stat.correct / stat.gradable).toFixed(4)) : null,
+      accuracy_percent: stat.gradable ? `${Math.round((stat.correct / stat.gradable) * 100)}%` : "N/A",
+    }))
+    .sort((a, b) => String(a.key).localeCompare(String(b.key), "zh-CN"));
+}
+
+function recordExamSession(submittedAt, report) {
+  const exam = examById(state.activeExamId);
+  const answers = state.filtered.map((problem) => {
+    const answer = state.examAnswers[problem.id];
+    const correct = answer?.choice
+      ? (answerMatches(problem, answer.choice) || problem.answer_note === "full_credit_all_answers")
+      : null;
+    return {
+      ...problemExportMeta(problem),
+      user_answer: answer?.choice || "",
+      correct,
+      answered_at: answer?.answeredAt || "",
+    };
+  });
+  const session = {
+    id: `exam_${state.activeExamId || "unknown"}_${submittedAt.replace(/[:.]/g, "-")}`,
+    exam_id: state.activeExamId,
+    exam_name: exam?.display_name || state.activeExamId || "",
+    started_at: state.examStartedAt,
+    submitted_at: submittedAt,
+    duration_seconds: FULL_EXAM_SECONDS - state.timerRemaining,
+    time_limit_seconds: FULL_EXAM_SECONDS,
+    score: report.score,
+    total_problems: state.filtered.length,
+    answered_count: state.filtered.length - report.blank.length,
+    correct_count: report.correct.length,
+    incorrect_count: report.incorrect.length,
+    blank_count: report.blank.length,
+    accuracy: state.filtered.length - report.blank.length
+      ? Number((report.correct.length / (state.filtered.length - report.blank.length)).toFixed(4))
+      : null,
+    correct_numbers: report.correct,
+    incorrect_numbers: report.incorrect,
+    blank_numbers: report.blank,
+    topic_stats: report.topicStats.map((stat) => ({
+      topic: stat.tag,
+      topic_label: topicName(stat.tag),
+      total: stat.total,
+      correct: stat.correct,
+      blank: stat.blank,
+      accuracy: stat.total - stat.blank ? Number((stat.correct / (stat.total - stat.blank)).toFixed(4)) : null,
+    })),
+    answers,
+  };
+  state.examHistory.push(session);
+}
+
+function buildStudyExport() {
+  const records = answeredProblems().map(({ problem, progress }) => progressExportRecord(problem, progress));
+  const gradable = records.filter((record) => record.correct !== null);
+  const correct = gradable.filter((record) => record.correct).length;
+  const favoriteRecords = favoriteProblems().map(({ problem, marks }) => ({
+    ...problemExportMeta(problem),
+    favorite_at: marks.favoriteAt || "",
+    solution_viewed_at: marks.solutionViewedAt || "",
+  }));
+
+  return {
+    schema_version: 1,
+    exported_at: new Date().toISOString(),
+    app: "AMC 10/12 + BMO1 Practice Center",
+    storage_keys: {
+      progress: STORAGE_KEY,
+      marks: MARKS_KEY,
+      exam_history: EXAM_HISTORY_KEY,
+    },
+    summary: {
+      attempted_problem_count: records.length,
+      gradable_problem_count: gradable.length,
+      correct_problem_count: correct,
+      incorrect_problem_count: gradable.length - correct,
+      overall_accuracy: gradable.length ? Number((correct / gradable.length).toFixed(4)) : null,
+      total_attempts: records.reduce((sum, record) => sum + (record.attempts || 0), 0),
+      needs_review_count: records.filter((record) => record.needs_review).length,
+      ever_wrong_count: records.filter((record) => record.ever_wrong).length,
+      favorite_count: favoriteRecords.length,
+      exam_session_count: state.examHistory.length,
+    },
+    topic_accuracy: summarizeRecords(records, (record) => record.topic_labels || []),
+    difficulty_accuracy: summarizeRecords(records, (record) => [record.difficulty_label || record.difficulty]),
+    contest_accuracy: summarizeRecords(records, (record) => [record.type]),
+    year_accuracy: summarizeRecords(records, (record) => [String(record.year || "")]),
+    problem_records: records,
+    exam_sessions: state.examHistory,
+    favorites: favoriteRecords,
+  };
+}
+
+function downloadJson(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportStudyRecord() {
+  const payload = buildStudyExport();
+  const stamp = new Date().toISOString().slice(0, 10);
+  downloadJson(`amc-practice-study-record-${stamp}.json`, payload);
 }
 
 function move(delta) {
@@ -849,6 +1150,8 @@ function jumpToProblem(problemId) {
   stopTimer();
   state.mode = "single";
   state.activeExamId = null;
+  initFilters("amc");
+  setFilterVisibility({ level: true, form: true, exam: true });
   showPracticeShell();
   els.yearFilter.value = "all";
   els.levelFilter.value = "all";
@@ -871,6 +1174,13 @@ function jumpToProblem(problemId) {
 
 function statusLabels(problem, progress = null, marks = {}) {
   const labels = [];
+  if (problem.contest === "BMO1") {
+    labels.push(problem.difficulty_label || "未分级 / Unrated");
+    if (problem.answer_status === "official_report_extracted") labels.push("官方报告解析已提取 / Official solution extracted");
+    if (problem.answer_status === "not_found_open_official") labels.push("未找到开放官方答案 / No open official answer found");
+    if (problem.quality?.needs_human_review) labels.push("OCR 待复核 / OCR needs review");
+    return labels;
+  }
   if (!progress) labels.push("未做 / Unattempted");
   if (progress?.correct) labels.push("做对 / Correct");
   if (progress && !progress.correct) labels.push("做错 / Incorrect");
@@ -991,13 +1301,15 @@ function renderStats() {
       .filter(([id]) => visibleIds.has(id))
       .map(([, value]) => value);
   els.statTotal.textContent = String(state.filtered.length);
-  els.statAnswered.textContent = String(visibleProgress.length);
-  els.statCorrect.textContent = state.mode === "exam" && !state.examSubmitted
+  els.statAnswered.textContent = state.mode === "bmo" ? "-" : String(visibleProgress.length);
+  els.statCorrect.textContent = state.mode === "bmo" ? "-" : state.mode === "exam" && !state.examSubmitted
     ? "-"
     : String(visibleProgress.filter((item) => item.correct).length);
   if (state.mode === "exam") {
     const exam = examById(state.activeExamId);
     els.datasetMeta.textContent = exam ? `全卷练习 / Full Mock · ${exam.display_name} · 75 分钟 / 75 min` : "全卷练习 / Full Mock";
+  } else if (state.mode === "bmo") {
+    els.datasetMeta.textContent = `BMO1 训练 / BMO Practice · ${state.bmoProblems.length} 题 · 答案区直接显示来源状态`;
   } else {
     updateDatasetMeta();
   }
@@ -1029,7 +1341,11 @@ function renderList() {
     if (progress?.needsReview) button.classList.add("needs-review");
     if (marks.favorite) button.classList.add("favorite");
     if (marks.solutionViewed) button.classList.add("solution-viewed");
-    button.textContent = state.mode === "exam" ? `#${problem.number}` : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
+    button.textContent = state.mode === "exam"
+      ? `#${problem.number}`
+      : state.mode === "bmo"
+        ? `${problem.year} #${problem.number || "?"}`
+        : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
     button.title = `${problem.display_name} #${problem.number}`;
     button.addEventListener("click", () => {
       state.currentIndex = index;
@@ -1064,13 +1380,19 @@ function renderProblem() {
   }
 
   els.problemKicker.textContent = `${problem.display_name} · ${topicName(problem.primary_topic)}`;
-  els.problemTitle.textContent = `Problem ${problem.number} / 第 ${problem.number} 题`;
+  els.problemTitle.textContent = state.mode === "bmo"
+    ? `BMO1 Problem ${problem.number || "?"} / ${problem.difficulty_label || "未分级"}`
+    : `Problem ${problem.number} / 第 ${problem.number} 题`;
   els.statement.innerHTML = sanitizeHtml(problem.statement_html || `<p>${problem.statement_text}</p>`);
   renderChoices(problem, progress);
   setAnswerPanel(problem, progress);
   els.prevProblem.disabled = state.currentIndex === 0;
   els.nextProblem.disabled = state.currentIndex === state.filtered.length - 1;
   els.submitAnswer.textContent = state.mode === "exam" && !state.examSubmitted ? "保存本题 / Save" : "提交 / Submit";
+  els.submitAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.revealAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.clearAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.favoriteProblem.classList.toggle("is-hidden", state.mode === "bmo");
   els.submitAnswer.disabled = state.mode === "exam" && state.examSubmitted;
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
   els.clearAnswer.disabled = state.mode === "exam" && state.examSubmitted;
@@ -1083,6 +1405,13 @@ function renderProblem() {
 function renderChoices(problem, progress) {
   els.choicePanel.innerHTML = "";
   const choices = problem.choices || {};
+  if (problem.answer_mode === "free_response" || !Object.keys(choices).length) {
+    const note = document.createElement("div");
+    note.className = "empty";
+    note.textContent = "BMO 题为证明/解答题，不需要选择选项。 / BMO problems are proof-response questions; no choices are needed.";
+    els.choicePanel.appendChild(note);
+    return;
+  }
   for (const letter of ["A", "B", "C", "D", "E"]) {
     const button = document.createElement("button");
     button.type = "button";
@@ -1113,7 +1442,12 @@ function setAnswerPanel(problem, progress = null) {
     return;
   }
 
-  if (state.mode === "exam" && !state.examSubmitted) {
+  if (state.mode === "bmo") {
+    els.answerStatus.textContent = problem.answer_status === "official_report_extracted"
+      ? "官方报告解析已提取 / Official solution extracted"
+      : "未找到开放官方答案 / No open official answer found";
+    els.answerStatus.classList.add(problem.answer_status === "official_report_extracted" ? "good" : "warn");
+  } else if (state.mode === "exam" && !state.examSubmitted) {
     if (progress?.pending) {
       els.answerStatus.textContent = "已记录本题 / Saved";
       els.answerStatus.classList.add("warn");
@@ -1156,6 +1490,13 @@ function setAnswerPanel(problem, progress = null) {
       note.textContent = `备注 / Note: ${formatAnswerNote(problem.answer_note)}`;
       els.answerDetail.appendChild(note);
     }
+    if (state.mode === "bmo" && !problem.answer_value) {
+      const note = document.createElement("span");
+      note.textContent = problem.answer_status === "official_report_extracted"
+        ? "官方报告解析已在下方分阶段显示。 / The official report solution is staged below."
+        : "这道题暂未采集到开放官方答案。 / No open official answer has been collected for this problem.";
+      els.answerDetail.appendChild(note);
+    }
   }
 
   const marks = problemMarks(problem);
@@ -1182,15 +1523,19 @@ function setAnswerPanel(problem, progress = null) {
       : "提交答案后会自动显示解析；作答前也可以点击“看答案/解析”。 / The solution appears after submission; you may also reveal it before answering.";
     els.solutionBody.appendChild(prompt);
   } else if (problem.solution_text) {
-    const source = document.createElement("div");
-    source.className = "solution-source-note";
-    const stage = activeSolutionStage(problem);
-    source.textContent = `解析来源 / Source: ${problem.solution_source || "本地题库 / Local bank"} · ${solutionStageLabels[stage] || "解析 / Solution"}`;
-    els.solutionBody.appendChild(source);
-    const content = document.createElement("div");
-    content.className = "solution-stage-content";
-    renderPlainText(content, solutionStages(problem)[stage] || problem.solution_text);
-    els.solutionBody.appendChild(content);
+    renderAllSolutionStages(problem);
+  } else if (state.mode === "bmo") {
+    const note = document.createElement("p");
+    note.textContent = problem.solution_text
+      ? "下方显示已采集解析。 / Collected solution is shown below."
+      : "这道 BMO 题暂未采集到可直接显示的答案或解析；可通过来源链接查看原始试卷/官方页面。 / No directly displayable answer or solution has been collected yet; use the source links for the original paper or official page.";
+    els.solutionBody.appendChild(note);
+    if (problem.solution_text) {
+      const content = document.createElement("div");
+      content.className = "solution-stage-content";
+      renderPlainText(content, problem.solution_text);
+      els.solutionBody.appendChild(content);
+    }
   } else {
     const note = document.createElement("p");
     note.textContent = "这道题的内嵌解析还未采集，先使用 AoPS 解析页。 / Inline solution is not available yet; please use the AoPS solution page.";
@@ -1264,6 +1609,9 @@ function formatAnswerNote(note) {
     multiple_accepted: "多个答案被接受 / Multiple answers accepted",
     no_official_choice_correct: "官方选项无正确答案 / No official choice is correct",
     full_credit_all_answers: "原题有误，所有答案给满分 / Flawed problem; all answers receive full credit",
+    official_report_available: "官方报告可用 / Official report available",
+    official_report_extracted: "官方报告解析已提取 / Official solution extracted",
+    not_found_open_official: "未找到开放官方答案 / No open official answer found",
   };
   return notes[note] || note;
 }
@@ -1358,9 +1706,67 @@ function bindWorkspaceResize() {
   });
 }
 
-async function loadProblemBank() {
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function textToHtml(value) {
+  return `<p>${escapeHtml(value).replace(/\n/g, "<br />")}</p>`;
+}
+
+function normalizeBmoProblem(item) {
+  const number = Number(item.problem_number) || null;
+  const source = item.source || {};
+  const answerText = item.answer || "";
+  const solutionText = item.solution || "";
+  const answerStatus = item.answer_status || "not_found_open_official";
+  return {
+    id: item.id,
+    contest: "BMO1",
+    type: "BMO1",
+    year: item.year,
+    year_label: item.year_label || String(item.year),
+    level: "BMO1",
+    form: "",
+    exam_id: `BMO1-${item.year_label || item.year}`,
+    display_name: `BMO1 ${item.year_label || item.year}`,
+    number,
+    category: item.category || "",
+    primary_topic: item.topic || item.category || "BMO1",
+    topic_tags: [item.topic, item.category].filter(Boolean),
+    difficulty_label: item.difficulty || "未分级",
+    difficulty_level: item.difficulty_level || null,
+    statement_text: item.statement || "",
+    statement_html: textToHtml(item.statement || ""),
+    choices: {},
+    answer_mode: "free_response",
+    answer_choice: "",
+    answer_value: answerText,
+    answer_note: answerStatus,
+    answer_choices_accepted: [],
+    solution_text: solutionText || answerText || "",
+    solution_stages: item.solution_stages || (solutionText ? {
+      idea: solutionText,
+      key_steps: solutionText,
+      full_calculation: solutionText,
+    } : null),
+    solution_source: item.solution_source || (answerStatus === "official_report_extracted" ? "BMOS/UKMT official markers' report" : "BMO import status"),
+    problem_url: source.paper_url || source.official_index || "#",
+    answer_key_url: source.solution_url || source.official_index || source.paper_url || "#",
+    solution_url: source.solution_url || source.official_index || source.paper_url || "#",
+    quality: item.quality || {},
+    answer_status: answerStatus,
+  };
+}
+
+async function loadJsonFrom(urls) {
   const errors = [];
-  for (const url of DATA_URLS) {
+  for (const url of urls) {
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
@@ -1372,17 +1778,34 @@ async function loadProblemBank() {
   throw new Error(errors.join("；"));
 }
 
+async function loadProblemBank() {
+  return loadJsonFrom(AMC_DATA_URLS);
+}
+
+async function loadBmoBank() {
+  try {
+    const data = await loadJsonFrom(BMO_DATA_URLS);
+    return Array.isArray(data) ? data.map(normalizeBmoProblem) : [];
+  } catch (error) {
+    console.warn("BMO problem bank failed to load; AMC practice will continue.", error);
+    return [];
+  }
+}
+
 function bindEvents() {
   els.singlePracticeMode.addEventListener("click", enterSinglePractice);
+  els.bmoPracticeMode.addEventListener("click", enterBmoPractice);
   els.startFullExam.addEventListener("click", enterFullExam);
   els.reviewMode.addEventListener("click", showReview);
   els.aboutMode.addEventListener("click", showAbout);
+  els.exportReportMode.addEventListener("click", exportStudyRecord);
   els.backToEntry.addEventListener("click", showEntry);
   els.openReview.addEventListener("click", showReview);
   els.openAbout.addEventListener("click", showAbout);
   els.reviewToPractice.addEventListener("click", continuePracticeFromReview);
   els.reviewToAbout.addEventListener("click", showAbout);
   els.reviewToEntry.addEventListener("click", showEntry);
+  els.exportStudyRecord.addEventListener("click", exportStudyRecord);
   els.aboutToPractice.addEventListener("click", enterSinglePractice);
   els.aboutToEntry.addEventListener("click", showEntry);
   [els.mistakeTopicFilter, els.mistakeYearFilter, els.mistakeDifficultyFilter, els.mistakeStatusFilter].forEach((select) => {
@@ -1422,15 +1845,22 @@ async function init() {
   bindEvents();
   bindWorkspaceResize();
   try {
-    state.data = await loadProblemBank();
+    const [amcData, bmoProblems] = await Promise.all([loadProblemBank(), loadBmoBank()]);
+    state.data = amcData;
     state.problems = state.data.problems.slice().sort((a, b) => (
       b.year - a.year ||
       a.level - b.level ||
       a.form.localeCompare(b.form) ||
       a.number - b.number
     ));
+    state.bmoProblems = bmoProblems.slice().sort((a, b) => (
+      b.year - a.year ||
+      String(a.primary_topic).localeCompare(String(b.primary_topic), "zh-CN") ||
+      Number(a.number || 999) - Number(b.number || 999)
+    ));
     normalizeStoredProgress();
-    initFilters();
+    initFilters("amc");
+    setFilterVisibility({ level: true, form: true, exam: true });
     updateDatasetMeta();
     showEntry();
   } catch (error) {
