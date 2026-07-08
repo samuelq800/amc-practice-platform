@@ -43,13 +43,13 @@
         </div>
 
         <div class="mode-grid">
-          <section class="auth-card" aria-label="账号登录 / Account access">
+          <section class="auth-card shared-session-card" aria-label="共享账号状态 / Shared account status">
             <div>
               <span class="eyebrow">账号 / Account</span>
-              <h2 id="authTitle">登录后同步练习记录<br />Sign in to sync progress</h2>
-              <p id="authStatusText">未登录时可继续使用游客模式，记录只保存在本机。<br />Guest mode keeps records on this device only.</p>
+              <h2 id="authTitle">共享登录状态<br />Shared Login Session</h2>
+              <p id="authStatusText">请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。<br />Sign in from the main SZZX contest entrance; this page will reuse the same Supabase session.</p>
             </div>
-            <div id="authGuestPanel" class="auth-actions">
+            <div id="authGuestPanel" class="auth-actions is-hidden">
               <button id="openLogin" type="button">登录 / Login</button>
               <button id="openSignup" type="button">注册 / Sign up</button>
               <button id="continueGuest" type="button">游客模式 / Continue as Guest</button>

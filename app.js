@@ -307,22 +307,21 @@ function renderAuthState() {
   [els.userBadge, els.topUserBadge, els.reviewUserBadge].forEach((node) => {
     if (node) node.textContent = label;
   });
-  els.authGuestPanel.classList.toggle("is-hidden", loggedIn);
+  els.authGuestPanel.classList.add("is-hidden");
   els.authUserPanel.classList.toggle("is-hidden", !loggedIn);
   els.topLogoutButton.classList.toggle("is-hidden", !loggedIn);
-  const showAdmin = loggedIn && isAdmin();
   [els.adminDashboardButton, els.topAdminDashboardButton, els.reviewAdminDashboardButton].forEach((button) => {
-    if (button) button.classList.toggle("is-hidden", !showAdmin);
+    if (button) button.classList.add("is-hidden");
   });
   if (loggedIn) {
     els.authTitle.innerHTML = "云端账号已连接<br />Cloud account connected";
     els.authStatusText.textContent = state.cloudStatus || "练习记录和收藏会同步到 Supabase。 / Attempts and favorites sync to Supabase.";
   } else if (state.authMode === "guest") {
     els.authTitle.innerHTML = "游客模式<br />Guest Mode";
-    els.authStatusText.textContent = "当前记录只保存在本机浏览器。登录后可切换到云端同步。 / Records stay in this browser only. Sign in to use cloud sync.";
+    els.authStatusText.textContent = "请从主入口登录；当前记录只保存在本机浏览器。 / Sign in from the main entrance; records stay in this browser only.";
   } else {
-    els.authTitle.innerHTML = "登录后同步练习记录<br />Sign in to sync progress";
-    els.authStatusText.textContent = "未登录时可继续使用游客模式，记录只保存在本机。 / Guest mode keeps records on this device only.";
+    els.authTitle.innerHTML = "共享登录状态<br />Shared Login Session";
+    els.authStatusText.textContent = "请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。 / Sign in from the main entrance; this page reuses the same Supabase session.";
   }
 }
 
@@ -526,6 +525,11 @@ function attemptPayload(problem, progress, extra = {}) {
     is_correct: Boolean(progress.correct),
     time_spent_seconds: Number.isFinite(extra.timeSpentSeconds) ? extra.timeSpentSeconds : null,
     mode: extra.source || progress.source || (state.mode === "exam" ? "full_exam" : "single"),
+    // TODO: When the BMO mode stores a distinct internal contest marker, map it to "BMO".
+    // Current AMC records default to "AMC" so existing AMC practice remains stable.
+    contest_type: problem.type === "BMO" || problem.contest_type === "BMO" ? "BMO" : "AMC",
+    platform: "amc-practice-platform",
+    source_url: window.location.href,
     submitted_at: progress.submittedAt || new Date().toISOString(),
   };
 }
