@@ -147,7 +147,7 @@ a:hover {
   height: 210px;
   border: 1px solid rgba(0, 107, 67, 0.08);
   border-radius: 50%;
-  background: url("./assets/school-logo.jpg") center / cover no-repeat;
+  background: url("./school-logo.jpg") center / cover no-repeat;
   content: "";
   opacity: 0.05;
   pointer-events: none;
@@ -241,6 +241,113 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.auth-card {
+  grid-column: 1 / -1;
+  padding: 18px;
+  border: 1px solid rgba(0, 107, 67, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.auth-card h2 {
+  margin: 4px 0 6px;
+  font-size: 22px;
+  line-height: 1.12;
+}
+
+.auth-card p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.auth-actions,
+.auth-user-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.auth-form {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.auth-form label,
+.admin-filters label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.auth-form input,
+.admin-filters input,
+.admin-filters select {
+  min-height: 38px;
+  padding: 0 10px;
+}
+
+.auth-message {
+  grid-column: 1 / -1;
+  min-height: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.auth-message.good {
+  color: var(--good);
+}
+
+.auth-message.bad {
+  color: var(--bad);
+}
+
+.auth-message.warn {
+  color: var(--warn);
+}
+
+.user-status,
+#userBadge {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--accent-strong);
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.user-status {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+#userBadge {
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mode-card {
@@ -384,7 +491,9 @@ a:hover {
 }
 
 .review-screen,
-.about-screen {
+.about-screen,
+.admin-screen,
+.assignment-screen {
   height: 100vh;
   padding: 16px;
   display: flex;
@@ -399,6 +508,201 @@ a:hover {
   overflow: auto;
   display: grid;
   gap: 14px;
+}
+
+.admin-page {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+}
+
+.assignment-page {
+  width: min(1120px, 100%);
+  flex: 1;
+  min-height: 0;
+  margin: 0 auto;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 4px 0 18px;
+}
+
+.assignment-intro,
+.assignment-card,
+.assignment-empty {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.assignment-intro {
+  padding: 22px;
+}
+
+.assignment-intro h2,
+.assignment-card h3 {
+  margin: 6px 0 0;
+  letter-spacing: 0;
+}
+
+.assignment-intro h2 {
+  font-size: 28px;
+}
+
+.assignment-intro p,
+.assignment-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.assignment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.assignment-card {
+  min-height: 168px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.assignment-card-copy {
+  min-width: 0;
+}
+
+.assignment-card h3 {
+  font-size: 21px;
+}
+
+.assignment-card > button {
+  min-width: 150px;
+  color: #fff;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.assignment-card > button:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  border-color: var(--line);
+  background: var(--panel-soft);
+  box-shadow: none;
+  transform: none;
+}
+
+.assignment-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.assignment-meta-row span {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.assignment-problems {
+  font-size: 13px;
+}
+
+.assignment-empty {
+  padding: 24px;
+  color: var(--muted);
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-summary div,
+.admin-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-summary div {
+  min-height: 86px;
+  padding: 14px;
+  display: grid;
+  align-content: center;
+}
+
+.admin-summary span {
+  color: var(--accent-strong);
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.admin-summary small {
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.admin-panel {
+  min-width: 0;
+  padding: 16px;
+}
+
+.admin-filters {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.table-wrap {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.admin-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel-soft);
+  color: var(--accent-strong);
+  font-weight: 900;
 }
 
 .about-hero {
@@ -1429,6 +1733,15 @@ body.is-resizing {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .admin-summary,
+  .admin-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
   .about-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1478,14 +1791,18 @@ body.is-resizing {
   }
 
   .review-screen,
-  .about-screen {
+  .about-screen,
+  .admin-screen,
+  .assignment-screen {
     height: auto;
     min-height: 100vh;
     overflow: visible;
     padding: 10px;
   }
 
-  .about-page {
+  .about-page,
+  .admin-page,
+  .assignment-page {
     overflow: visible;
   }
 
@@ -1502,11 +1819,25 @@ body.is-resizing {
     min-height: auto;
   }
 
+  .assignment-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .assignment-card > button {
+    width: 100%;
+  }
+
   .review-summary {
     grid-template-columns: 1fr;
   }
 
   .review-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-summary,
+  .admin-filters {
     grid-template-columns: 1fr;
   }
 
@@ -1568,6 +1899,16 @@ body.is-resizing {
 
   .mode-grid {
     grid-template-columns: 1fr;
+  }
+
+  .auth-card,
+  .auth-form {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-actions,
+  .auth-user-panel {
+    justify-content: flex-start;
   }
 
   .mode-card {
@@ -1763,6 +2104,8 @@ a:focus-visible {
 .entry-screen,
 .review-screen,
 .about-screen,
+.admin-screen,
+.assignment-screen,
 .app-shell {
   background:
     linear-gradient(135deg, rgba(6, 78, 59, 0.06), transparent 34%),
@@ -1778,8 +2121,14 @@ a:focus-visible {
 .problem-pane,
 .solution-pane,
 .review-panel,
+.admin-panel,
+.admin-summary div,
 .about-card,
-.mode-card {
+.assignment-intro,
+.assignment-card,
+.assignment-empty,
+.mode-card,
+.auth-card {
   border-color: rgba(6, 78, 59, 0.14);
   background:
     linear-gradient(180deg, rgba(255, 253, 248, 0.97), rgba(249, 250, 246, 0.96)),

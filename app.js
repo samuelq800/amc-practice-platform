@@ -4,6 +4,14 @@ const MARKS_KEY = "amc-practice-marks-v1";
 const LAYOUT_KEY = "amc-practice-layout-v1";
 const FULL_EXAM_SECONDS = 75 * 60;
 
+const SUPABASE_URL = "https://bwlcnaruyjazaxyiiumd.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_bGhQso88Ml6VEpX4reo8QQ_VjwL7yND";
+
+// The Supabase anon/publishable key is safe in frontend code only when Row Level Security
+// policies are enabled and correctly scoped. Never put a service_role key, database password,
+// JWT secret, or hard-coded admin password in this static GitHub Pages app.
+const CLOUD_ENABLED = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
+
 const weeklyRecommendationIds = [
   "2025_AMC_10A_10",
   "2025_AMC_12A_15",
@@ -30,7 +38,36 @@ const els = {
   entryScreen: document.querySelector("#entryScreen"),
   practiceShell: document.querySelector("#practiceShell"),
   entryMeta: document.querySelector("#entryMeta"),
+  authTitle: document.querySelector("#authTitle"),
+  authStatusText: document.querySelector("#authStatusText"),
+  authGuestPanel: document.querySelector("#authGuestPanel"),
+  authUserPanel: document.querySelector("#authUserPanel"),
+  authForm: document.querySelector("#authForm"),
+  authEmail: document.querySelector("#authEmail"),
+  authPassword: document.querySelector("#authPassword"),
+  authSubmit: document.querySelector("#authSubmit"),
+  authCancel: document.querySelector("#authCancel"),
+  authMessage: document.querySelector("#authMessage"),
+  openLogin: document.querySelector("#openLogin"),
+  openSignup: document.querySelector("#openSignup"),
+  continueGuest: document.querySelector("#continueGuest"),
+  userBadge: document.querySelector("#userBadge"),
+  topUserBadge: document.querySelector("#topUserBadge"),
+  reviewUserBadge: document.querySelector("#reviewUserBadge"),
+  logoutButton: document.querySelector("#logoutButton"),
+  topLogoutButton: document.querySelector("#topLogoutButton"),
+  adminDashboardButton: document.querySelector("#adminDashboardButton"),
+  topAdminDashboardButton: document.querySelector("#topAdminDashboardButton"),
+  reviewAdminDashboardButton: document.querySelector("#reviewAdminDashboardButton"),
   singlePracticeMode: document.querySelector("#singlePracticeMode"),
+  assignedPracticeCard: document.querySelector("#assignedPracticeCard"),
+  assignedPracticeMode: document.querySelector("#assignedPracticeMode"),
+  assignmentScreen: document.querySelector("#assignmentScreen"),
+  assignmentMeta: document.querySelector("#assignmentMeta"),
+  assignmentUserBadge: document.querySelector("#assignmentUserBadge"),
+  assignmentList: document.querySelector("#assignmentList"),
+  assignmentRefresh: document.querySelector("#assignmentRefresh"),
+  assignmentToEntry: document.querySelector("#assignmentToEntry"),
   fullExamSelect: document.querySelector("#fullExamSelect"),
   startFullExam: document.querySelector("#startFullExam"),
   reviewMode: document.querySelector("#reviewMode"),
@@ -38,6 +75,29 @@ const els = {
   aboutScreen: document.querySelector("#aboutScreen"),
   aboutToPractice: document.querySelector("#aboutToPractice"),
   aboutToEntry: document.querySelector("#aboutToEntry"),
+  adminScreen: document.querySelector("#adminScreen"),
+  adminMeta: document.querySelector("#adminMeta"),
+  adminRefresh: document.querySelector("#adminRefresh"),
+  adminExportCsv: document.querySelector("#adminExportCsv"),
+  adminToPractice: document.querySelector("#adminToPractice"),
+  adminToEntry: document.querySelector("#adminToEntry"),
+  adminTotalStudents: document.querySelector("#adminTotalStudents"),
+  adminTotalAttempts: document.querySelector("#adminTotalAttempts"),
+  adminAverageAccuracy: document.querySelector("#adminAverageAccuracy"),
+  adminActiveUsers: document.querySelector("#adminActiveUsers"),
+  adminStudentFilter: document.querySelector("#adminStudentFilter"),
+  adminYearFilter: document.querySelector("#adminYearFilter"),
+  adminLevelFilter: document.querySelector("#adminLevelFilter"),
+  adminTopicFilter: document.querySelector("#adminTopicFilter"),
+  adminDifficultyFilter: document.querySelector("#adminDifficultyFilter"),
+  adminDateFrom: document.querySelector("#adminDateFrom"),
+  adminDateTo: document.querySelector("#adminDateTo"),
+  adminStudentTitle: document.querySelector("#adminStudentTitle"),
+  adminStudentRows: document.querySelector("#adminStudentRows"),
+  adminProblemTitle: document.querySelector("#adminProblemTitle"),
+  adminProblemRows: document.querySelector("#adminProblemRows"),
+  adminRecentTitle: document.querySelector("#adminRecentTitle"),
+  adminRecentList: document.querySelector("#adminRecentList"),
   reviewScreen: document.querySelector("#reviewScreen"),
   reviewMeta: document.querySelector("#reviewMeta"),
   reviewTotal: document.querySelector("#reviewTotal"),
@@ -120,6 +180,8 @@ const state = {
   solutionStage: "idea",
   mode: "entry",
   activeExamId: null,
+  activeAssignmentId: null,
+  assignments: [],
   examAnswers: {},
   examSubmitted: false,
   timerRemaining: FULL_EXAM_SECONDS,
@@ -127,6 +189,16 @@ const state = {
   progress: loadProgress(),
   marks: loadMarks(),
   layout: loadLayout(),
+  supabase: null,
+  authMode: "guest",
+  authAction: "login",
+  user: null,
+  profile: null,
+  cloudReady: false,
+  cloudStatus: "",
+  cloudAttempts: [],
+  cloudFavorites: [],
+  adminData: { profiles: [], attempts: [] },
 };
 
 function loadProgress() {
@@ -167,6 +239,358 @@ function saveMarks() {
 
 function saveLayout() {
   localStorage.setItem(LAYOUT_KEY, JSON.stringify(state.layout));
+}
+
+function cloudClient() {
+  if (state.supabase) return state.supabase;
+  if (!CLOUD_ENABLED || !window.supabase?.createClient) return null;
+  state.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  });
+  return state.supabase;
+}
+
+function isLoggedIn() {
+  return Boolean(state.user);
+}
+
+function isAdmin() {
+  return state.profile?.role === "admin";
+}
+
+function isMathClubMember() {
+  return state.profile?.role === "mathclubmembers";
+}
+
+function displayName() {
+  return state.profile?.display_name || state.user?.email || "Guest";
+}
+
+function setAuthMessage(message = "", tone = "") {
+  if (!els.authMessage) return;
+  els.authMessage.textContent = message;
+  els.authMessage.className = `auth-message ${tone}`.trim();
+}
+
+function setCloudStatus(message = "") {
+  state.cloudStatus = message;
+  renderAuthState();
+}
+
+function openAuthForm(action) {
+  state.authAction = action;
+  els.authForm.classList.remove("is-hidden");
+  els.authSubmit.textContent = action === "signup" ? "注册 / Sign up" : "登录 / Login";
+  setAuthMessage(action === "signup" ? "创建账号后练习记录会同步到云端。 / Records sync after sign-up." : "登录后会加载你的云端记录。 / Cloud records load after login.");
+  els.authEmail.focus();
+}
+
+function closeAuthForm() {
+  els.authForm.classList.add("is-hidden");
+  els.authPassword.value = "";
+  setAuthMessage("");
+}
+
+function enterGuestMode() {
+  state.authMode = "guest";
+  state.user = null;
+  state.profile = null;
+  state.cloudReady = false;
+  state.cloudAttempts = [];
+  state.cloudFavorites = [];
+  state.assignments = [];
+  state.progress = loadProgress();
+  state.marks = loadMarks();
+  normalizeStoredProgress();
+  renderAuthState();
+  renderReviewDashboard();
+  render();
+}
+
+function renderAuthState() {
+  const loggedIn = isLoggedIn();
+  const roleLabel = loggedIn ? (isAdmin() ? "admin" : isMathClubMember() ? "mathclubmembers" : "student") : "guest";
+  const label = loggedIn
+    ? `${displayName()} · ${roleLabel}`
+    : state.authMode === "guest"
+      ? "Guest · 本机记录"
+      : "未登录 / Not signed in";
+  [els.userBadge, els.topUserBadge, els.reviewUserBadge, els.assignmentUserBadge].forEach((node) => {
+    if (node) node.textContent = label;
+  });
+  els.assignedPracticeCard.classList.toggle("is-hidden", !isMathClubMember());
+  els.authGuestPanel.classList.add("is-hidden");
+  els.authUserPanel.classList.toggle("is-hidden", !loggedIn);
+  els.topLogoutButton.classList.toggle("is-hidden", !loggedIn);
+  [els.adminDashboardButton, els.topAdminDashboardButton, els.reviewAdminDashboardButton].forEach((button) => {
+    if (button) button.classList.add("is-hidden");
+  });
+  if (loggedIn) {
+    els.authTitle.innerHTML = "云端账号已连接<br />Cloud account connected";
+    els.authStatusText.textContent = state.cloudStatus || "练习记录和收藏会同步到 Supabase。 / Attempts and favorites sync to Supabase.";
+  } else if (state.authMode === "guest") {
+    els.authTitle.innerHTML = "游客模式<br />Guest Mode";
+    els.authStatusText.textContent = "请从主入口登录；当前记录只保存在本机浏览器。 / Sign in from the main entrance; records stay in this browser only.";
+  } else {
+    els.authTitle.innerHTML = "共享登录状态<br />Shared Login Session";
+    els.authStatusText.textContent = "请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。 / Sign in from the main entrance; this page reuses the same Supabase session.";
+  }
+}
+
+async function ensureProfile(user) {
+  const client = cloudClient();
+  if (!client || !user) return null;
+  const { data, error } = await client
+    .from("profiles")
+    .select("id,email,display_name,role,created_at")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) throw error;
+  if (data) return data;
+
+  const profile = {
+    id: user.id,
+    email: user.email,
+    display_name: user.email?.split("@")[0] || "Student",
+    role: "student",
+  };
+  const { data: inserted, error: insertError } = await client
+    .from("profiles")
+    .insert(profile)
+    .select("id,email,display_name,role,created_at")
+    .single();
+  if (insertError) return profile;
+  return inserted;
+}
+
+function problemById(problemId) {
+  return state.problems.find((problem) => problem.id === problemId) || null;
+}
+
+function attemptToProgress(problem, attempts) {
+  const sorted = attempts.slice().sort((a, b) => String(a.submitted_at || "").localeCompare(String(b.submitted_at || "")));
+  let aggregate = {};
+  for (const attempt of sorted) {
+    const correct = Boolean(attempt.is_correct);
+    const previous = aggregate;
+    const wrongAttempts = (previous.wrongAttempts || 0) + (correct ? 0 : 1);
+    const correctAttempts = (previous.correctAttempts || 0) + (correct ? 1 : 0);
+    const reviewCorrectStreak = correct
+      ? (previous.needsReview || previous.everWrong ? (previous.reviewCorrectStreak || 0) + 1 : previous.reviewCorrectStreak || 0)
+      : 0;
+    aggregate = {
+      ...previous,
+      choice: attempt.selected_answer,
+      correct,
+      submittedAt: attempt.submitted_at,
+      attempts: (previous.attempts || 0) + 1,
+      wrongAttempts,
+      correctAttempts,
+      everWrong: Boolean(previous.everWrong || !correct),
+      needsReview: correct ? reviewCorrectStreak < 2 && Boolean(previous.everWrong || previous.needsReview) : true,
+      reviewCorrectStreak,
+      source: attempt.mode,
+      examId: attempt.exam_id,
+    };
+  }
+  return problem && aggregate.choice ? aggregate : null;
+}
+
+function mergeCloudAttemptsIntoProgress(attempts) {
+  const grouped = new Map();
+  for (const attempt of attempts || []) {
+    if (!attempt.problem_id) continue;
+    if (!grouped.has(attempt.problem_id)) grouped.set(attempt.problem_id, []);
+    grouped.get(attempt.problem_id).push(attempt);
+  }
+  const next = {};
+  for (const [problemId, records] of grouped.entries()) {
+    const problem = problemById(problemId);
+    const progress = attemptToProgress(problem, records);
+    if (progress) next[problemId] = progress;
+  }
+  state.progress = next;
+  saveProgress();
+}
+
+function mergeCloudFavoritesIntoMarks(favorites) {
+  const next = { ...state.marks };
+  for (const mark of Object.values(next)) {
+    if (mark) mark.favorite = false;
+  }
+  for (const favorite of favorites || []) {
+    if (!favorite.problem_id) continue;
+    next[favorite.problem_id] = {
+      ...(next[favorite.problem_id] || {}),
+      favorite: true,
+      favoriteAt: favorite.created_at || new Date().toISOString(),
+    };
+  }
+  state.marks = next;
+  saveMarks();
+}
+
+async function loadCloudState() {
+  const client = cloudClient();
+  if (!client || !state.user) return;
+  setCloudStatus("正在加载云端记录... / Loading cloud records...");
+  const [attemptsResult, favoritesResult] = await Promise.all([
+    client
+      .from("attempts")
+      .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
+      .eq("user_id", state.user.id)
+      .order("submitted_at", { ascending: true }),
+    client
+      .from("favorites")
+      .select("id,user_id,problem_id,created_at")
+      .eq("user_id", state.user.id)
+      .order("created_at", { ascending: true }),
+  ]);
+  if (attemptsResult.error) throw attemptsResult.error;
+  if (favoritesResult.error) throw favoritesResult.error;
+  state.cloudAttempts = attemptsResult.data || [];
+  state.cloudFavorites = favoritesResult.data || [];
+  mergeCloudAttemptsIntoProgress(state.cloudAttempts);
+  mergeCloudFavoritesIntoMarks(state.cloudFavorites);
+  state.cloudReady = true;
+  setCloudStatus(`已同步 ${state.cloudAttempts.length} 条云端作答记录，${state.cloudFavorites.length} 个收藏。 / Synced ${state.cloudAttempts.length} attempts and ${state.cloudFavorites.length} favorites.`);
+}
+
+async function applySession(session) {
+  state.user = session?.user || null;
+  state.authMode = state.user ? "cloud" : "guest";
+  state.profile = null;
+  if (!state.user) {
+    state.assignments = [];
+    renderAuthState();
+    return;
+  }
+  try {
+    state.profile = await ensureProfile(state.user);
+    renderAuthState();
+    await loadCloudState();
+    await loadAssignedAssignments();
+    renderReviewDashboard();
+    render();
+  } catch (error) {
+    state.cloudReady = false;
+    setCloudStatus(`云端连接失败，已保留本机记录。 / Cloud unavailable; local fallback active. ${error.message}`);
+  }
+}
+
+async function initAuth() {
+  const client = cloudClient();
+  if (!client) {
+    state.authMode = "guest";
+    setCloudStatus("Supabase 脚本未加载，当前使用本机记录。 / Supabase script unavailable; using local records.");
+    return;
+  }
+  const { data } = await client.auth.getSession();
+  await applySession(data.session);
+  client.auth.onAuthStateChange((_event, session) => {
+    applySession(session);
+  });
+}
+
+async function handleAuthSubmit(event) {
+  event.preventDefault();
+  const client = cloudClient();
+  if (!client) {
+    setAuthMessage("Supabase 暂不可用，请先使用游客模式。 / Supabase unavailable; use guest mode for now.", "bad");
+    return;
+  }
+  const email = els.authEmail.value.trim();
+  const password = els.authPassword.value;
+  if (!email || !password) {
+    setAuthMessage("请输入邮箱和密码。 / Please enter email and password.", "bad");
+    return;
+  }
+  setAuthMessage("处理中... / Working...", "warn");
+  const result = state.authAction === "signup"
+    ? await client.auth.signUp({ email, password })
+    : await client.auth.signInWithPassword({ email, password });
+  if (result.error) {
+    setAuthMessage(result.error.message, "bad");
+    return;
+  }
+  closeAuthForm();
+  setAuthMessage(state.authAction === "signup" ? "注册成功，请按 Supabase 邮件设置完成验证。 / Sign-up submitted; check email if confirmation is enabled." : "登录成功。 / Signed in.", "good");
+}
+
+async function logout() {
+  const client = cloudClient();
+  if (client) await client.auth.signOut();
+  enterGuestMode();
+}
+
+function attemptPayload(problem, progress, extra = {}) {
+  return {
+    user_id: state.user?.id,
+    problem_id: problem.id,
+    exam_id: extra.examId || progress.examId || problem.exam_id || null,
+    year: Number(problem.year) || null,
+    level: Number(problem.level) || null,
+    form: problem.form || null,
+    number: Number(problem.number) || null,
+    topic: problem.primary_topic || null,
+    difficulty: difficultyRange(problem),
+    selected_answer: progress.choice,
+    correct_answer: problem.answer_choice || null,
+    is_correct: Boolean(progress.correct),
+    time_spent_seconds: Number.isFinite(extra.timeSpentSeconds) ? extra.timeSpentSeconds : null,
+    mode: extra.source || progress.source || (state.mode === "exam" ? "full_exam" : state.mode === "assignment" ? "assignment" : "single"),
+    // TODO: When the BMO mode stores a distinct internal contest marker, map it to "BMO".
+    // Current AMC records default to "AMC" so existing AMC practice remains stable.
+    contest_type: problem.type === "BMO" || problem.contest_type === "BMO" ? "BMO" : "AMC",
+    platform: "amc-practice-platform",
+    source_url: window.location.href,
+    submitted_at: progress.submittedAt || new Date().toISOString(),
+  };
+}
+
+async function saveAttemptCloud(problem, progress, extra = {}) {
+  if (!isLoggedIn()) return;
+  const client = cloudClient();
+  if (!client) return;
+  const payload = attemptPayload(problem, progress, extra);
+  const { error } = await client.from("attempts").insert(payload);
+  if (error) {
+    setCloudStatus(`云端作答保存失败，本机记录已保留。 / Cloud attempt save failed; local copy kept. ${error.message}`);
+    return;
+  }
+  state.cloudAttempts.push({ ...payload, id: crypto.randomUUID?.() || `${payload.problem_id}-${payload.submitted_at}` });
+  setCloudStatus("作答已同步。 / Attempt synced.");
+}
+
+async function syncFavoriteCloud(problem, isFavorite) {
+  if (!isLoggedIn()) return;
+  const client = cloudClient();
+  if (!client) return;
+  if (isFavorite) {
+    const { error } = await client
+      .from("favorites")
+      .upsert({ user_id: state.user.id, problem_id: problem.id }, { onConflict: "user_id,problem_id" });
+    if (error) {
+      setCloudStatus(`云端收藏保存失败，本机收藏已保留。 / Cloud favorite save failed; local copy kept. ${error.message}`);
+      return;
+    }
+    setCloudStatus("收藏已同步。 / Favorite synced.");
+  } else {
+    const { error } = await client
+      .from("favorites")
+      .delete()
+      .eq("user_id", state.user.id)
+      .eq("problem_id", problem.id);
+    if (error) {
+      setCloudStatus(`云端收藏删除失败，本机收藏已更新。 / Cloud favorite delete failed; local copy updated. ${error.message}`);
+      return;
+    }
+    setCloudStatus("收藏已取消同步。 / Favorite removed.");
+  }
 }
 
 function clamp(value, min, max) {
@@ -310,20 +734,26 @@ function showEntry() {
   stopTimer();
   state.mode = "entry";
   state.activeExamId = null;
+  state.activeAssignmentId = null;
   state.examSubmitted = false;
   els.entryScreen.classList.remove("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
 }
 
 function showPracticeShell() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.remove("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
-  els.filters.classList.toggle("is-hidden", state.mode === "exam");
-  els.randomProblem.classList.toggle("is-hidden", state.mode === "exam");
+  const isLockedSet = state.mode === "exam" || state.mode === "assignment";
+  els.filters.classList.toggle("is-hidden", isLockedSet);
+  els.randomProblem.classList.toggle("is-hidden", isLockedSet);
   els.timerPanel.classList.toggle("is-hidden", state.mode !== "exam");
   els.submitExam.classList.toggle("is-hidden", state.mode !== "exam");
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
@@ -333,7 +763,9 @@ function showPracticeShell() {
 function showReview() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.remove("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
   renderReviewDashboard();
 }
@@ -341,12 +773,155 @@ function showReview() {
 function showAbout() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.remove("is-hidden");
 }
 
+async function showAdminDashboard() {
+  if (!isAdmin()) return;
+  els.entryScreen.classList.add("is-hidden");
+  els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
+  els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.remove("is-hidden");
+  els.aboutScreen.classList.add("is-hidden");
+  await loadAdminDashboard();
+}
+
+function formatAssignmentDate(value) {
+  if (!value) return "未设置截止时间 / No due date";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "未设置截止时间 / No due date";
+  return `截止 / Due ${new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date)}`;
+}
+
+function assignmentProblems(assignment) {
+  return (assignment?.problem_ids || []).map(problemById).filter(Boolean);
+}
+
+function renderAssignedAssignments(message = "") {
+  if (!els.assignmentList) return;
+  els.assignmentList.innerHTML = "";
+  if (!isMathClubMember()) {
+    els.assignmentMeta.textContent = "仅数学社成员可查看老师布置的题目 / Math Club membership required.";
+    return;
+  }
+  if (message) els.assignmentMeta.textContent = message;
+  else els.assignmentMeta.textContent = state.assignments.length
+    ? `${state.assignments.length} 个任务 / assignments · 选择任务后即可直接作答`
+    : "暂无已发布任务 / No assignments published yet.";
+
+  if (!state.assignments.length) {
+    const empty = document.createElement("div");
+    empty.className = "assignment-empty";
+    empty.textContent = "老师暂时还没有发布 AMC 练习任务。 / Your teacher has not published an AMC assignment yet.";
+    els.assignmentList.appendChild(empty);
+    return;
+  }
+
+  for (const assignment of state.assignments) {
+    const problems = assignmentProblems(assignment);
+    const answered = problems.filter((problem) => problemProgress(problem)).length;
+    const correct = problems.filter((problem) => problemProgress(problem)?.correct).length;
+    const card = document.createElement("article");
+    card.className = "assignment-card";
+    const info = document.createElement("div");
+    info.className = "assignment-card-copy";
+    const eyebrow = document.createElement("span");
+    eyebrow.className = "eyebrow";
+    eyebrow.textContent = `AMC 任务 / ${problems.length} 题`;
+    const title = document.createElement("h3");
+    title.textContent = assignment.title || "数学社 AMC 练习 / Math Club AMC Practice";
+    const instruction = document.createElement("p");
+    instruction.textContent = assignment.instructions || "完成题目后可直接查看答案与分阶段解析。 / Answers and staged solutions are available after submission.";
+    const meta = document.createElement("div");
+    meta.className = "assignment-meta-row";
+    [formatAssignmentDate(assignment.due_at), `${answered}/${problems.length} 已完成 / completed`, `${correct} 正确 / correct`].forEach((label) => {
+      const chip = document.createElement("span");
+      chip.textContent = label;
+      meta.appendChild(chip);
+    });
+    const items = document.createElement("p");
+    items.className = "assignment-problems";
+    items.textContent = problems.length
+      ? problems.map((problem) => `${problem.year} AMC ${problem.level}${problem.form} #${problem.number}`).join(" · ")
+      : "本任务中的题目尚未载入，请刷新题库后再试。 / Assigned problems are unavailable; refresh and try again.";
+    info.append(eyebrow, title, instruction, meta, items);
+    const action = document.createElement("button");
+    action.type = "button";
+    action.textContent = problems.length ? "开始作答 / Start" : "题目未载入 / Unavailable";
+    action.disabled = !problems.length;
+    action.addEventListener("click", () => startAssignment(assignment.id));
+    card.append(info, action);
+    els.assignmentList.appendChild(card);
+  }
+}
+
+async function loadAssignedAssignments() {
+  if (!isMathClubMember()) {
+    state.assignments = [];
+    renderAssignedAssignments();
+    return;
+  }
+  const client = cloudClient();
+  if (!client) return;
+  const { data, error } = await client
+    .from("amc_assignments")
+    .select("id,title,instructions,problem_ids,due_at,created_at")
+    .eq("target_role", "mathclubmembers")
+    .order("created_at", { ascending: false });
+  if (error) {
+    renderAssignedAssignments(`无法读取布置任务 / Unable to load assignments: ${error.message}`);
+    return;
+  }
+  state.assignments = data || [];
+  renderAssignedAssignments();
+}
+
+async function showAssignedAssignments() {
+  if (!isMathClubMember()) return;
+  stopTimer();
+  state.mode = "assignments";
+  state.activeExamId = null;
+  state.activeAssignmentId = null;
+  state.examSubmitted = false;
+  els.entryScreen.classList.add("is-hidden");
+  els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.remove("is-hidden");
+  els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
+  els.aboutScreen.classList.add("is-hidden");
+  renderAssignedAssignments("读取老师布置的题目中 / Loading assignments...");
+  await loadAssignedAssignments();
+}
+
+function startAssignment(assignmentId) {
+  const assignment = state.assignments.find((item) => item.id === assignmentId);
+  const problems = assignmentProblems(assignment);
+  if (!assignment || !problems.length) return;
+  stopTimer();
+  state.mode = "assignment";
+  state.activeAssignmentId = assignment.id;
+  state.activeExamId = null;
+  state.examSubmitted = false;
+  state.filtered = problems;
+  state.currentIndex = 0;
+  state.selectedChoice = problemProgress(problems[0])?.choice || null;
+  state.revealed = Boolean(problemProgress(problems[0]));
+  showPracticeShell();
+  render();
+}
+
 function continuePracticeFromReview() {
-  if (state.mode === "exam" || state.mode === "single") {
+  if (state.mode === "exam" || state.mode === "single" || state.mode === "assignment") {
     showPracticeShell();
     render();
   } else {
@@ -358,6 +933,7 @@ function enterSinglePractice() {
   stopTimer();
   state.mode = "single";
   state.activeExamId = null;
+  state.activeAssignmentId = null;
   showPracticeShell();
   applyFilters();
 }
@@ -368,6 +944,7 @@ function enterFullExam() {
   if (!exam) return;
   state.mode = "exam";
   state.activeExamId = examId;
+  state.activeAssignmentId = null;
   state.examAnswers = {};
   state.examSubmitted = false;
   state.filtered = state.problems
@@ -593,6 +1170,7 @@ function toggleFavorite() {
   marks.favorite = !marks.favorite;
   marks.favoriteAt = marks.favorite ? new Date().toISOString() : marks.favoriteAt;
   saveMarks();
+  syncFavoriteCloud(problem, marks.favorite);
   render();
 }
 
@@ -691,10 +1269,14 @@ function submitAnswer() {
     render();
     return;
   }
-  recordSubmission(problem, state.selectedChoice);
+  const progress = recordSubmission(problem, state.selectedChoice, state.mode === "assignment" ? {
+    source: "assignment",
+    assignmentId: state.activeAssignmentId,
+  } : {});
   state.revealed = true;
   markSolutionViewed(problem);
   saveProgress();
+  saveAttemptCloud(problem, progress);
   renderReviewDashboard();
   render();
 }
@@ -733,7 +1315,12 @@ function submitWholeExam() {
   for (const problem of state.filtered) {
     const answer = state.examAnswers[problem.id];
     if (!answer?.choice) continue;
-    recordSubmission(problem, answer.choice, {
+    const progress = recordSubmission(problem, answer.choice, {
+      submittedAt,
+      source: "full_exam",
+      examId: state.activeExamId,
+    });
+    saveAttemptCloud(problem, progress, {
       submittedAt,
       source: "full_exam",
       examId: state.activeExamId,
@@ -843,6 +1430,238 @@ function diagnosisAdvice(stat) {
   return "掌握较好，保持限时训练 / Strong; maintain timed practice.";
 }
 
+function dateTime(value) {
+  if (!value) return "-";
+  try {
+    return new Intl.DateTimeFormat("zh-CN", {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  } catch {
+    return String(value);
+  }
+}
+
+function filterAdminAttempts() {
+  const student = els.adminStudentFilter.value;
+  const year = els.adminYearFilter.value;
+  const level = els.adminLevelFilter.value;
+  const topic = els.adminTopicFilter.value;
+  const difficulty = els.adminDifficultyFilter.value;
+  const from = els.adminDateFrom.value ? new Date(`${els.adminDateFrom.value}T00:00:00`) : null;
+  const to = els.adminDateTo.value ? new Date(`${els.adminDateTo.value}T23:59:59`) : null;
+  return state.adminData.attempts.filter((attempt) => {
+    if (student !== "all" && attempt.user_id !== student) return false;
+    if (year !== "all" && String(attempt.year) !== year) return false;
+    if (level !== "all" && String(attempt.level) !== level) return false;
+    if (topic !== "all" && attempt.topic !== topic) return false;
+    if (difficulty !== "all" && attempt.difficulty !== difficulty) return false;
+    const submitted = attempt.submitted_at ? new Date(attempt.submitted_at) : null;
+    if (from && submitted && submitted < from) return false;
+    if (to && submitted && submitted > to) return false;
+    return true;
+  });
+}
+
+function profileFor(userId) {
+  return state.adminData.profiles.find((profile) => profile.id === userId) || {};
+}
+
+function setupAdminFilters() {
+  const profiles = state.adminData.profiles.slice().sort((a, b) => String(a.email || "").localeCompare(String(b.email || "")));
+  fillSelect(
+    els.adminStudentFilter,
+    profiles.map((profile) => [profile.id, profile.display_name || profile.email || profile.id]),
+    "全部学生 / All Students"
+  );
+  const attempts = state.adminData.attempts;
+  fillSelect(
+    els.adminYearFilter,
+    uniqueValues(attempts, (attempt) => attempt.year).sort((a, b) => b - a).map((year) => [String(year), String(year)]),
+    "全部年份 / All Years"
+  );
+  fillSelect(els.adminLevelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试 / All Contests");
+  fillSelect(
+    els.adminTopicFilter,
+    uniqueValues(attempts, (attempt) => attempt.topic)
+      .sort((a, b) => topicName(a).localeCompare(topicName(b), "zh-CN"))
+      .map((topic) => [topic, topicName(topic)]),
+    "全部知识点 / All Topics"
+  );
+  fillSelect(
+    els.adminDifficultyFilter,
+    uniqueValues(attempts, (attempt) => attempt.difficulty)
+      .sort()
+      .map((difficulty) => [difficulty, difficulty]),
+    "全部难度 / All Difficulty"
+  );
+}
+
+function renderAdminDashboard() {
+  const attempts = filterAdminAttempts();
+  const totalAttempts = attempts.length;
+  const correctAttempts = attempts.filter((attempt) => attempt.is_correct).length;
+  const activeSince = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const activeUsers = new Set(attempts.filter((attempt) => new Date(attempt.submitted_at).getTime() >= activeSince).map((attempt) => attempt.user_id));
+  els.adminTotalStudents.textContent = String(state.adminData.profiles.length);
+  els.adminTotalAttempts.textContent = String(totalAttempts);
+  els.adminAverageAccuracy.textContent = percent(correctAttempts, totalAttempts);
+  els.adminActiveUsers.textContent = String(activeUsers.size);
+  els.adminMeta.textContent = `当前筛选 ${totalAttempts} 条作答记录 / ${totalAttempts} filtered attempts`;
+
+  const byStudent = new Map();
+  for (const profile of state.adminData.profiles) {
+    byStudent.set(profile.id, { profile, total: 0, correct: 0, lastActive: "" });
+  }
+  for (const attempt of attempts) {
+    const row = byStudent.get(attempt.user_id) || { profile: profileFor(attempt.user_id), total: 0, correct: 0, lastActive: "" };
+    row.total += 1;
+    if (attempt.is_correct) row.correct += 1;
+    if (String(attempt.submitted_at || "") > String(row.lastActive || "")) row.lastActive = attempt.submitted_at;
+    byStudent.set(attempt.user_id, row);
+  }
+  const studentRows = [...byStudent.values()].sort((a, b) => b.total - a.total || String(b.lastActive || "").localeCompare(String(a.lastActive || "")));
+  els.adminStudentTitle.textContent = `${studentRows.length} students`;
+  els.adminStudentRows.innerHTML = studentRows.length ? "" : '<tr><td colspan="6">暂无学生数据 / No student data</td></tr>';
+  for (const row of studentRows) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.profile.display_name || "-"}</td>
+      <td>${row.profile.email || "-"}</td>
+      <td>${row.total}</td>
+      <td>${row.correct}</td>
+      <td>${percent(row.correct, row.total)}</td>
+      <td>${dateTime(row.lastActive)}</td>
+    `;
+    els.adminStudentRows.appendChild(tr);
+  }
+
+  const byProblem = new Map();
+  for (const attempt of attempts) {
+    const key = attempt.problem_id;
+    const problem = problemById(key);
+    const row = byProblem.get(key) || {
+      problem_id: key,
+      exam: problem?.display_name || attempt.exam_id || "-",
+      number: attempt.number || problem?.number || "-",
+      topic: attempt.topic || problem?.primary_topic || "-",
+      total: 0,
+      correct: 0,
+    };
+    row.total += 1;
+    if (attempt.is_correct) row.correct += 1;
+    byProblem.set(key, row);
+  }
+  const problemRows = [...byProblem.values()].sort((a, b) => b.total - a.total || String(a.problem_id).localeCompare(String(b.problem_id))).slice(0, 200);
+  els.adminProblemTitle.textContent = `${byProblem.size} problems`;
+  els.adminProblemRows.innerHTML = problemRows.length ? "" : '<tr><td colspan="6">暂无题目数据 / No problem data</td></tr>';
+  for (const row of problemRows) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.problem_id}</td>
+      <td>${row.exam}</td>
+      <td>${row.number}</td>
+      <td>${topicName(row.topic)}</td>
+      <td>${row.total}</td>
+      <td>${percent(row.correct, row.total)}</td>
+    `;
+    els.adminProblemRows.appendChild(tr);
+  }
+
+  const recent = attempts.slice().sort((a, b) => String(b.submitted_at || "").localeCompare(String(a.submitted_at || ""))).slice(0, 50);
+  els.adminRecentTitle.textContent = `${recent.length} attempts`;
+  els.adminRecentList.innerHTML = "";
+  if (!recent.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "暂无作答记录 / No attempts yet";
+    els.adminRecentList.appendChild(empty);
+  }
+  for (const attempt of recent) {
+    const profile = profileFor(attempt.user_id);
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = `answered-item ${attempt.is_correct ? "correct" : "incorrect"}`;
+    item.innerHTML = `
+      <span>
+        <strong>${profile.display_name || profile.email || "Student"} · ${attempt.problem_id}</strong>
+        <small>${topicName(attempt.topic)} · 选择 ${attempt.selected_answer || "-"} / 正答 ${attempt.correct_answer || "-"} · ${dateTime(attempt.submitted_at)}</small>
+      </span>
+      <b>${attempt.is_correct ? "正确 / Correct" : "错误 / Wrong"}</b>
+    `;
+    item.addEventListener("click", () => jumpToProblem(attempt.problem_id));
+    els.adminRecentList.appendChild(item);
+  }
+}
+
+async function loadAdminDashboard() {
+  if (!isAdmin()) return;
+  const client = cloudClient();
+  if (!client) return;
+  els.adminMeta.textContent = "正在读取 Supabase 数据... / Loading Supabase data...";
+  const [profilesResult, attemptsResult] = await Promise.all([
+    client.from("profiles").select("id,email,display_name,role,created_at").order("created_at", { ascending: false }),
+    client
+      .from("attempts")
+      .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
+      .order("submitted_at", { ascending: false })
+      .limit(5000),
+  ]);
+  if (profilesResult.error) {
+    els.adminMeta.textContent = `读取学生失败 / Failed to load students: ${profilesResult.error.message}`;
+    return;
+  }
+  if (attemptsResult.error) {
+    els.adminMeta.textContent = `读取作答失败 / Failed to load attempts: ${attemptsResult.error.message}`;
+    return;
+  }
+  state.adminData = {
+    profiles: profilesResult.data || [],
+    attempts: attemptsResult.data || [],
+  };
+  setupAdminFilters();
+  renderAdminDashboard();
+}
+
+function exportAdminCsv() {
+  if (!isAdmin()) return;
+  const rows = filterAdminAttempts();
+  const headers = ["student_email", "student_name", "problem_id", "exam_id", "year", "level", "form", "number", "topic", "difficulty", "selected_answer", "correct_answer", "is_correct", "mode", "submitted_at"];
+  const escapeCell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const csv = [
+    headers.join(","),
+    ...rows.map((attempt) => {
+      const profile = profileFor(attempt.user_id);
+      return [
+        profile.email,
+        profile.display_name,
+        attempt.problem_id,
+        attempt.exam_id,
+        attempt.year,
+        attempt.level,
+        attempt.form,
+        attempt.number,
+        topicName(attempt.topic),
+        attempt.difficulty,
+        attempt.selected_answer,
+        attempt.correct_answer,
+        attempt.is_correct,
+        attempt.mode,
+        attempt.submitted_at,
+      ].map(escapeCell).join(",");
+    }),
+  ].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `amc-admin-attempts-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function jumpToProblem(problemId) {
   const problem = state.problems.find((item) => item.id === problemId);
   if (!problem) return;
@@ -925,9 +1744,12 @@ function renderReviewDashboard() {
   els.reviewAccuracy.textContent = percent(correct, answered.length);
   els.reviewPriority.textContent = String(priorityMistakes.length);
   els.reviewFavorites.textContent = String(favorites.length);
+  const recordScope = isLoggedIn()
+    ? `云端账号 ${displayName()} / Cloud account ${displayName()}`
+    : "游客本机记录 / Guest local records";
   els.reviewMeta.textContent = answered.length
-    ? `本机已保存 ${answered.length} 道作答记录，${priorityMistakes.length} 道高优先级错题需要复习 / ${answered.length} local attempts saved; ${priorityMistakes.length} high-priority errors need review.`
-    : "本机还没有保存作答记录 / No local attempt records yet.";
+    ? `${recordScope}：已保存 ${answered.length} 道作答记录，${priorityMistakes.length} 道高优先级错题需要复习 / ${answered.length} attempts saved; ${priorityMistakes.length} high-priority errors need review.`
+    : `${recordScope}：还没有保存作答记录 / No attempt records yet.`;
   els.diagnosisTitle.textContent = answered.length ? `${topicDiagnosis().length} 个知识点 / topics` : "暂无记录 / No records";
   els.answeredTitle.textContent = `${answered.length} 题 / problems`;
   els.mistakeTitle.textContent = `${filteredMistakeProblems().length}/${mistakes.length} 题 / problems`;
@@ -998,6 +1820,11 @@ function renderStats() {
   if (state.mode === "exam") {
     const exam = examById(state.activeExamId);
     els.datasetMeta.textContent = exam ? `全卷练习 / Full Mock · ${exam.display_name} · 75 分钟 / 75 min` : "全卷练习 / Full Mock";
+  } else if (state.mode === "assignment") {
+    const assignment = state.assignments.find((item) => item.id === state.activeAssignmentId);
+    els.datasetMeta.textContent = assignment
+      ? `老师布置题目 / Assigned Problems · ${assignment.title || "Math Club AMC Practice"} · ${state.filtered.length} 题 / problems`
+      : `老师布置题目 / Assigned Problems · ${state.filtered.length} 题 / problems`;
   } else {
     updateDatasetMeta();
   }
@@ -1029,7 +1856,7 @@ function renderList() {
     if (progress?.needsReview) button.classList.add("needs-review");
     if (marks.favorite) button.classList.add("favorite");
     if (marks.solutionViewed) button.classList.add("solution-viewed");
-    button.textContent = state.mode === "exam" ? `#${problem.number}` : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
+    button.textContent = state.mode === "exam" || state.mode === "assignment" ? `#${problem.number}` : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
     button.title = `${problem.display_name} #${problem.number}`;
     button.addEventListener("click", () => {
       state.currentIndex = index;
@@ -1373,7 +2200,27 @@ async function loadProblemBank() {
 }
 
 function bindEvents() {
+  els.openLogin.addEventListener("click", () => openAuthForm("login"));
+  els.openSignup.addEventListener("click", () => openAuthForm("signup"));
+  els.continueGuest.addEventListener("click", enterGuestMode);
+  els.authCancel.addEventListener("click", closeAuthForm);
+  els.authForm.addEventListener("submit", handleAuthSubmit);
+  els.logoutButton.addEventListener("click", logout);
+  els.topLogoutButton.addEventListener("click", logout);
+  [els.adminDashboardButton, els.topAdminDashboardButton, els.reviewAdminDashboardButton].forEach((button) => {
+    button.addEventListener("click", showAdminDashboard);
+  });
+  els.adminRefresh.addEventListener("click", loadAdminDashboard);
+  els.adminExportCsv.addEventListener("click", exportAdminCsv);
+  els.adminToPractice.addEventListener("click", continuePracticeFromReview);
+  els.adminToEntry.addEventListener("click", showEntry);
+  [els.adminStudentFilter, els.adminYearFilter, els.adminLevelFilter, els.adminTopicFilter, els.adminDifficultyFilter, els.adminDateFrom, els.adminDateTo].forEach((control) => {
+    control.addEventListener("change", renderAdminDashboard);
+  });
   els.singlePracticeMode.addEventListener("click", enterSinglePractice);
+  els.assignedPracticeMode.addEventListener("click", showAssignedAssignments);
+  els.assignmentRefresh.addEventListener("click", loadAssignedAssignments);
+  els.assignmentToEntry.addEventListener("click", showEntry);
   els.startFullExam.addEventListener("click", enterFullExam);
   els.reviewMode.addEventListener("click", showReview);
   els.aboutMode.addEventListener("click", showAbout);
@@ -1421,6 +2268,7 @@ function bindEvents() {
 async function init() {
   bindEvents();
   bindWorkspaceResize();
+  renderAuthState();
   try {
     state.data = await loadProblemBank();
     state.problems = state.data.problems.slice().sort((a, b) => (
@@ -1432,7 +2280,19 @@ async function init() {
     normalizeStoredProgress();
     initFilters();
     updateDatasetMeta();
-    showEntry();
+    await initAuth();
+    const problemId = new URLSearchParams(window.location.search).get("problem");
+    const directProblem = problemById(problemId);
+    if (directProblem) {
+      enterSinglePractice();
+      state.filtered = [directProblem];
+      state.currentIndex = 0;
+      state.selectedChoice = problemProgress(directProblem)?.choice || null;
+      state.revealed = Boolean(problemProgress(directProblem));
+      render();
+    } else {
+      showEntry();
+    }
   } catch (error) {
     els.datasetMeta.textContent = "题库加载失败 / Problem bank failed to load";
     els.entryMeta.textContent = "题库加载失败 / Problem bank failed to load";

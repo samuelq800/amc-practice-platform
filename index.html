@@ -4,7 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-color1" />
+    <link rel="icon" href="./school-logo.jpg" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-assignments1" />
     <script>
       window.MathJax = {
         tex: {
@@ -42,6 +43,39 @@
         </div>
 
         <div class="mode-grid">
+          <section class="auth-card shared-session-card" aria-label="共享账号状态 / Shared account status">
+            <div>
+              <span class="eyebrow">账号 / Account</span>
+              <h2 id="authTitle">共享登录状态<br />Shared Login Session</h2>
+              <p id="authStatusText">请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。<br />Sign in from the main SZZX contest entrance; this page will reuse the same Supabase session.</p>
+            </div>
+            <div id="authGuestPanel" class="auth-actions is-hidden">
+              <button id="openLogin" type="button">登录 / Login</button>
+              <button id="openSignup" type="button">注册 / Sign up</button>
+              <button id="continueGuest" type="button">游客模式 / Continue as Guest</button>
+            </div>
+            <div id="authUserPanel" class="auth-user-panel is-hidden">
+              <span id="userBadge">Guest</span>
+              <button id="adminDashboardButton" type="button" class="is-hidden">管理员面板 / Admin</button>
+              <button id="logoutButton" type="button">退出 / Logout</button>
+            </div>
+            <form id="authForm" class="auth-form is-hidden">
+              <label>
+                <span>邮箱 / Email</span>
+                <input id="authEmail" type="email" autocomplete="email" placeholder="student@example.com" />
+              </label>
+              <label>
+                <span>密码 / Password</span>
+                <input id="authPassword" type="password" autocomplete="current-password" placeholder="至少 6 位 / at least 6 characters" />
+              </label>
+              <div class="auth-actions">
+                <button id="authSubmit" type="submit">登录 / Login</button>
+                <button id="authCancel" type="button">取消 / Cancel</button>
+              </div>
+              <p id="authMessage" class="auth-message"></p>
+            </form>
+          </section>
+
           <section class="mode-card mode-card-primary">
             <div>
               <span class="eyebrow">单题练习 / Single Problems</span>
@@ -62,6 +96,15 @@
               <select id="fullExamSelect"></select>
             </label>
             <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
+          </section>
+
+          <section id="assignedPracticeCard" class="mode-card mode-card-primary is-hidden" aria-label="数学社布置题目 / Math Club assignments">
+            <div>
+              <span class="eyebrow">数学社任务 / Math Club</span>
+              <h2>老师布置题目<br />Assigned Problems</h2>
+              <p>完成数学社老师布置的 AMC 题目；提交后可直接查看答案和分阶段解析。<br />Complete assigned AMC problems with answers and staged solutions available after submission.</p>
+            </div>
+            <button id="assignedPracticeMode" type="button">进入布置题目 / Open Assignments</button>
           </section>
 
           <section class="mode-card mode-card-secondary">
@@ -85,6 +128,34 @@
       </section>
     </main>
 
+    <main id="assignmentScreen" class="assignment-screen is-hidden">
+      <header class="topbar">
+        <div class="brand">
+          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
+          <div>
+            <h1>数学社布置题目 / Math Club Assignments</h1>
+            <p id="assignmentMeta">加载老师布置的 AMC 题目中 / Loading assigned AMC problems...</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="assignmentUserBadge">Guest</span>
+          </div>
+          <button id="assignmentRefresh" type="button">刷新 / Refresh</button>
+          <button id="assignmentToEntry" type="button">模式选择 / Modes</button>
+        </div>
+      </header>
+
+      <section class="assignment-page" aria-label="老师布置的题目 / Assigned problems">
+        <div class="assignment-intro">
+          <span class="eyebrow">Math Club / AMC Practice</span>
+          <h2>老师布置的 AMC 题目</h2>
+          <p>选择一个任务即可直接进入作答。答案、解析与完成情况会保存在你的练习记录中。</p>
+        </div>
+        <div id="assignmentList" class="assignment-list"></div>
+      </section>
+    </main>
+
     <main id="practiceShell" class="app-shell is-hidden">
       <header class="topbar">
         <div class="brand">
@@ -95,6 +166,11 @@
           </div>
         </div>
         <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="topUserBadge">Guest</span>
+            <button id="topAdminDashboardButton" type="button" class="is-hidden">Admin</button>
+            <button id="topLogoutButton" type="button" class="is-hidden">Logout</button>
+          </div>
           <div id="timerPanel" class="timer-panel is-hidden" aria-label="全卷倒计时 / Full exam countdown">
             <span id="timerText">75:00</span>
             <small id="timerLabel">剩余时间 / Time left</small>
@@ -234,6 +310,10 @@
           </div>
         </div>
         <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="reviewUserBadge">Guest</span>
+          </div>
+          <button id="reviewAdminDashboardButton" type="button" class="is-hidden">管理员面板 / Admin</button>
           <button id="reviewToPractice" type="button">继续练习 / Continue</button>
           <button id="reviewToAbout" type="button">平台说明 / About</button>
           <button id="reviewToEntry" type="button">模式选择 / Modes</button>
@@ -317,6 +397,103 @@
       </section>
     </main>
 
+    <main id="adminScreen" class="admin-screen is-hidden">
+      <header class="topbar">
+        <div class="brand">
+          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
+          <div>
+            <h1>管理员面板 / Admin Dashboard</h1>
+            <p id="adminMeta">加载云端数据 / Loading cloud data</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button id="adminRefresh" type="button">刷新 / Refresh</button>
+          <button id="adminExportCsv" type="button">导出 CSV / Export CSV</button>
+          <button id="adminToPractice" type="button">返回练习 / Practice</button>
+          <button id="adminToEntry" type="button">模式选择 / Modes</button>
+        </div>
+      </header>
+
+      <section class="admin-page" aria-label="管理员数据 / Admin analytics">
+        <div class="admin-summary">
+          <div><span id="adminTotalStudents">0</span><small>学生 / Students</small></div>
+          <div><span id="adminTotalAttempts">0</span><small>作答 / Attempts</small></div>
+          <div><span id="adminAverageAccuracy">0%</span><small>平均正确率 / Avg Accuracy</small></div>
+          <div><span id="adminActiveUsers">0</span><small>7 日活跃 / Active 7d</small></div>
+        </div>
+
+        <section class="admin-panel">
+          <div class="section-head">
+            <span class="eyebrow">筛选 / Filters</span>
+            <strong>云端记录 / Cloud Records</strong>
+          </div>
+          <div class="admin-filters">
+            <label><span>学生 / Student</span><select id="adminStudentFilter"></select></label>
+            <label><span>年份 / Year</span><select id="adminYearFilter"></select></label>
+            <label><span>考试 / Contest</span><select id="adminLevelFilter"></select></label>
+            <label><span>知识点 / Topic</span><select id="adminTopicFilter"></select></label>
+            <label><span>难度 / Difficulty</span><select id="adminDifficultyFilter"></select></label>
+            <label><span>开始日期 / From</span><input id="adminDateFrom" type="date" /></label>
+            <label><span>结束日期 / To</span><input id="adminDateTo" type="date" /></label>
+          </div>
+        </section>
+
+        <section class="admin-grid">
+          <div class="admin-panel">
+            <div class="section-head">
+              <span class="eyebrow">学生统计 / Students</span>
+              <strong id="adminStudentTitle">0 students</strong>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>姓名 / Name</th>
+                    <th>邮箱 / Email</th>
+                    <th>作答 / Attempts</th>
+                    <th>正确 / Correct</th>
+                    <th>正确率 / Accuracy</th>
+                    <th>最近活跃 / Last Active</th>
+                  </tr>
+                </thead>
+                <tbody id="adminStudentRows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="admin-panel">
+            <div class="section-head">
+              <span class="eyebrow">题目统计 / Problems</span>
+              <strong id="adminProblemTitle">0 problems</strong>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>题目 / Problem</th>
+                    <th>试卷 / Exam</th>
+                    <th>题号 / No.</th>
+                    <th>知识点 / Topic</th>
+                    <th>作答 / Attempts</th>
+                    <th>正确率 / Correct Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="adminProblemRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="section-head">
+            <span class="eyebrow">最近作答 / Recent Attempts</span>
+            <strong id="adminRecentTitle">0 attempts</strong>
+          </div>
+          <div id="adminRecentList" class="answered-list"></div>
+        </section>
+      </section>
+    </main>
+
     <main id="aboutScreen" class="about-screen is-hidden">
       <header class="topbar">
         <div class="brand">
@@ -396,6 +573,7 @@
       </section>
     </main>
 
-    <script src="./app.js?v=20260707-color1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./app.js?v=20260711-assignments1"></script>
   </body>
 </html>
