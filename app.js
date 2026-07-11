@@ -60,6 +60,14 @@ const els = {
   topAdminDashboardButton: document.querySelector("#topAdminDashboardButton"),
   reviewAdminDashboardButton: document.querySelector("#reviewAdminDashboardButton"),
   singlePracticeMode: document.querySelector("#singlePracticeMode"),
+  assignedPracticeCard: document.querySelector("#assignedPracticeCard"),
+  assignedPracticeMode: document.querySelector("#assignedPracticeMode"),
+  assignmentScreen: document.querySelector("#assignmentScreen"),
+  assignmentMeta: document.querySelector("#assignmentMeta"),
+  assignmentUserBadge: document.querySelector("#assignmentUserBadge"),
+  assignmentList: document.querySelector("#assignmentList"),
+  assignmentRefresh: document.querySelector("#assignmentRefresh"),
+  assignmentToEntry: document.querySelector("#assignmentToEntry"),
   fullExamSelect: document.querySelector("#fullExamSelect"),
   startFullExam: document.querySelector("#startFullExam"),
   reviewMode: document.querySelector("#reviewMode"),
@@ -172,6 +180,8 @@ const state = {
   solutionStage: "idea",
   mode: "entry",
   activeExamId: null,
+  activeAssignmentId: null,
+  assignments: [],
   examAnswers: {},
   examSubmitted: false,
   timerRemaining: FULL_EXAM_SECONDS,
@@ -252,6 +262,10 @@ function isAdmin() {
   return state.profile?.role === "admin";
 }
 
+function isMathClubMember() {
+  return state.profile?.role === "mathclubmembers";
+}
+
 function displayName() {
   return state.profile?.display_name || state.user?.email || "Guest";
 }
@@ -288,6 +302,7 @@ function enterGuestMode() {
   state.cloudReady = false;
   state.cloudAttempts = [];
   state.cloudFavorites = [];
+  state.assignments = [];
   state.progress = loadProgress();
   state.marks = loadMarks();
   normalizeStoredProgress();
@@ -298,15 +313,16 @@ function enterGuestMode() {
 
 function renderAuthState() {
   const loggedIn = isLoggedIn();
-  const roleLabel = loggedIn ? (isAdmin() ? "admin" : "student") : "guest";
+  const roleLabel = loggedIn ? (isAdmin() ? "admin" : isMathClubMember() ? "mathclubmembers" : "student") : "guest";
   const label = loggedIn
     ? `${displayName()} · ${roleLabel}`
     : state.authMode === "guest"
       ? "Guest · 本机记录"
       : "未登录 / Not signed in";
-  [els.userBadge, els.topUserBadge, els.reviewUserBadge].forEach((node) => {
+  [els.userBadge, els.topUserBadge, els.reviewUserBadge, els.assignmentUserBadge].forEach((node) => {
     if (node) node.textContent = label;
   });
+  els.assignedPracticeCard.classList.toggle("is-hidden", !isMathClubMember());
   els.authGuestPanel.classList.add("is-hidden");
   els.authUserPanel.classList.toggle("is-hidden", !loggedIn);
   els.topLogoutButton.classList.toggle("is-hidden", !loggedIn);
@@ -449,6 +465,7 @@ async function applySession(session) {
   state.authMode = state.user ? "cloud" : "guest";
   state.profile = null;
   if (!state.user) {
+    state.assignments = [];
     renderAuthState();
     return;
   }
@@ -456,6 +473,7 @@ async function applySession(session) {
     state.profile = await ensureProfile(state.user);
     renderAuthState();
     await loadCloudState();
+    await loadAssignedAssignments();
     renderReviewDashboard();
     render();
   } catch (error) {
@@ -524,7 +542,7 @@ function attemptPayload(problem, progress, extra = {}) {
     correct_answer: problem.answer_choice || null,
     is_correct: Boolean(progress.correct),
     time_spent_seconds: Number.isFinite(extra.timeSpentSeconds) ? extra.timeSpentSeconds : null,
-    mode: extra.source || progress.source || (state.mode === "exam" ? "full_exam" : "single"),
+    mode: extra.source || progress.source || (state.mode === "exam" ? "full_exam" : state.mode === "assignment" ? "assignment" : "single"),
     // TODO: When the BMO mode stores a distinct internal contest marker, map it to "BMO".
     // Current AMC records default to "AMC" so existing AMC practice remains stable.
     contest_type: problem.type === "BMO" || problem.contest_type === "BMO" ? "BMO" : "AMC",
@@ -716,9 +734,11 @@ function showEntry() {
   stopTimer();
   state.mode = "entry";
   state.activeExamId = null;
+  state.activeAssignmentId = null;
   state.examSubmitted = false;
   els.entryScreen.classList.remove("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
   els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
@@ -727,11 +747,13 @@ function showEntry() {
 function showPracticeShell() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.remove("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
   els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
-  els.filters.classList.toggle("is-hidden", state.mode === "exam");
-  els.randomProblem.classList.toggle("is-hidden", state.mode === "exam");
+  const isLockedSet = state.mode === "exam" || state.mode === "assignment";
+  els.filters.classList.toggle("is-hidden", isLockedSet);
+  els.randomProblem.classList.toggle("is-hidden", isLockedSet);
   els.timerPanel.classList.toggle("is-hidden", state.mode !== "exam");
   els.submitExam.classList.toggle("is-hidden", state.mode !== "exam");
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
@@ -741,6 +763,7 @@ function showPracticeShell() {
 function showReview() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.remove("is-hidden");
   els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
@@ -750,6 +773,7 @@ function showReview() {
 function showAbout() {
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
   els.adminScreen.classList.add("is-hidden");
   els.aboutScreen.classList.remove("is-hidden");
@@ -759,14 +783,145 @@ async function showAdminDashboard() {
   if (!isAdmin()) return;
   els.entryScreen.classList.add("is-hidden");
   els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.add("is-hidden");
   els.reviewScreen.classList.add("is-hidden");
   els.adminScreen.classList.remove("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
   await loadAdminDashboard();
 }
 
+function formatAssignmentDate(value) {
+  if (!value) return "未设置截止时间 / No due date";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "未设置截止时间 / No due date";
+  return `截止 / Due ${new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date)}`;
+}
+
+function assignmentProblems(assignment) {
+  return (assignment?.problem_ids || []).map(problemById).filter(Boolean);
+}
+
+function renderAssignedAssignments(message = "") {
+  if (!els.assignmentList) return;
+  els.assignmentList.innerHTML = "";
+  if (!isMathClubMember()) {
+    els.assignmentMeta.textContent = "仅数学社成员可查看老师布置的题目 / Math Club membership required.";
+    return;
+  }
+  if (message) els.assignmentMeta.textContent = message;
+  else els.assignmentMeta.textContent = state.assignments.length
+    ? `${state.assignments.length} 个任务 / assignments · 选择任务后即可直接作答`
+    : "暂无已发布任务 / No assignments published yet.";
+
+  if (!state.assignments.length) {
+    const empty = document.createElement("div");
+    empty.className = "assignment-empty";
+    empty.textContent = "老师暂时还没有发布 AMC 练习任务。 / Your teacher has not published an AMC assignment yet.";
+    els.assignmentList.appendChild(empty);
+    return;
+  }
+
+  for (const assignment of state.assignments) {
+    const problems = assignmentProblems(assignment);
+    const answered = problems.filter((problem) => problemProgress(problem)).length;
+    const correct = problems.filter((problem) => problemProgress(problem)?.correct).length;
+    const card = document.createElement("article");
+    card.className = "assignment-card";
+    const info = document.createElement("div");
+    info.className = "assignment-card-copy";
+    const eyebrow = document.createElement("span");
+    eyebrow.className = "eyebrow";
+    eyebrow.textContent = `AMC 任务 / ${problems.length} 题`;
+    const title = document.createElement("h3");
+    title.textContent = assignment.title || "数学社 AMC 练习 / Math Club AMC Practice";
+    const instruction = document.createElement("p");
+    instruction.textContent = assignment.instructions || "完成题目后可直接查看答案与分阶段解析。 / Answers and staged solutions are available after submission.";
+    const meta = document.createElement("div");
+    meta.className = "assignment-meta-row";
+    [formatAssignmentDate(assignment.due_at), `${answered}/${problems.length} 已完成 / completed`, `${correct} 正确 / correct`].forEach((label) => {
+      const chip = document.createElement("span");
+      chip.textContent = label;
+      meta.appendChild(chip);
+    });
+    const items = document.createElement("p");
+    items.className = "assignment-problems";
+    items.textContent = problems.length
+      ? problems.map((problem) => `${problem.year} AMC ${problem.level}${problem.form} #${problem.number}`).join(" · ")
+      : "本任务中的题目尚未载入，请刷新题库后再试。 / Assigned problems are unavailable; refresh and try again.";
+    info.append(eyebrow, title, instruction, meta, items);
+    const action = document.createElement("button");
+    action.type = "button";
+    action.textContent = problems.length ? "开始作答 / Start" : "题目未载入 / Unavailable";
+    action.disabled = !problems.length;
+    action.addEventListener("click", () => startAssignment(assignment.id));
+    card.append(info, action);
+    els.assignmentList.appendChild(card);
+  }
+}
+
+async function loadAssignedAssignments() {
+  if (!isMathClubMember()) {
+    state.assignments = [];
+    renderAssignedAssignments();
+    return;
+  }
+  const client = cloudClient();
+  if (!client) return;
+  const { data, error } = await client
+    .from("amc_assignments")
+    .select("id,title,instructions,problem_ids,due_at,created_at")
+    .eq("target_role", "mathclubmembers")
+    .order("created_at", { ascending: false });
+  if (error) {
+    renderAssignedAssignments(`无法读取布置任务 / Unable to load assignments: ${error.message}`);
+    return;
+  }
+  state.assignments = data || [];
+  renderAssignedAssignments();
+}
+
+async function showAssignedAssignments() {
+  if (!isMathClubMember()) return;
+  stopTimer();
+  state.mode = "assignments";
+  state.activeExamId = null;
+  state.activeAssignmentId = null;
+  state.examSubmitted = false;
+  els.entryScreen.classList.add("is-hidden");
+  els.practiceShell.classList.add("is-hidden");
+  els.assignmentScreen.classList.remove("is-hidden");
+  els.reviewScreen.classList.add("is-hidden");
+  els.adminScreen.classList.add("is-hidden");
+  els.aboutScreen.classList.add("is-hidden");
+  renderAssignedAssignments("读取老师布置的题目中 / Loading assignments...");
+  await loadAssignedAssignments();
+}
+
+function startAssignment(assignmentId) {
+  const assignment = state.assignments.find((item) => item.id === assignmentId);
+  const problems = assignmentProblems(assignment);
+  if (!assignment || !problems.length) return;
+  stopTimer();
+  state.mode = "assignment";
+  state.activeAssignmentId = assignment.id;
+  state.activeExamId = null;
+  state.examSubmitted = false;
+  state.filtered = problems;
+  state.currentIndex = 0;
+  state.selectedChoice = problemProgress(problems[0])?.choice || null;
+  state.revealed = Boolean(problemProgress(problems[0]));
+  showPracticeShell();
+  render();
+}
+
 function continuePracticeFromReview() {
-  if (state.mode === "exam" || state.mode === "single") {
+  if (state.mode === "exam" || state.mode === "single" || state.mode === "assignment") {
     showPracticeShell();
     render();
   } else {
@@ -778,6 +933,7 @@ function enterSinglePractice() {
   stopTimer();
   state.mode = "single";
   state.activeExamId = null;
+  state.activeAssignmentId = null;
   showPracticeShell();
   applyFilters();
 }
@@ -788,6 +944,7 @@ function enterFullExam() {
   if (!exam) return;
   state.mode = "exam";
   state.activeExamId = examId;
+  state.activeAssignmentId = null;
   state.examAnswers = {};
   state.examSubmitted = false;
   state.filtered = state.problems
@@ -1112,7 +1269,10 @@ function submitAnswer() {
     render();
     return;
   }
-  const progress = recordSubmission(problem, state.selectedChoice);
+  const progress = recordSubmission(problem, state.selectedChoice, state.mode === "assignment" ? {
+    source: "assignment",
+    assignmentId: state.activeAssignmentId,
+  } : {});
   state.revealed = true;
   markSolutionViewed(problem);
   saveProgress();
@@ -1660,6 +1820,11 @@ function renderStats() {
   if (state.mode === "exam") {
     const exam = examById(state.activeExamId);
     els.datasetMeta.textContent = exam ? `全卷练习 / Full Mock · ${exam.display_name} · 75 分钟 / 75 min` : "全卷练习 / Full Mock";
+  } else if (state.mode === "assignment") {
+    const assignment = state.assignments.find((item) => item.id === state.activeAssignmentId);
+    els.datasetMeta.textContent = assignment
+      ? `老师布置题目 / Assigned Problems · ${assignment.title || "Math Club AMC Practice"} · ${state.filtered.length} 题 / problems`
+      : `老师布置题目 / Assigned Problems · ${state.filtered.length} 题 / problems`;
   } else {
     updateDatasetMeta();
   }
@@ -1691,7 +1856,7 @@ function renderList() {
     if (progress?.needsReview) button.classList.add("needs-review");
     if (marks.favorite) button.classList.add("favorite");
     if (marks.solutionViewed) button.classList.add("solution-viewed");
-    button.textContent = state.mode === "exam" ? `#${problem.number}` : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
+    button.textContent = state.mode === "exam" || state.mode === "assignment" ? `#${problem.number}` : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
     button.title = `${problem.display_name} #${problem.number}`;
     button.addEventListener("click", () => {
       state.currentIndex = index;
@@ -2053,6 +2218,9 @@ function bindEvents() {
     control.addEventListener("change", renderAdminDashboard);
   });
   els.singlePracticeMode.addEventListener("click", enterSinglePractice);
+  els.assignedPracticeMode.addEventListener("click", showAssignedAssignments);
+  els.assignmentRefresh.addEventListener("click", loadAssignedAssignments);
+  els.assignmentToEntry.addEventListener("click", showEntry);
   els.startFullExam.addEventListener("click", enterFullExam);
   els.reviewMode.addEventListener("click", showReview);
   els.aboutMode.addEventListener("click", showAbout);
@@ -2113,7 +2281,18 @@ async function init() {
     initFilters();
     updateDatasetMeta();
     await initAuth();
-    showEntry();
+    const problemId = new URLSearchParams(window.location.search).get("problem");
+    const directProblem = problemById(problemId);
+    if (directProblem) {
+      enterSinglePractice();
+      state.filtered = [directProblem];
+      state.currentIndex = 0;
+      state.selectedChoice = problemProgress(directProblem)?.choice || null;
+      state.revealed = Boolean(problemProgress(directProblem));
+      render();
+    } else {
+      showEntry();
+    }
   } catch (error) {
     els.datasetMeta.textContent = "题库加载失败 / Problem bank failed to load";
     els.entryMeta.textContent = "题库加载失败 / Problem bank failed to load";

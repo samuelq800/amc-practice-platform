@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
     <link rel="icon" href="./school-logo.jpg" />
-    <link rel="stylesheet" href="./styles.css?v=20260707-color1" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-assignments1" />
     <script>
       window.MathJax = {
         tex: {
@@ -98,6 +98,15 @@
             <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
           </section>
 
+          <section id="assignedPracticeCard" class="mode-card mode-card-primary is-hidden" aria-label="数学社布置题目 / Math Club assignments">
+            <div>
+              <span class="eyebrow">数学社任务 / Math Club</span>
+              <h2>老师布置题目<br />Assigned Problems</h2>
+              <p>完成数学社老师布置的 AMC 题目；提交后可直接查看答案和分阶段解析。<br />Complete assigned AMC problems with answers and staged solutions available after submission.</p>
+            </div>
+            <button id="assignedPracticeMode" type="button">进入布置题目 / Open Assignments</button>
+          </section>
+
           <section class="mode-card mode-card-secondary">
             <div>
               <span class="eyebrow">学习记录 / Study Record</span>
@@ -116,6 +125,34 @@
             <button id="aboutMode" type="button">查看 About / About</button>
           </section>
         </div>
+      </section>
+    </main>
+
+    <main id="assignmentScreen" class="assignment-screen is-hidden">
+      <header class="topbar">
+        <div class="brand">
+          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
+          <div>
+            <h1>数学社布置题目 / Math Club Assignments</h1>
+            <p id="assignmentMeta">加载老师布置的 AMC 题目中 / Loading assigned AMC problems...</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="assignmentUserBadge">Guest</span>
+          </div>
+          <button id="assignmentRefresh" type="button">刷新 / Refresh</button>
+          <button id="assignmentToEntry" type="button">模式选择 / Modes</button>
+        </div>
+      </header>
+
+      <section class="assignment-page" aria-label="老师布置的题目 / Assigned problems">
+        <div class="assignment-intro">
+          <span class="eyebrow">Math Club / AMC Practice</span>
+          <h2>老师布置的 AMC 题目</h2>
+          <p>选择一个任务即可直接进入作答。答案、解析与完成情况会保存在你的练习记录中。</p>
+        </div>
+        <div id="assignmentList" class="assignment-list"></div>
       </section>
     </main>
 
@@ -537,6 +574,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./app.js?v=20260708-supabase1"></script>
+    <script src="./app.js?v=20260711-assignments1"></script>
   </body>
 </html>
