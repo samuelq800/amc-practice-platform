@@ -1,4 +1,4 @@
-const DATA_URLS = ["./amc_aops_2010_present.json", "../amc_aops_2010_present.json"];
+const DATA_URLS = ["./amc_aops_2010_present.json?v=20260712-figure-fix1", "../amc_aops_2010_present.json?v=20260712-figure-fix1"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
 const LAYOUT_KEY = "amc-practice-layout-v1";
