@@ -368,7 +368,22 @@ async function ensureProfile(user) {
 }
 
 function problemById(problemId) {
-  return state.problems.find((problem) => problem.id === problemId) || null;
+  const rawId = String(problemId || "").trim();
+  const exact = state.problems.find((problem) => problem.id === rawId);
+  if (exact) return exact;
+
+  // Older Math Club assignments saved single-digit numbers without the
+  // zero-padding used by the AMC problem bank, e.g. ..._1 instead of ..._01.
+  const match = rawId.match(/^(\d{4})(?:_(Fall))?_AMC_(10|12)([AB])_(\d{1,2})$/);
+  if (!match) return null;
+  const [, year, season, level, form, number] = match;
+  return state.problems.find((problem) => (
+    String(problem.year) === year &&
+    String(problem.level) === level &&
+    problem.form === form &&
+    Number(problem.number) === Number(number) &&
+    (season ? String(problem.season || "").toLowerCase() === season.toLowerCase() : !problem.season)
+  )) || null;
 }
 
 function attemptToProgress(problem, attempts) {
