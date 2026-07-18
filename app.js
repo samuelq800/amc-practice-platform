@@ -734,6 +734,7 @@ async function submitBmoResponse() {
       setCloudStatus("BMO 解答已同步，等待教师评阅。 / BMO solution synced for teacher review.");
     }
   }
+  state.revealed = true;
   render();
 }
 
@@ -1123,6 +1124,7 @@ function enterBmoPractice() {
   state.activeExamId = null;
   state.activeAssignmentId = null;
   state.examSubmitted = false;
+  state.revealed = false;
   state.solutionStage = "idea";
   initFilters("bmo");
   setFilterVisibility({ level: false, form: false, exam: false });
@@ -1393,7 +1395,7 @@ function toggleFavorite() {
 }
 
 function canShowAnswer(progress = null) {
-  if (state.mode === "bmo") return true;
+  if (state.mode === "bmo") return Boolean(state.revealed);
   if (state.mode === "exam") return state.examSubmitted;
   return Boolean(state.revealed || progress);
 }
@@ -2323,7 +2325,7 @@ function renderProblem() {
       ? "保存本题 / Save"
       : "提交 / Submit";
   els.submitAnswer.classList.remove("is-hidden");
-  els.revealAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.revealAnswer.classList.remove("is-hidden");
   els.clearAnswer.classList.remove("is-hidden");
   els.clearAnswer.textContent = state.mode === "bmo" ? "清空草稿 / Clear Draft" : "清除 / Clear";
   els.favoriteProblem.classList.toggle("is-hidden", state.mode === "bmo");
@@ -2502,6 +2504,8 @@ function setAnswerPanel(problem, progress = null) {
     const prompt = document.createElement("p");
     prompt.textContent = state.mode === "exam"
       ? "考试模式中答案和解析已锁定，提交整卷后统一显示。 / In exam mode, answers and solutions are locked until you submit the full paper."
+      : state.mode === "bmo"
+        ? "BMO 解析默认隐藏。提交你的解答后会自动显示，也可以点击“看答案/解析”提前展开。 / BMO solutions are hidden by default; submit your response or use Reveal to open them."
       : "提交答案后会自动显示解析；作答前也可以点击“看答案/解析”。 / The solution appears after submission; you may also reveal it before answering.";
     els.solutionBody.appendChild(prompt);
   } else if (problem.solution_text) {
