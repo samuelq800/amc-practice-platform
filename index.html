@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
+    <title>AMC 10/12 与 BMO1 真题练习 | AMC &amp; BMO Practice</title>
     <link rel="icon" href="./school-logo.jpg" />
     <link rel="stylesheet" href="./styles.css?v=20260711-assignments1" />
     <script>
@@ -28,15 +28,15 @@
             <div class="brand-lockup">
               <img class="school-logo" src="./school-logo.jpg" alt="学校标识 / School logo" />
               <div>
-                <span class="eyebrow">AMC Practice Center</span>
-                <h1>AMC 10/12 真题练习<br />AMC 10/12 Practice</h1>
+                <span class="eyebrow">AMC &amp; BMO Practice Center</span>
+                <h1>AMC 10/12 与 BMO1 真题练习<br />AMC 10/12 &amp; BMO1 Practice</h1>
               </div>
             </div>
             <p id="entryMeta">加载中 / Loading...</p>
             <div class="entry-stats" aria-label="平台数据 / Platform data">
               <div><strong>68</strong><span>套 AMC 试卷 / AMC papers</span></div>
               <div><strong>1700</strong><span>道真题 / problems</span></div>
-              <div><strong>75</strong><span>分钟全卷模拟 / min mock exam</span></div>
+              <div><strong>145</strong><span>道 BMO1 分类题 / BMO1 problems</span></div>
             </div>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -96,6 +96,15 @@
               <select id="fullExamSelect"></select>
             </label>
             <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
+          </section>
+
+          <section class="mode-card mode-card-primary" aria-label="BMO1 训练 / BMO1 practice">
+            <div>
+              <span class="eyebrow">BMO1 训练 / BMO1 Practice</span>
+              <h2>开始 BMO1 训练<br />Start BMO1 Practice</h2>
+              <p>按年份、知识点和难度练习 BMO1 证明题；答案与分阶段解析直接显示。<br />Practice BMO1 proof problems by year, topic, and difficulty with staged solutions shown directly.</p>
+            </div>
+            <button id="bmoPracticeMode" type="button">进入 BMO1 训练 / Start BMO1</button>
           </section>
 
           <section id="assignedPracticeCard" class="mode-card mode-card-primary is-hidden" aria-label="数学社布置题目 / Math Club assignments">
@@ -161,7 +170,7 @@
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
+            <h1 id="practiceTitle">AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
             <p id="datasetMeta">加载中 / Loading...</p>
           </div>
         </div>
@@ -499,8 +508,8 @@
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>平台说明 / About the Platform</h1>
-            <p>AMC 10/12 Practice Center</p>
+            <h1>AMC/BMO 平台说明 / About the Platform</h1>
+            <p>AMC 10/12 &amp; BMO1 Practice Center</p>
           </div>
         </div>
         <div class="top-actions">
@@ -513,14 +522,13 @@
         <div class="about-hero">
           <div>
             <span class="eyebrow">About This Platform</span>
-            <h2>面向 AMC 10/12 备赛的校内数学训练平台<br />A School-Based AMC 10/12 Training Platform</h2>
+            <h2>面向 AMC 10/12 与 BMO1 备赛的校内数学训练平台<br />A School-Based AMC 10/12 and BMO1 Training Platform</h2>
             <p>
-              本平台由数学社维护，面向准备 AMC 10/12 的同学提供系统化真题练习、全卷模拟和学习表现分析。
-              平台重点服务 AMC 前置训练，帮助学生熟悉竞赛题型、建立限时作答节奏，并通过知识点诊断明确下一步复习方向。
+              本平台由数学社维护，面向准备 AMC 10/12 与 BMO1 的同学提供系统化真题练习、AMC 全卷模拟和学习表现分析。
+              AMC 模块用于选择题训练与限时模拟；BMO1 模块作为独立入口，用于证明题分类训练并直接展示答案与解析。
               <br />
-              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 through structured past-paper practice,
-              full-length mock exams, and performance diagnostics. It is designed for AMC readiness training: students can learn the contest format,
-              build timed-exam habits, and identify what to review next.
+              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 and BMO1 through structured past-paper practice,
+              AMC full-length mock exams, and performance diagnostics. BMO1 is kept as a separate proof-problem practice mode with answers and solutions shown directly.
             </p>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -535,14 +543,14 @@
 
           <section class="about-card">
             <span class="eyebrow">题库范围 / Problem Bank</span>
-            <h3>收录 AMC 10/12 历年真题<br />AMC 10/12 Past Problems</h3>
-            <p>题库覆盖 AMC 10 与 AMC 12 的历年试卷，并按年份、卷别、题号、知识点和难度区间组织，便于针对性训练。<br />The problem bank includes AMC 10 and AMC 12 papers, organized by year, form, problem number, topic, and difficulty band.</p>
+            <h3>收录 AMC 10/12 与 BMO1 训练题<br />AMC 10/12 and BMO1 Problems</h3>
+            <p>AMC 题库按年份、卷别、题号、知识点和难度组织；BMO1 题库覆盖 2000–2023 年官方真题，并作为独立训练入口。<br />AMC problems are organized by paper and topic; BMO1 includes official problems from 2000–2023 in a separate practice mode.</p>
           </section>
 
           <section class="about-card">
             <span class="eyebrow">练习方式 / Practice Modes</span>
-            <h3>支持单题练习与全卷模拟<br />Single Practice and Full Mock Exams</h3>
-            <p>单题练习适合按知识点查漏补缺；全卷模拟提供 75 分钟倒计时、统一交卷和 AMC 规则模拟计分，更接近正式比赛体验。<br />Single-problem practice supports targeted review, while full mock exams use a 75-minute timer, exam submission, and AMC-style scoring.</p>
+            <h3>支持 AMC 练习与 BMO 证明题训练<br />AMC Practice and BMO Proof Training</h3>
+            <p>AMC 提供单题练习与 75 分钟全卷模拟；BMO1 按年份、知识点和难度筛选，直接查看答案与分阶段解析。<br />AMC supports single practice and timed mocks; BMO1 supports filtered proof-problem practice with staged solutions.</p>
           </section>
 
           <section class="about-card">
@@ -561,6 +569,10 @@
             <br />
             AMC 10/12 problems, answer keys, and solution links are organized from publicly available Art of Problem Solving（AoPS）pages.
             This platform is for learning and practice. Source links are retained so students can review the original AoPS problem, answer key, and solution pages.
+            <br /><br />
+            BMO1 题干来自 BMOS/UKMT 官方历年题目汇编，知识点分类参考《BMO1分类题库2000-2023》PDF。未找到开放官方答案的题目会明确标注，不进行自动判分。
+            <br />
+            BMO1 statements come from the official BMOS/UKMT archive, with topic classification informed by the classified BMO1 PDF. Items without an open answer are clearly marked and are not auto-graded.
           </p>
         </section>
 
@@ -574,6 +586,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./app.js?v=20260712-figure-fix1"></script>
+    <script src="./app.js?v=20260717-bmo-restore2"></script>
   </body>
 </html>
