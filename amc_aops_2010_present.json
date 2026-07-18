@@ -35998,18 +35998,18 @@
       "statement_text": "In the figure below, $ABEF$ is a rectangle, $\\overline{AD}\\perp\\overline{DE}$ , $AF=7$ , $AB=1$ , and $AD=5$ .\nWhat is the area of $\\triangle ABC$ ?\n\n[asy] unitsize(1cm); pair A, B, C, D, E, F; A = (5, 5); B = (5.6, 4.2); C = (5, 3.75); D = (5, 0); E = (0, 0); F = (-0.6, 0.8); fill(A--B--C--cycle, palered); dot(A); dot(B); dot(C); dot(D); dot(E); dot(F); label(\"$A$\", A, N); label(\"$B$\", B, (1,0)); label(\"$C$\", C, SE); label(\"$D$\", D, (1,0)); label(\"$E$\", E, S); label(\"$F$\", F, W); draw(A--D--E); draw(A--B--E--F--A); draw(rightanglemark(C, D, E)); [/asy]\n\n$\\textbf{(A) } \\frac{3}{8} \\qquad\\textbf{(B) } \\frac{4}{9} \\qquad\\textbf{(C) } \\frac{1}{8}\\sqrt{13} \\qquad\\textbf{(D) } \\frac{7}{15} \\qquad\\textbf{(E) } \\frac{1}{8}\\sqrt{15}$",
       "statement_html": "<p>In the figure below, <img src=\"https://latex.artofproblemsolving.com/5/e/9/5e91fa584790bd73c21e57d1c0bdc5199237b961.png\" class=\"latex\" alt=\"$ABEF$\" style=\"vertical-align: -1px\" width=\"59\" height=\"14\"> is a rectangle, <img src=\"https://latex.artofproblemsolving.com/8/1/2/81240ee5212d4c7b8b49dda0a65850698a467e64.png\" class=\"latex\" alt=\"$\\overline{AD}\\perp\\overline{DE}$\" style=\"vertical-align: -1px\" width=\"85\" height=\"18\">, <img src=\"https://latex.artofproblemsolving.com/9/9/e/99e384e6c4e4dce1bebe3d26d0697b6d310af890.png\" class=\"latex\" alt=\"$AF=7$\" style=\"vertical-align: -1px\" width=\"63\" height=\"14\">, <img src=\"https://latex.artofproblemsolving.com/4/e/4/4e4e71e9c0786b12fb9b4b5c67364147ed6e402f.png\" class=\"latex\" alt=\"$AB=1$\" style=\"vertical-align: -1px\" width=\"64\" height=\"14\">, and <img src=\"https://latex.artofproblemsolving.com/7/8/d/78d54c2de2b9c068bc2465bdf90eff7a3312f9e5.png\" class=\"latex\" alt=\"$AD=5$\" style=\"vertical-align: -1px\" width=\"64\" height=\"14\">.\nWhat is the area of <img src=\"https://latex.artofproblemsolving.com/8/c/3/8c3a2d2224f7d163b46d702132425d47828bf538.png\" class=\"latex\" alt=\"$\\triangle ABC$\" style=\"vertical-align: -4px\" width=\"61\" height=\"18\">?\n</p>\n<p><img src=\"https://latex.artofproblemsolving.com/b/e/a/bea2f60b31948e67857bef201e82a1d159cbb6af.png\" class=\"latexcenter\" alt=\"[asy] unitsize(1cm); pair A, B, C, D, E, F; A = (5, 5); B = (5.6, 4.2); C = (5, 3.75); D = (5, 0); E = (0, 0); F = (-0.6, 0.8); fill(A--B--C--cycle, palered); dot(A); dot(B); dot(C); dot(D); dot(E); dot(F); label(&quot;$A$&quot;, A, N); label(&quot;$B$&quot;, B, (1,0)); label(&quot;$C$&quot;, C, SE); label(&quot;$D$&quot;, D, (1,0)); label(&quot;$E$&quot;, E, S); label(&quot;$F$&quot;, F, W); draw(A--D--E); draw(A--B--E--F--A); draw(rightanglemark(C, D, E)); [/asy]\" width=\"342\" height=\"282\">\n</p>\n<p><img src=\"https://latex.artofproblemsolving.com/a/b/a/aba322a958a5a4d73a4bb819ea5ae293934886c7.png\" class=\"latex\" alt=\"$\\textbf{(A) } \\frac{3}{8} \\qquad\\textbf{(B) } \\frac{4}{9} \\qquad\\textbf{(C) } \\frac{1}{8}\\sqrt{13} \\qquad\\textbf{(D) } \\frac{7}{15} \\qquad\\textbf{(E) } \\frac{1}{8}\\sqrt{15}$\" style=\"vertical-align: -13px\" width=\"451\" height=\"38\">\n</p>",
       "choices": {
-        "A": "; dot",
-        "B": "; dot",
-        "C": "; dot",
-        "D": "; dot",
-        "E": "; dot(F); label(\"$A$\", A, N); label(\"$B$\", B, (1,0)); label(\"$C$\", C, SE); label(\"$D$\", D, (1,0)); label(\"$E$\", E, S); label(\"$F$\", F, W); draw(A--D--E); draw(A--B--E--F--A); draw(rightanglemark(C, D, E)); [/asy]"
+        "A": "\\frac{3}{8}",
+        "B": "\\frac{4}{9}",
+        "C": "\\frac{1}{8}\\sqrt{13}",
+        "D": "\\frac{7}{15}",
+        "E": "\\frac{1}{8}\\sqrt{15}"
       },
       "answer_choice": "A",
       "answer_choices_accepted": [
         "A"
       ],
       "answer_note": null,
-      "answer_value": "; dot",
+      "answer_value": "\\frac{3}{8}",
       "primary_topic": "geometry",
       "topic_tags": [
         "geometry",

@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AMC 10/12 真题练习 | AMC 10/12 Practice</title>
-    <link rel="stylesheet" href="./styles.css?v=20260707-color1" />
+    <title>AMC 10/12 与 BMO1 真题练习 | AMC &amp; BMO Practice</title>
+    <link rel="icon" href="./school-logo.jpg" />
+    <link rel="stylesheet" href="./styles.css?v=20260718-bmo-submit1" />
     <script>
       window.MathJax = {
         tex: {
@@ -27,21 +28,54 @@
             <div class="brand-lockup">
               <img class="school-logo" src="./school-logo.jpg" alt="学校标识 / School logo" />
               <div>
-                <span class="eyebrow">AMC Practice Center</span>
-                <h1>AMC 10/12 真题练习<br />AMC 10/12 Practice</h1>
+                <span class="eyebrow">AMC &amp; BMO Practice Center</span>
+                <h1>AMC 10/12 与 BMO1 真题练习<br />AMC 10/12 &amp; BMO1 Practice</h1>
               </div>
             </div>
             <p id="entryMeta">加载中 / Loading...</p>
             <div class="entry-stats" aria-label="平台数据 / Platform data">
               <div><strong>68</strong><span>套 AMC 试卷 / AMC papers</span></div>
               <div><strong>1700</strong><span>道真题 / problems</span></div>
-              <div><strong>75</strong><span>分钟全卷模拟 / min mock exam</span></div>
+              <div><strong>145</strong><span>道 BMO1 分类题 / BMO1 problems</span></div>
             </div>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
         </div>
 
         <div class="mode-grid">
+          <section class="auth-card shared-session-card" aria-label="共享账号状态 / Shared account status">
+            <div>
+              <span class="eyebrow">账号 / Account</span>
+              <h2 id="authTitle">共享登录状态<br />Shared Login Session</h2>
+              <p id="authStatusText">请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。<br />Sign in from the main SZZX contest entrance; this page will reuse the same Supabase session.</p>
+            </div>
+            <div id="authGuestPanel" class="auth-actions is-hidden">
+              <button id="openLogin" type="button">登录 / Login</button>
+              <button id="openSignup" type="button">注册 / Sign up</button>
+              <button id="continueGuest" type="button">游客模式 / Continue as Guest</button>
+            </div>
+            <div id="authUserPanel" class="auth-user-panel is-hidden">
+              <span id="userBadge">Guest</span>
+              <button id="adminDashboardButton" type="button" class="is-hidden">管理员面板 / Admin</button>
+              <button id="logoutButton" type="button">退出 / Logout</button>
+            </div>
+            <form id="authForm" class="auth-form is-hidden">
+              <label>
+                <span>邮箱 / Email</span>
+                <input id="authEmail" type="email" autocomplete="email" placeholder="student@example.com" />
+              </label>
+              <label>
+                <span>密码 / Password</span>
+                <input id="authPassword" type="password" autocomplete="current-password" placeholder="至少 6 位 / at least 6 characters" />
+              </label>
+              <div class="auth-actions">
+                <button id="authSubmit" type="submit">登录 / Login</button>
+                <button id="authCancel" type="button">取消 / Cancel</button>
+              </div>
+              <p id="authMessage" class="auth-message"></p>
+            </form>
+          </section>
+
           <section class="mode-card mode-card-primary">
             <div>
               <span class="eyebrow">单题练习 / Single Problems</span>
@@ -62,6 +96,24 @@
               <select id="fullExamSelect"></select>
             </label>
             <button id="startFullExam" type="button">开始全卷练习 / Start Mock Exam</button>
+          </section>
+
+          <section class="mode-card mode-card-primary" aria-label="BMO1 训练 / BMO1 practice">
+            <div>
+              <span class="eyebrow">BMO1 训练 / BMO1 Practice</span>
+              <h2>开始 BMO1 训练<br />Start BMO1 Practice</h2>
+              <p>按年份、知识点和难度练习 BMO1 证明题；答案与分阶段解析直接显示。<br />Practice BMO1 proof problems by year, topic, and difficulty with staged solutions shown directly.</p>
+            </div>
+            <button id="bmoPracticeMode" type="button">进入 BMO1 训练 / Start BMO1</button>
+          </section>
+
+          <section id="assignedPracticeCard" class="mode-card mode-card-primary is-hidden" aria-label="数学社布置题目 / Math Club assignments">
+            <div>
+              <span class="eyebrow">数学社任务 / Math Club</span>
+              <h2>老师布置题目<br />Assigned Problems</h2>
+              <p>完成数学社老师布置的 AMC 题目；提交后可直接查看答案和分阶段解析。<br />Complete assigned AMC problems with answers and staged solutions available after submission.</p>
+            </div>
+            <button id="assignedPracticeMode" type="button">进入布置题目 / Open Assignments</button>
           </section>
 
           <section class="mode-card mode-card-secondary">
@@ -85,16 +137,49 @@
       </section>
     </main>
 
+    <main id="assignmentScreen" class="assignment-screen is-hidden">
+      <header class="topbar">
+        <div class="brand">
+          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
+          <div>
+            <h1>数学社布置题目 / Math Club Assignments</h1>
+            <p id="assignmentMeta">加载老师布置的 AMC 题目中 / Loading assigned AMC problems...</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="assignmentUserBadge">Guest</span>
+          </div>
+          <button id="assignmentRefresh" type="button">刷新 / Refresh</button>
+          <button id="assignmentToEntry" type="button">模式选择 / Modes</button>
+        </div>
+      </header>
+
+      <section class="assignment-page" aria-label="老师布置的题目 / Assigned problems">
+        <div class="assignment-intro">
+          <span class="eyebrow">Math Club / AMC Practice</span>
+          <h2>老师布置的 AMC 题目</h2>
+          <p>选择一个任务即可直接进入作答。答案、解析与完成情况会保存在你的练习记录中。</p>
+        </div>
+        <div id="assignmentList" class="assignment-list"></div>
+      </section>
+    </main>
+
     <main id="practiceShell" class="app-shell is-hidden">
       <header class="topbar">
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
+            <h1 id="practiceTitle">AMC 10/12 真题练习 / AMC 10/12 Practice</h1>
             <p id="datasetMeta">加载中 / Loading...</p>
           </div>
         </div>
         <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="topUserBadge">Guest</span>
+            <button id="topAdminDashboardButton" type="button" class="is-hidden">Admin</button>
+            <button id="topLogoutButton" type="button" class="is-hidden">Logout</button>
+          </div>
           <div id="timerPanel" class="timer-panel is-hidden" aria-label="全卷倒计时 / Full exam countdown">
             <span id="timerText">75:00</span>
             <small id="timerLabel">剩余时间 / Time left</small>
@@ -169,6 +254,17 @@
 
           <div id="choicePanel" class="choice-panel" aria-label="答案选项 / Answer choices"></div>
 
+          <section id="bmoResponsePanel" class="bmo-response-panel is-hidden" aria-label="BMO 证明解答 / BMO proof response">
+            <label for="bmoResponseText">
+              <span>我的证明 / My Solution</span>
+              <textarea id="bmoResponseText" maxlength="12000" rows="8" placeholder="在这里写出完整证明或解题过程…… / Write your proof or full solution here..."></textarea>
+            </label>
+            <div class="bmo-response-meta">
+              <span id="bmoResponseStatus">草稿仅保存在本机 / Draft saved locally</span>
+              <span id="bmoResponseCount">0 / 12000</span>
+            </div>
+          </section>
+
           <div class="answer-actions">
             <button id="submitAnswer" type="button">提交 / Submit</button>
             <button id="submitExam" type="button" class="is-hidden">提交整卷 / Submit Exam</button>
@@ -234,6 +330,10 @@
           </div>
         </div>
         <div class="top-actions">
+          <div class="user-status" aria-label="账号状态 / Account status">
+            <span id="reviewUserBadge">Guest</span>
+          </div>
+          <button id="reviewAdminDashboardButton" type="button" class="is-hidden">管理员面板 / Admin</button>
           <button id="reviewToPractice" type="button">继续练习 / Continue</button>
           <button id="reviewToAbout" type="button">平台说明 / About</button>
           <button id="reviewToEntry" type="button">模式选择 / Modes</button>
@@ -317,13 +417,155 @@
       </section>
     </main>
 
+    <main id="adminScreen" class="admin-screen is-hidden">
+      <header class="topbar">
+        <div class="brand">
+          <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
+          <div>
+            <h1>管理员面板 / Admin Dashboard</h1>
+            <p id="adminMeta">加载云端数据 / Loading cloud data</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button id="adminRefresh" type="button">刷新 / Refresh</button>
+          <button id="adminExportCsv" type="button">导出 CSV / Export CSV</button>
+          <button id="adminToPractice" type="button">返回练习 / Practice</button>
+          <button id="adminToEntry" type="button">模式选择 / Modes</button>
+        </div>
+      </header>
+
+      <section class="admin-page" aria-label="管理员数据 / Admin analytics">
+        <div class="admin-summary">
+          <div><span id="adminTotalStudents">0</span><small>学生 / Students</small></div>
+          <div><span id="adminTotalAttempts">0</span><small>作答 / Attempts</small></div>
+          <div><span id="adminAverageAccuracy">0%</span><small>AMC 正确率 / AMC Accuracy</small></div>
+          <div><span id="adminActiveUsers">0</span><small>7 日活跃 / Active 7d</small></div>
+        </div>
+
+        <section class="admin-panel">
+          <div class="section-head">
+            <span class="eyebrow">筛选 / Filters</span>
+            <strong>云端记录 / Cloud Records</strong>
+          </div>
+          <div class="admin-filters">
+            <label><span>学生 / Student</span><select id="adminStudentFilter"></select></label>
+            <label><span>年份 / Year</span><select id="adminYearFilter"></select></label>
+            <label><span>考试 / Contest</span><select id="adminLevelFilter"></select></label>
+            <label><span>知识点 / Topic</span><select id="adminTopicFilter"></select></label>
+            <label><span>难度 / Difficulty</span><select id="adminDifficultyFilter"></select></label>
+            <label><span>开始日期 / From</span><input id="adminDateFrom" type="date" /></label>
+            <label><span>结束日期 / To</span><input id="adminDateTo" type="date" /></label>
+          </div>
+        </section>
+
+        <section class="admin-grid">
+          <div class="admin-panel">
+            <div class="section-head">
+              <span class="eyebrow">学生统计 / Students</span>
+              <strong id="adminStudentTitle">0 students</strong>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>姓名 / Name</th>
+                    <th>邮箱 / Email</th>
+                    <th>作答 / Attempts</th>
+                    <th>正确 / Correct</th>
+                    <th>正确率 / Accuracy</th>
+                    <th>最近活跃 / Last Active</th>
+                  </tr>
+                </thead>
+                <tbody id="adminStudentRows"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="admin-panel">
+            <div class="section-head">
+              <span class="eyebrow">题目统计 / Problems</span>
+              <strong id="adminProblemTitle">0 problems</strong>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>题目 / Problem</th>
+                    <th>试卷 / Exam</th>
+                    <th>题号 / No.</th>
+                    <th>知识点 / Topic</th>
+                    <th>作答 / Attempts</th>
+                    <th>正确率 / Correct Rate</th>
+                  </tr>
+                </thead>
+                <tbody id="adminProblemRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel">
+          <div class="section-head">
+            <span class="eyebrow">最近作答 / Recent Attempts</span>
+            <strong id="adminRecentTitle">0 attempts</strong>
+          </div>
+          <div id="adminRecentList" class="answered-list"></div>
+        </section>
+
+        <section class="admin-panel bmo-review-section">
+          <div class="section-head">
+            <span class="eyebrow">BMO 解答评阅 / BMO Review</span>
+            <strong id="adminBmoTitle">0 submissions</strong>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table bmo-review-table">
+              <thead>
+                <tr>
+                  <th>学生 / Student</th>
+                  <th>题目 / Problem</th>
+                  <th>提交时间 / Submitted</th>
+                  <th>状态 / Status</th>
+                  <th>分数 / Score</th>
+                  <th>操作 / Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminBmoRows"></tbody>
+            </table>
+          </div>
+
+          <form id="bmoReviewForm" class="bmo-review-form is-hidden">
+            <div class="bmo-review-head">
+              <div>
+                <span class="eyebrow">当前解答 / Current Submission</span>
+                <strong id="bmoReviewHeading">-</strong>
+              </div>
+              <button id="bmoReviewCancel" type="button">取消 / Cancel</button>
+            </div>
+            <div id="bmoReviewResponse" class="bmo-review-response"></div>
+            <div class="bmo-review-controls">
+              <label>
+                <span>评分（0–10）/ Score</span>
+                <input id="bmoReviewScore" type="number" min="0" max="10" step="0.5" required />
+              </label>
+              <label>
+                <span>教师反馈 / Teacher Feedback</span>
+                <textarea id="bmoReviewFeedback" rows="4" maxlength="4000" placeholder="写下评语或改进建议…… / Add feedback or suggestions..."></textarea>
+              </label>
+            </div>
+            <button id="bmoReviewSave" type="submit">保存评阅 / Save Review</button>
+            <p id="bmoReviewMessage" class="bmo-review-message"></p>
+          </form>
+        </section>
+      </section>
+    </main>
+
     <main id="aboutScreen" class="about-screen is-hidden">
       <header class="topbar">
         <div class="brand">
           <img class="school-logo school-logo-small" src="./school-logo.jpg" alt="学校标识 / School logo" />
           <div>
-            <h1>平台说明 / About the Platform</h1>
-            <p>AMC 10/12 Practice Center</p>
+            <h1>AMC/BMO 平台说明 / About the Platform</h1>
+            <p>AMC 10/12 &amp; BMO1 Practice Center</p>
           </div>
         </div>
         <div class="top-actions">
@@ -336,14 +578,13 @@
         <div class="about-hero">
           <div>
             <span class="eyebrow">About This Platform</span>
-            <h2>面向 AMC 10/12 备赛的校内数学训练平台<br />A School-Based AMC 10/12 Training Platform</h2>
+            <h2>面向 AMC 10/12 与 BMO1 备赛的校内数学训练平台<br />A School-Based AMC 10/12 and BMO1 Training Platform</h2>
             <p>
-              本平台由数学社维护，面向准备 AMC 10/12 的同学提供系统化真题练习、全卷模拟和学习表现分析。
-              平台重点服务 AMC 前置训练，帮助学生熟悉竞赛题型、建立限时作答节奏，并通过知识点诊断明确下一步复习方向。
+              本平台由数学社维护，面向准备 AMC 10/12 与 BMO1 的同学提供系统化真题练习、AMC 全卷模拟和学习表现分析。
+              AMC 模块用于选择题训练与限时模拟；BMO1 模块作为独立入口，用于证明题分类训练并直接展示答案与解析。
               <br />
-              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 through structured past-paper practice,
-              full-length mock exams, and performance diagnostics. It is designed for AMC readiness training: students can learn the contest format,
-              build timed-exam habits, and identify what to review next.
+              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 and BMO1 through structured past-paper practice,
+              AMC full-length mock exams, and performance diagnostics. BMO1 is kept as a separate proof-problem practice mode with answers and solutions shown directly.
             </p>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -358,14 +599,14 @@
 
           <section class="about-card">
             <span class="eyebrow">题库范围 / Problem Bank</span>
-            <h3>收录 AMC 10/12 历年真题<br />AMC 10/12 Past Problems</h3>
-            <p>题库覆盖 AMC 10 与 AMC 12 的历年试卷，并按年份、卷别、题号、知识点和难度区间组织，便于针对性训练。<br />The problem bank includes AMC 10 and AMC 12 papers, organized by year, form, problem number, topic, and difficulty band.</p>
+            <h3>收录 AMC 10/12 与 BMO1 训练题<br />AMC 10/12 and BMO1 Problems</h3>
+            <p>AMC 题库按年份、卷别、题号、知识点和难度组织；BMO1 题库覆盖 2000–2023 年官方真题，并作为独立训练入口。<br />AMC problems are organized by paper and topic; BMO1 includes official problems from 2000–2023 in a separate practice mode.</p>
           </section>
 
           <section class="about-card">
             <span class="eyebrow">练习方式 / Practice Modes</span>
-            <h3>支持单题练习与全卷模拟<br />Single Practice and Full Mock Exams</h3>
-            <p>单题练习适合按知识点查漏补缺；全卷模拟提供 75 分钟倒计时、统一交卷和 AMC 规则模拟计分，更接近正式比赛体验。<br />Single-problem practice supports targeted review, while full mock exams use a 75-minute timer, exam submission, and AMC-style scoring.</p>
+            <h3>支持 AMC 练习与 BMO 证明题训练<br />AMC Practice and BMO Proof Training</h3>
+            <p>AMC 提供单题练习与 75 分钟全卷模拟；BMO1 按年份、知识点和难度筛选，直接查看答案与分阶段解析。<br />AMC supports single practice and timed mocks; BMO1 supports filtered proof-problem practice with staged solutions.</p>
           </section>
 
           <section class="about-card">
@@ -384,6 +625,10 @@
             <br />
             AMC 10/12 problems, answer keys, and solution links are organized from publicly available Art of Problem Solving（AoPS）pages.
             This platform is for learning and practice. Source links are retained so students can review the original AoPS problem, answer key, and solution pages.
+            <br /><br />
+            BMO1 题干来自 BMOS/UKMT 官方历年题目汇编，知识点分类参考《BMO1分类题库2000-2023》PDF。未找到开放官方答案的题目会明确标注，不进行自动判分。
+            <br />
+            BMO1 statements come from the official BMOS/UKMT archive, with topic classification informed by the classified BMO1 PDF. Items without an open answer are clearly marked and are not auto-graded.
           </p>
         </section>
 
@@ -396,6 +641,7 @@
       </section>
     </main>
 
-    <script src="./app.js?v=20260707-color1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./app.js?v=20260718-bmo-submit1"></script>
   </body>
 </html>
