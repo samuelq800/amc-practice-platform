@@ -3,6 +3,9 @@ const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "
 const STORAGE_KEY = "amc-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
 const LAYOUT_KEY = "amc-practice-layout-v1";
+const BMO_DRAFTS_KEY = "amc-practice-bmo-drafts-v2";
+const BMO_SUBMISSIONS_KEY = "amc-practice-bmo-submissions-v2";
+const BMO_RESPONSE_LIMIT = 12000;
 const FULL_EXAM_SECONDS = 75 * 60;
 
 const SUPABASE_URL = "https://bwlcnaruyjazaxyiiumd.supabase.co";
@@ -104,6 +107,16 @@ const els = {
   adminProblemRows: document.querySelector("#adminProblemRows"),
   adminRecentTitle: document.querySelector("#adminRecentTitle"),
   adminRecentList: document.querySelector("#adminRecentList"),
+  adminBmoTitle: document.querySelector("#adminBmoTitle"),
+  adminBmoRows: document.querySelector("#adminBmoRows"),
+  bmoReviewForm: document.querySelector("#bmoReviewForm"),
+  bmoReviewHeading: document.querySelector("#bmoReviewHeading"),
+  bmoReviewResponse: document.querySelector("#bmoReviewResponse"),
+  bmoReviewScore: document.querySelector("#bmoReviewScore"),
+  bmoReviewFeedback: document.querySelector("#bmoReviewFeedback"),
+  bmoReviewCancel: document.querySelector("#bmoReviewCancel"),
+  bmoReviewSave: document.querySelector("#bmoReviewSave"),
+  bmoReviewMessage: document.querySelector("#bmoReviewMessage"),
   reviewScreen: document.querySelector("#reviewScreen"),
   reviewMeta: document.querySelector("#reviewMeta"),
   reviewTotal: document.querySelector("#reviewTotal"),
@@ -159,6 +172,10 @@ const els = {
   nextProblem: document.querySelector("#nextProblem"),
   statement: document.querySelector("#statement"),
   choicePanel: document.querySelector("#choicePanel"),
+  bmoResponsePanel: document.querySelector("#bmoResponsePanel"),
+  bmoResponseText: document.querySelector("#bmoResponseText"),
+  bmoResponseStatus: document.querySelector("#bmoResponseStatus"),
+  bmoResponseCount: document.querySelector("#bmoResponseCount"),
   submitAnswer: document.querySelector("#submitAnswer"),
   submitExam: document.querySelector("#submitExam"),
   revealAnswer: document.querySelector("#revealAnswer"),
@@ -206,8 +223,29 @@ const state = {
   cloudStatus: "",
   cloudAttempts: [],
   cloudFavorites: [],
-  adminData: { profiles: [], attempts: [] },
+  bmoDrafts: loadStoredObject(BMO_DRAFTS_KEY),
+  bmoSubmissions: loadStoredArray(BMO_SUBMISSIONS_KEY),
+  activeBmoReviewId: null,
+  adminData: { profiles: [], attempts: [], bmoSubmissions: [] },
 };
+
+function loadStoredObject(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  } catch {
+    return {};
+  }
+}
+
+function loadStoredArray(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
+}
 
 function loadProgress() {
   try {
@@ -247,6 +285,34 @@ function saveMarks() {
 
 function saveLayout() {
   localStorage.setItem(LAYOUT_KEY, JSON.stringify(state.layout));
+}
+
+function saveBmoDrafts() {
+  localStorage.setItem(BMO_DRAFTS_KEY, JSON.stringify(state.bmoDrafts));
+}
+
+function saveBmoSubmissions() {
+  localStorage.setItem(BMO_SUBMISSIONS_KEY, JSON.stringify(state.bmoSubmissions));
+}
+
+function bmoOwnerKey() {
+  return state.user?.id || "guest";
+}
+
+function bmoDraftKey(problemId) {
+  return `${bmoOwnerKey()}:${problemId}`;
+}
+
+function belongsToCurrentBmoOwner(submission) {
+  if (state.user) return submission.user_id === state.user.id || submission.local_owner === state.user.id;
+  return !submission.user_id && (!submission.local_owner || submission.local_owner === "guest");
+}
+
+function currentBmoSubmission(problem) {
+  if (!problem) return null;
+  return state.bmoSubmissions
+    .filter((submission) => submission.problem_id === problem.id && belongsToCurrentBmoOwner(submission))
+    .sort((a, b) => String(b.updated_at || b.submitted_at || "").localeCompare(String(a.updated_at || a.submitted_at || "")))[0] || null;
 }
 
 function cloudClient() {
@@ -335,7 +401,7 @@ function renderAuthState() {
   els.authUserPanel.classList.toggle("is-hidden", !loggedIn);
   els.topLogoutButton.classList.toggle("is-hidden", !loggedIn);
   [els.adminDashboardButton, els.topAdminDashboardButton, els.reviewAdminDashboardButton].forEach((button) => {
-    if (button) button.classList.add("is-hidden");
+    if (button) button.classList.toggle("is-hidden", !isAdmin());
   });
   if (loggedIn) {
     els.authTitle.innerHTML = "云端账号已连接<br />Cloud account connected";
@@ -461,7 +527,7 @@ async function loadCloudState() {
   const client = cloudClient();
   if (!client || !state.user) return;
   setCloudStatus("正在加载云端记录... / Loading cloud records...");
-  const [attemptsResult, favoritesResult] = await Promise.all([
+  const [attemptsResult, favoritesResult, bmoResult] = await Promise.all([
     client
       .from("attempts")
       .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
@@ -472,15 +538,27 @@ async function loadCloudState() {
       .select("id,user_id,problem_id,created_at")
       .eq("user_id", state.user.id)
       .order("created_at", { ascending: true }),
+    client
+      .from("bmo_submissions")
+      .select("id,user_id,problem_id,year,year_label,number,topic,difficulty,response_text,review_status,score,max_score,teacher_feedback,submitted_at,updated_at")
+      .eq("user_id", state.user.id)
+      .order("updated_at", { ascending: true }),
   ]);
   if (attemptsResult.error) throw attemptsResult.error;
   if (favoritesResult.error) throw favoritesResult.error;
   state.cloudAttempts = attemptsResult.data || [];
   state.cloudFavorites = favoritesResult.data || [];
+  const otherOwners = state.bmoSubmissions.filter((submission) => !belongsToCurrentBmoOwner(submission));
+  const unsynced = state.bmoSubmissions.filter((submission) => belongsToCurrentBmoOwner(submission) && submission.local_only);
+  state.bmoSubmissions = [...otherOwners, ...(bmoResult.data || []), ...unsynced];
+  saveBmoSubmissions();
   mergeCloudAttemptsIntoProgress(state.cloudAttempts);
   mergeCloudFavoritesIntoMarks(state.cloudFavorites);
   state.cloudReady = true;
-  setCloudStatus(`已同步 ${state.cloudAttempts.length} 条云端作答记录，${state.cloudFavorites.length} 个收藏。 / Synced ${state.cloudAttempts.length} attempts and ${state.cloudFavorites.length} favorites.`);
+  const bmoMessage = bmoResult.error
+    ? `BMO 云端表尚未就绪：${bmoResult.error.message}`
+    : `${bmoResult.data?.length || 0} 份 BMO 解答`;
+  setCloudStatus(`已同步 ${state.cloudAttempts.length} 条 AMC 作答、${state.cloudFavorites.length} 个收藏、${bmoMessage}。 / Cloud records synced.`);
 }
 
 async function applySession(session) {
@@ -587,6 +665,76 @@ async function saveAttemptCloud(problem, progress, extra = {}) {
   }
   state.cloudAttempts.push({ ...payload, id: crypto.randomUUID?.() || `${payload.problem_id}-${payload.submitted_at}` });
   setCloudStatus("作答已同步。 / Attempt synced.");
+}
+
+function bmoSubmissionPayload(problem, responseText) {
+  const now = new Date().toISOString();
+  return {
+    user_id: state.user?.id || null,
+    problem_id: problem.id,
+    year: Number(problem.year) || null,
+    year_label: problem.year_label || String(problem.year || ""),
+    number: Number(problem.number) || null,
+    topic: problem.primary_topic || null,
+    difficulty: problem.difficulty_label || null,
+    response_text: responseText,
+    review_status: "submitted",
+    score: null,
+    max_score: 10,
+    teacher_feedback: null,
+    submitted_at: now,
+    updated_at: now,
+  };
+}
+
+function replaceCurrentBmoSubmission(submission) {
+  state.bmoSubmissions = state.bmoSubmissions.filter((item) => (
+    item.problem_id !== submission.problem_id || !belongsToCurrentBmoOwner(item)
+  ));
+  state.bmoSubmissions.push(submission);
+  saveBmoSubmissions();
+}
+
+async function submitBmoResponse() {
+  const problem = currentProblem();
+  if (!problem || state.mode !== "bmo") return;
+  const responseText = els.bmoResponseText.value.trim();
+  if (!responseText) {
+    els.bmoResponseStatus.textContent = "请先写出解答再提交。 / Write your solution before submitting.";
+    els.bmoResponseStatus.className = "bad";
+    els.bmoResponseText.focus();
+    return;
+  }
+
+  const payload = bmoSubmissionPayload(problem, responseText);
+  const localSubmission = {
+    ...payload,
+    id: `local-${Date.now()}`,
+    local_owner: bmoOwnerKey(),
+    local_only: Boolean(state.user),
+  };
+  replaceCurrentBmoSubmission(localSubmission);
+  delete state.bmoDrafts[bmoDraftKey(problem.id)];
+  saveBmoDrafts();
+
+  if (isLoggedIn()) {
+    els.submitAnswer.disabled = true;
+    els.bmoResponseStatus.textContent = "正在同步到云端…… / Syncing to cloud...";
+    els.bmoResponseStatus.className = "warn";
+    const client = cloudClient();
+    const { data, error } = await client
+      .from("bmo_submissions")
+      .upsert(payload, { onConflict: "user_id,problem_id" })
+      .select("id,user_id,problem_id,year,year_label,number,topic,difficulty,response_text,review_status,score,max_score,teacher_feedback,submitted_at,updated_at")
+      .single();
+    if (error) {
+      setCloudStatus(`BMO 解答云端保存失败，本机副本已保留。 / BMO cloud save failed; local copy kept. ${error.message}`);
+    } else {
+      replaceCurrentBmoSubmission(data);
+      setCloudStatus("BMO 解答已同步，等待教师评阅。 / BMO solution synced for teacher review.");
+    }
+  }
+  render();
 }
 
 async function syncFavoriteCloud(problem, isFavorite) {
@@ -1330,6 +1478,10 @@ function setSelected(choice) {
 
 function submitAnswer() {
   const problem = currentProblem();
+  if (state.mode === "bmo") {
+    submitBmoResponse();
+    return;
+  }
   if (!problem || !state.selectedChoice) return;
   if (state.mode === "exam" && !state.examSubmitted) {
     state.examAnswers[problem.id] = {
@@ -1363,6 +1515,14 @@ function revealAnswer() {
 function clearAnswer() {
   const problem = currentProblem();
   if (!problem) return;
+  if (state.mode === "bmo") {
+    delete state.bmoDrafts[bmoDraftKey(problem.id)];
+    saveBmoDrafts();
+    els.bmoResponseText.value = "";
+    updateBmoResponseMeta();
+    els.bmoResponseText.focus();
+    return;
+  }
   if (state.mode === "exam" && !state.examSubmitted) {
     delete state.examAnswers[problem.id];
     state.selectedChoice = null;
@@ -1524,12 +1684,34 @@ function filterAdminAttempts() {
   const from = els.adminDateFrom.value ? new Date(`${els.adminDateFrom.value}T00:00:00`) : null;
   const to = els.adminDateTo.value ? new Date(`${els.adminDateTo.value}T23:59:59`) : null;
   return state.adminData.attempts.filter((attempt) => {
+    if (level === "BMO1") return false;
     if (student !== "all" && attempt.user_id !== student) return false;
     if (year !== "all" && String(attempt.year) !== year) return false;
     if (level !== "all" && String(attempt.level) !== level) return false;
     if (topic !== "all" && attempt.topic !== topic) return false;
     if (difficulty !== "all" && attempt.difficulty !== difficulty) return false;
     const submitted = attempt.submitted_at ? new Date(attempt.submitted_at) : null;
+    if (from && submitted && submitted < from) return false;
+    if (to && submitted && submitted > to) return false;
+    return true;
+  });
+}
+
+function filterAdminBmoSubmissions() {
+  const student = els.adminStudentFilter.value;
+  const year = els.adminYearFilter.value;
+  const level = els.adminLevelFilter.value;
+  const topic = els.adminTopicFilter.value;
+  const difficulty = els.adminDifficultyFilter.value;
+  const from = els.adminDateFrom.value ? new Date(`${els.adminDateFrom.value}T00:00:00`) : null;
+  const to = els.adminDateTo.value ? new Date(`${els.adminDateTo.value}T23:59:59`) : null;
+  return state.adminData.bmoSubmissions.filter((submission) => {
+    if (level !== "all" && level !== "BMO1") return false;
+    if (student !== "all" && submission.user_id !== student) return false;
+    if (year !== "all" && String(submission.year) !== year) return false;
+    if (topic !== "all" && submission.topic !== topic) return false;
+    if (difficulty !== "all" && submission.difficulty !== difficulty) return false;
+    const submitted = submission.submitted_at ? new Date(submission.submitted_at) : null;
     if (from && submitted && submitted < from) return false;
     if (to && submitted && submitted > to) return false;
     return true;
@@ -1548,22 +1730,24 @@ function setupAdminFilters() {
     "全部学生 / All Students"
   );
   const attempts = state.adminData.attempts;
+  const bmoSubmissions = state.adminData.bmoSubmissions;
+  const allRecords = [...attempts, ...bmoSubmissions];
   fillSelect(
     els.adminYearFilter,
-    uniqueValues(attempts, (attempt) => attempt.year).sort((a, b) => b - a).map((year) => [String(year), String(year)]),
+    uniqueValues(allRecords, (record) => record.year).sort((a, b) => b - a).map((year) => [String(year), String(year)]),
     "全部年份 / All Years"
   );
-  fillSelect(els.adminLevelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试 / All Contests");
+  fillSelect(els.adminLevelFilter, [["10", "AMC 10"], ["12", "AMC 12"], ["BMO1", "BMO1"]], "全部考试 / All Contests");
   fillSelect(
     els.adminTopicFilter,
-    uniqueValues(attempts, (attempt) => attempt.topic)
+    uniqueValues(allRecords, (record) => record.topic)
       .sort((a, b) => topicName(a).localeCompare(topicName(b), "zh-CN"))
       .map((topic) => [topic, topicName(topic)]),
     "全部知识点 / All Topics"
   );
   fillSelect(
     els.adminDifficultyFilter,
-    uniqueValues(attempts, (attempt) => attempt.difficulty)
+    uniqueValues(allRecords, (record) => record.difficulty)
       .sort()
       .map((difficulty) => [difficulty, difficulty]),
     "全部难度 / All Difficulty"
@@ -1572,26 +1756,35 @@ function setupAdminFilters() {
 
 function renderAdminDashboard() {
   const attempts = filterAdminAttempts();
+  const bmoSubmissions = filterAdminBmoSubmissions();
   const totalAttempts = attempts.length;
   const correctAttempts = attempts.filter((attempt) => attempt.is_correct).length;
   const activeSince = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const activeUsers = new Set(attempts.filter((attempt) => new Date(attempt.submitted_at).getTime() >= activeSince).map((attempt) => attempt.user_id));
+  const allActivity = [...attempts, ...bmoSubmissions];
+  const activeUsers = new Set(allActivity.filter((record) => new Date(record.submitted_at).getTime() >= activeSince).map((record) => record.user_id));
   els.adminTotalStudents.textContent = String(state.adminData.profiles.length);
-  els.adminTotalAttempts.textContent = String(totalAttempts);
+  els.adminTotalAttempts.textContent = String(totalAttempts + bmoSubmissions.length);
   els.adminAverageAccuracy.textContent = percent(correctAttempts, totalAttempts);
   els.adminActiveUsers.textContent = String(activeUsers.size);
-  els.adminMeta.textContent = `当前筛选 ${totalAttempts} 条作答记录 / ${totalAttempts} filtered attempts`;
+  els.adminMeta.textContent = `当前筛选 ${totalAttempts} 条 AMC 作答、${bmoSubmissions.length} 份 BMO 解答 / Filtered cloud activity`;
 
   const byStudent = new Map();
   for (const profile of state.adminData.profiles) {
-    byStudent.set(profile.id, { profile, total: 0, correct: 0, lastActive: "" });
+    byStudent.set(profile.id, { profile, total: 0, amcTotal: 0, correct: 0, lastActive: "" });
   }
   for (const attempt of attempts) {
-    const row = byStudent.get(attempt.user_id) || { profile: profileFor(attempt.user_id), total: 0, correct: 0, lastActive: "" };
+    const row = byStudent.get(attempt.user_id) || { profile: profileFor(attempt.user_id), total: 0, amcTotal: 0, correct: 0, lastActive: "" };
     row.total += 1;
+    row.amcTotal += 1;
     if (attempt.is_correct) row.correct += 1;
     if (String(attempt.submitted_at || "") > String(row.lastActive || "")) row.lastActive = attempt.submitted_at;
     byStudent.set(attempt.user_id, row);
+  }
+  for (const submission of bmoSubmissions) {
+    const row = byStudent.get(submission.user_id) || { profile: profileFor(submission.user_id), total: 0, correct: 0, amcTotal: 0, lastActive: "" };
+    row.total += 1;
+    if (String(submission.submitted_at || "") > String(row.lastActive || "")) row.lastActive = submission.submitted_at;
+    byStudent.set(submission.user_id, row);
   }
   const studentRows = [...byStudent.values()].sort((a, b) => b.total - a.total || String(b.lastActive || "").localeCompare(String(a.lastActive || "")));
   els.adminStudentTitle.textContent = `${studentRows.length} students`;
@@ -1603,7 +1796,7 @@ function renderAdminDashboard() {
       <td>${row.profile.email || "-"}</td>
       <td>${row.total}</td>
       <td>${row.correct}</td>
-      <td>${percent(row.correct, row.total)}</td>
+      <td>${row.amcTotal ? percent(row.correct, row.amcTotal) : "-"}</td>
       <td>${dateTime(row.lastActive)}</td>
     `;
     els.adminStudentRows.appendChild(tr);
@@ -1665,6 +1858,91 @@ function renderAdminDashboard() {
     item.addEventListener("click", () => jumpToProblem(attempt.problem_id));
     els.adminRecentList.appendChild(item);
   }
+  renderAdminBmoReviews(bmoSubmissions);
+}
+
+function renderAdminBmoReviews(submissions = filterAdminBmoSubmissions()) {
+  const rows = submissions.slice().sort((a, b) => String(b.updated_at || b.submitted_at || "").localeCompare(String(a.updated_at || a.submitted_at || "")));
+  els.adminBmoTitle.textContent = `${rows.length} submissions`;
+  els.adminBmoRows.innerHTML = "";
+  if (!rows.length) {
+    els.adminBmoRows.innerHTML = '<tr><td colspan="6">暂无 BMO 解答 / No BMO submissions</td></tr>';
+    return;
+  }
+  for (const submission of rows) {
+    const profile = profileFor(submission.user_id);
+    const tr = document.createElement("tr");
+    const reviewed = submission.review_status === "reviewed";
+    tr.innerHTML = `
+      <td>${escapeHtml(profile.display_name || profile.email || "Student")}</td>
+      <td>${escapeHtml(`BMO1 ${submission.year_label || submission.year} #${submission.number || "?"}`)}</td>
+      <td>${dateTime(submission.submitted_at)}</td>
+      <td>${reviewed ? "已评阅 / Reviewed" : "待评阅 / Pending"}</td>
+      <td>${reviewed ? `${submission.score ?? "-"}/${submission.max_score || 10}` : "-"}</td>
+      <td><button type="button" class="admin-review-button">${reviewed ? "修改评阅 / Edit" : "评阅 / Review"}</button></td>
+    `;
+    tr.querySelector("button").addEventListener("click", () => openBmoReview(submission.id));
+    els.adminBmoRows.appendChild(tr);
+  }
+}
+
+function openBmoReview(submissionId) {
+  const submission = state.adminData.bmoSubmissions.find((item) => item.id === submissionId);
+  if (!submission) return;
+  const profile = profileFor(submission.user_id);
+  state.activeBmoReviewId = submission.id;
+  els.bmoReviewHeading.textContent = `${profile.display_name || profile.email || "Student"} · BMO1 ${submission.year_label || submission.year} #${submission.number || "?"}`;
+  els.bmoReviewResponse.textContent = submission.response_text || "";
+  els.bmoReviewScore.value = submission.score ?? "";
+  els.bmoReviewFeedback.value = submission.teacher_feedback || "";
+  els.bmoReviewMessage.textContent = "";
+  els.bmoReviewForm.classList.remove("is-hidden");
+  els.bmoReviewScore.focus();
+  els.bmoReviewForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function closeBmoReview() {
+  state.activeBmoReviewId = null;
+  els.bmoReviewForm.classList.add("is-hidden");
+  els.bmoReviewMessage.textContent = "";
+}
+
+async function saveBmoReview(event) {
+  event.preventDefault();
+  if (!isAdmin() || !state.activeBmoReviewId) return;
+  const score = Number(els.bmoReviewScore.value);
+  if (!Number.isFinite(score) || score < 0 || score > 10) {
+    els.bmoReviewMessage.textContent = "请输入 0–10 分。 / Enter a score from 0 to 10.";
+    els.bmoReviewMessage.className = "bmo-review-message bad";
+    return;
+  }
+  els.bmoReviewSave.disabled = true;
+  els.bmoReviewMessage.textContent = "正在保存…… / Saving...";
+  els.bmoReviewMessage.className = "bmo-review-message warn";
+  const update = {
+    review_status: "reviewed",
+    score,
+    teacher_feedback: els.bmoReviewFeedback.value.trim() || null,
+    updated_at: new Date().toISOString(),
+  };
+  const client = cloudClient();
+  const { data, error } = await client
+    .from("bmo_submissions")
+    .update(update)
+    .eq("id", state.activeBmoReviewId)
+    .select("id,user_id,problem_id,year,year_label,number,topic,difficulty,response_text,review_status,score,max_score,teacher_feedback,submitted_at,updated_at")
+    .single();
+  els.bmoReviewSave.disabled = false;
+  if (error) {
+    els.bmoReviewMessage.textContent = `保存失败 / Save failed: ${error.message}`;
+    els.bmoReviewMessage.className = "bmo-review-message bad";
+    return;
+  }
+  state.adminData.bmoSubmissions = state.adminData.bmoSubmissions.map((item) => item.id === data.id ? data : item);
+  els.bmoReviewMessage.textContent = "评阅已保存。 / Review saved.";
+  els.bmoReviewMessage.className = "bmo-review-message good";
+  renderAdminDashboard();
+  setTimeout(closeBmoReview, 500);
 }
 
 async function loadAdminDashboard() {
@@ -1672,12 +1950,17 @@ async function loadAdminDashboard() {
   const client = cloudClient();
   if (!client) return;
   els.adminMeta.textContent = "正在读取 Supabase 数据... / Loading Supabase data...";
-  const [profilesResult, attemptsResult] = await Promise.all([
+  const [profilesResult, attemptsResult, bmoResult] = await Promise.all([
     client.from("profiles").select("id,email,display_name,role,created_at").order("created_at", { ascending: false }),
     client
       .from("attempts")
       .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
       .order("submitted_at", { ascending: false })
+      .limit(5000),
+    client
+      .from("bmo_submissions")
+      .select("id,user_id,problem_id,year,year_label,number,topic,difficulty,response_text,review_status,score,max_score,teacher_feedback,submitted_at,updated_at")
+      .order("updated_at", { ascending: false })
       .limit(5000),
   ]);
   if (profilesResult.error) {
@@ -1688,9 +1971,14 @@ async function loadAdminDashboard() {
     els.adminMeta.textContent = `读取作答失败 / Failed to load attempts: ${attemptsResult.error.message}`;
     return;
   }
+  if (bmoResult.error) {
+    els.adminMeta.textContent = `读取 BMO 解答失败 / Failed to load BMO submissions: ${bmoResult.error.message}`;
+    return;
+  }
   state.adminData = {
     profiles: profilesResult.data || [],
     attempts: attemptsResult.data || [],
+    bmoSubmissions: bmoResult.data || [],
   };
   setupAdminFilters();
   renderAdminDashboard();
@@ -1698,37 +1986,71 @@ async function loadAdminDashboard() {
 
 function exportAdminCsv() {
   if (!isAdmin()) return;
-  const rows = filterAdminAttempts();
-  const headers = ["student_email", "student_name", "problem_id", "exam_id", "year", "level", "form", "number", "topic", "difficulty", "selected_answer", "correct_answer", "is_correct", "mode", "submitted_at"];
+  const attempts = filterAdminAttempts();
+  const bmoSubmissions = filterAdminBmoSubmissions();
+  const headers = ["record_type", "student_email", "student_name", "problem_id", "exam_id", "year", "level", "form", "number", "topic", "difficulty", "selected_answer", "correct_answer", "is_correct", "response_text", "review_status", "score", "max_score", "teacher_feedback", "mode", "submitted_at"];
   const escapeCell = (value) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const attemptRows = attempts.map((attempt) => {
+    const profile = profileFor(attempt.user_id);
+    return [
+      "AMC attempt",
+      profile.email,
+      profile.display_name,
+      attempt.problem_id,
+      attempt.exam_id,
+      attempt.year,
+      attempt.level,
+      attempt.form,
+      attempt.number,
+      topicName(attempt.topic),
+      attempt.difficulty,
+      attempt.selected_answer,
+      attempt.correct_answer,
+      attempt.is_correct,
+      "",
+      "",
+      "",
+      "",
+      "",
+      attempt.mode,
+      attempt.submitted_at,
+    ];
+  });
+  const bmoRows = bmoSubmissions.map((submission) => {
+    const profile = profileFor(submission.user_id);
+    return [
+      "BMO submission",
+      profile.email,
+      profile.display_name,
+      submission.problem_id,
+      `BMO1-${submission.year_label || submission.year}`,
+      submission.year,
+      "BMO1",
+      "",
+      submission.number,
+      topicName(submission.topic),
+      submission.difficulty,
+      "",
+      "",
+      "",
+      submission.response_text,
+      submission.review_status,
+      submission.score,
+      submission.max_score,
+      submission.teacher_feedback,
+      "proof_response",
+      submission.submitted_at,
+    ];
+  });
   const csv = [
     headers.join(","),
-    ...rows.map((attempt) => {
-      const profile = profileFor(attempt.user_id);
-      return [
-        profile.email,
-        profile.display_name,
-        attempt.problem_id,
-        attempt.exam_id,
-        attempt.year,
-        attempt.level,
-        attempt.form,
-        attempt.number,
-        topicName(attempt.topic),
-        attempt.difficulty,
-        attempt.selected_answer,
-        attempt.correct_answer,
-        attempt.is_correct,
-        attempt.mode,
-        attempt.submitted_at,
-      ].map(escapeCell).join(",");
-    }),
+    ...[...attemptRows, ...bmoRows].map((row) => row.map(escapeCell).join(",")),
   ].join("\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `amc-admin-attempts-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.download = `amc-bmo-admin-records-${new Date().toISOString().slice(0, 10)}.csv`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -1893,7 +2215,10 @@ function renderStats() {
       .filter(([id]) => visibleIds.has(id))
       .map(([, value]) => value);
   els.statTotal.textContent = String(state.filtered.length);
-  els.statAnswered.textContent = state.mode === "bmo" ? "-" : String(visibleProgress.length);
+  const bmoSubmitted = state.mode === "bmo"
+    ? state.filtered.filter((problem) => currentBmoSubmission(problem)).length
+    : 0;
+  els.statAnswered.textContent = state.mode === "bmo" ? String(bmoSubmitted) : String(visibleProgress.length);
   els.statCorrect.textContent = state.mode === "bmo" ? "-" : state.mode === "exam" && !state.examSubmitted
     ? "-"
     : String(visibleProgress.filter((item) => item.correct).length);
@@ -1935,6 +2260,7 @@ function renderList() {
     button.type = "button";
     button.className = "problem-tile";
     if (index === state.currentIndex) button.classList.add("active");
+    if (state.mode === "bmo" && currentBmoSubmission(problem)) button.classList.add("answered");
     if (state.mode === "exam" && !state.examSubmitted && progress) button.classList.add("answered");
     if (!(state.mode === "exam" && !state.examSubmitted) && progress?.correct) button.classList.add("correct");
     if (!(state.mode === "exam" && !state.examSubmitted) && progress && !progress.correct) button.classList.add("incorrect");
@@ -1966,6 +2292,7 @@ function renderProblem() {
     els.problemTitle.textContent = "没有匹配题目 / No matching problems";
     els.statement.innerHTML = "";
     els.choicePanel.innerHTML = "";
+    els.bmoResponsePanel.classList.add("is-hidden");
     els.favoriteProblem.disabled = true;
     setAnswerPanel(null);
     return;
@@ -1984,14 +2311,21 @@ function renderProblem() {
     ? `BMO1 ${problem.year_label || problem.year} · Problem ${problem.number || "?"} / ${problem.difficulty_label || "未分级"}`
     : `Problem ${problem.number} / 第 ${problem.number} 题`;
   els.statement.innerHTML = sanitizeHtml(problem.statement_html || `<p>${problem.statement_text}</p>`);
+  els.choicePanel.classList.toggle("is-hidden", state.mode === "bmo");
   renderChoices(problem, progress);
+  renderBmoResponse(problem);
   setAnswerPanel(problem, progress);
   els.prevProblem.disabled = state.currentIndex === 0;
   els.nextProblem.disabled = state.currentIndex === state.filtered.length - 1;
-  els.submitAnswer.textContent = state.mode === "exam" && !state.examSubmitted ? "保存本题 / Save" : "提交 / Submit";
-  els.submitAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.submitAnswer.textContent = state.mode === "bmo"
+    ? "提交解答 / Submit Solution"
+    : state.mode === "exam" && !state.examSubmitted
+      ? "保存本题 / Save"
+      : "提交 / Submit";
+  els.submitAnswer.classList.remove("is-hidden");
   els.revealAnswer.classList.toggle("is-hidden", state.mode === "bmo");
-  els.clearAnswer.classList.toggle("is-hidden", state.mode === "bmo");
+  els.clearAnswer.classList.remove("is-hidden");
+  els.clearAnswer.textContent = state.mode === "bmo" ? "清空草稿 / Clear Draft" : "清除 / Clear";
   els.favoriteProblem.classList.toggle("is-hidden", state.mode === "bmo");
   els.submitAnswer.disabled = state.mode === "exam" && state.examSubmitted;
   els.revealAnswer.disabled = state.mode === "exam" && !state.examSubmitted;
@@ -2000,6 +2334,39 @@ function renderProblem() {
   els.submitExam.disabled = state.mode !== "exam" || state.examSubmitted;
   renderExamResult();
   queueMathTypeset(document.querySelector(".workspace"));
+}
+
+function updateBmoResponseMeta() {
+  if (!els.bmoResponseText) return;
+  const length = els.bmoResponseText.value.length;
+  els.bmoResponseCount.textContent = `${length} / ${BMO_RESPONSE_LIMIT}`;
+  const problem = currentProblem();
+  if (!problem || state.mode !== "bmo") return;
+  const submission = currentBmoSubmission(problem);
+  if (submission?.review_status === "reviewed") {
+    els.bmoResponseStatus.textContent = `已评阅：${submission.score ?? "-"}/${submission.max_score || 10}。修改后可重新提交。 / Reviewed; edit and resubmit if needed.`;
+    els.bmoResponseStatus.className = "good";
+  } else if (submission) {
+    els.bmoResponseStatus.textContent = isLoggedIn()
+      ? "已提交到云端，等待教师评阅。 / Submitted; awaiting teacher review."
+      : "已保存在本机；登录后提交可供教师评阅。 / Saved locally; sign in to send for review.";
+    els.bmoResponseStatus.className = "warn";
+  } else {
+    els.bmoResponseStatus.textContent = isLoggedIn()
+      ? "草稿自动保存在本机，点击提交后同步到教师后台。 / Draft autosaves locally; submit to sync."
+      : "草稿与提交仅保存在本机；登录后可同步。 / Draft and submission stay on this device until sign-in.";
+    els.bmoResponseStatus.className = "";
+  }
+}
+
+function renderBmoResponse(problem) {
+  const isBmo = state.mode === "bmo" && problem?.answer_mode === "free_response";
+  els.bmoResponsePanel.classList.toggle("is-hidden", !isBmo);
+  if (!isBmo) return;
+  const submission = currentBmoSubmission(problem);
+  const draft = state.bmoDrafts[bmoDraftKey(problem.id)];
+  els.bmoResponseText.value = typeof draft === "string" ? draft : submission?.response_text || "";
+  updateBmoResponseMeta();
 }
 
 function renderChoices(problem, progress) {
@@ -2043,10 +2410,16 @@ function setAnswerPanel(problem, progress = null) {
   }
 
   if (state.mode === "bmo") {
-    els.answerStatus.textContent = problem.answer_status === "official_report_extracted"
-      ? "官方报告解析已提取 / Official solution extracted"
-      : "未找到开放官方答案 / No open official answer found";
-    els.answerStatus.classList.add(problem.answer_status === "official_report_extracted" ? "good" : "warn");
+    const submission = currentBmoSubmission(problem);
+    if (submission?.review_status === "reviewed") {
+      els.answerStatus.textContent = `已评阅 · ${submission.score ?? "-"}/${submission.max_score || 10} / Reviewed`;
+      els.answerStatus.classList.add("good");
+    } else if (submission) {
+      els.answerStatus.textContent = "解答已提交，待教师评阅 / Submitted for review";
+      els.answerStatus.classList.add("warn");
+    } else {
+      els.answerStatus.textContent = "可提交证明解答 / Ready for response";
+    }
   } else if (state.mode === "exam" && !state.examSubmitted) {
     if (progress?.pending) {
       els.answerStatus.textContent = "已记录本题 / Saved";
@@ -2096,6 +2469,15 @@ function setAnswerPanel(problem, progress = null) {
         ? "官方报告解析已在下方分阶段显示。 / The official report solution is staged below."
         : "这道题暂未采集到开放官方答案。 / No open official answer has been collected for this problem.";
       els.answerDetail.appendChild(note);
+    }
+    if (state.mode === "bmo") {
+      const submission = currentBmoSubmission(problem);
+      if (submission?.teacher_feedback) {
+        const feedback = document.createElement("p");
+        feedback.className = "teacher-feedback";
+        feedback.textContent = `教师反馈 / Teacher feedback: ${submission.teacher_feedback}`;
+        els.answerDetail.appendChild(feedback);
+      }
     }
   }
 
@@ -2405,6 +2787,8 @@ function bindEvents() {
   });
   els.adminRefresh.addEventListener("click", loadAdminDashboard);
   els.adminExportCsv.addEventListener("click", exportAdminCsv);
+  els.bmoReviewForm.addEventListener("submit", saveBmoReview);
+  els.bmoReviewCancel.addEventListener("click", closeBmoReview);
   els.adminToPractice.addEventListener("click", continuePracticeFromReview);
   els.adminToEntry.addEventListener("click", showEntry);
   [els.adminStudentFilter, els.adminYearFilter, els.adminLevelFilter, els.adminTopicFilter, els.adminDifficultyFilter, els.adminDateFrom, els.adminDateTo].forEach((control) => {
@@ -2444,6 +2828,13 @@ function bindEvents() {
     applyFilters();
   });
   els.submitAnswer.addEventListener("click", submitAnswer);
+  els.bmoResponseText.addEventListener("input", () => {
+    const problem = currentProblem();
+    if (!problem || state.mode !== "bmo") return;
+    state.bmoDrafts[bmoDraftKey(problem.id)] = els.bmoResponseText.value;
+    saveBmoDrafts();
+    updateBmoResponseMeta();
+  });
   els.submitExam.addEventListener("click", submitWholeExam);
   els.revealAnswer.addEventListener("click", revealAnswer);
   els.solutionStageControl.querySelectorAll(".solution-stage-button").forEach((button) => {

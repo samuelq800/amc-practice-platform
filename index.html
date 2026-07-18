@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AMC 10/12 与 BMO1 真题练习 | AMC &amp; BMO Practice</title>
     <link rel="icon" href="./school-logo.jpg" />
-    <link rel="stylesheet" href="./styles.css?v=20260711-assignments1" />
+    <link rel="stylesheet" href="./styles.css?v=20260718-bmo-submit1" />
     <script>
       window.MathJax = {
         tex: {
@@ -254,6 +254,17 @@
 
           <div id="choicePanel" class="choice-panel" aria-label="答案选项 / Answer choices"></div>
 
+          <section id="bmoResponsePanel" class="bmo-response-panel is-hidden" aria-label="BMO 证明解答 / BMO proof response">
+            <label for="bmoResponseText">
+              <span>我的证明 / My Solution</span>
+              <textarea id="bmoResponseText" maxlength="12000" rows="8" placeholder="在这里写出完整证明或解题过程…… / Write your proof or full solution here..."></textarea>
+            </label>
+            <div class="bmo-response-meta">
+              <span id="bmoResponseStatus">草稿仅保存在本机 / Draft saved locally</span>
+              <span id="bmoResponseCount">0 / 12000</span>
+            </div>
+          </section>
+
           <div class="answer-actions">
             <button id="submitAnswer" type="button">提交 / Submit</button>
             <button id="submitExam" type="button" class="is-hidden">提交整卷 / Submit Exam</button>
@@ -427,7 +438,7 @@
         <div class="admin-summary">
           <div><span id="adminTotalStudents">0</span><small>学生 / Students</small></div>
           <div><span id="adminTotalAttempts">0</span><small>作答 / Attempts</small></div>
-          <div><span id="adminAverageAccuracy">0%</span><small>平均正确率 / Avg Accuracy</small></div>
+          <div><span id="adminAverageAccuracy">0%</span><small>AMC 正确率 / AMC Accuracy</small></div>
           <div><span id="adminActiveUsers">0</span><small>7 日活跃 / Active 7d</small></div>
         </div>
 
@@ -499,6 +510,51 @@
             <strong id="adminRecentTitle">0 attempts</strong>
           </div>
           <div id="adminRecentList" class="answered-list"></div>
+        </section>
+
+        <section class="admin-panel bmo-review-section">
+          <div class="section-head">
+            <span class="eyebrow">BMO 解答评阅 / BMO Review</span>
+            <strong id="adminBmoTitle">0 submissions</strong>
+          </div>
+          <div class="table-wrap">
+            <table class="admin-table bmo-review-table">
+              <thead>
+                <tr>
+                  <th>学生 / Student</th>
+                  <th>题目 / Problem</th>
+                  <th>提交时间 / Submitted</th>
+                  <th>状态 / Status</th>
+                  <th>分数 / Score</th>
+                  <th>操作 / Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminBmoRows"></tbody>
+            </table>
+          </div>
+
+          <form id="bmoReviewForm" class="bmo-review-form is-hidden">
+            <div class="bmo-review-head">
+              <div>
+                <span class="eyebrow">当前解答 / Current Submission</span>
+                <strong id="bmoReviewHeading">-</strong>
+              </div>
+              <button id="bmoReviewCancel" type="button">取消 / Cancel</button>
+            </div>
+            <div id="bmoReviewResponse" class="bmo-review-response"></div>
+            <div class="bmo-review-controls">
+              <label>
+                <span>评分（0–10）/ Score</span>
+                <input id="bmoReviewScore" type="number" min="0" max="10" step="0.5" required />
+              </label>
+              <label>
+                <span>教师反馈 / Teacher Feedback</span>
+                <textarea id="bmoReviewFeedback" rows="4" maxlength="4000" placeholder="写下评语或改进建议…… / Add feedback or suggestions..."></textarea>
+              </label>
+            </div>
+            <button id="bmoReviewSave" type="submit">保存评阅 / Save Review</button>
+            <p id="bmoReviewMessage" class="bmo-review-message"></p>
+          </form>
         </section>
       </section>
     </main>
@@ -586,6 +642,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./app.js?v=20260717-bmo-restore2"></script>
+    <script src="./app.js?v=20260718-bmo-submit1"></script>
   </body>
 </html>

@@ -705,6 +705,92 @@ a:hover {
   font-weight: 900;
 }
 
+.bmo-review-section {
+  display: grid;
+  gap: 14px;
+}
+
+.bmo-review-table {
+  min-width: 760px;
+}
+
+.admin-review-button {
+  min-height: 34px;
+  padding: 6px 10px;
+  color: var(--accent-strong);
+  font-size: 12px;
+}
+
+.bmo-review-form {
+  display: grid;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.bmo-review-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.bmo-review-head > div {
+  display: grid;
+  gap: 5px;
+}
+
+.bmo-review-response {
+  max-height: 360px;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fbfa;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.bmo-review-controls {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.bmo-review-controls label {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.bmo-review-form input,
+.bmo-review-form textarea {
+  padding: 10px;
+}
+
+.bmo-review-form textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+#bmoReviewSave {
+  justify-self: start;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.bmo-review-message {
+  min-height: 18px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 750;
+}
+
 .about-hero {
   min-height: 270px;
   padding: 26px;
@@ -1448,6 +1534,81 @@ body.is-resizing {
   overflow-wrap: anywhere;
 }
 
+.bmo-response-panel {
+  flex: 0 0 auto;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  background: #f8fbfa;
+}
+
+.bmo-response-panel label {
+  display: grid;
+  gap: 8px;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.bmo-response-panel textarea,
+.bmo-review-form textarea,
+.bmo-review-form input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+
+.bmo-response-panel textarea {
+  min-height: 170px;
+  max-height: 320px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+.bmo-response-panel textarea:focus,
+.bmo-review-form textarea:focus,
+.bmo-review-form input:focus {
+  border-color: var(--focus);
+  outline: 3px solid rgba(47, 111, 182, 0.12);
+}
+
+.bmo-response-meta {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bmo-response-meta .good,
+.bmo-review-message.good {
+  color: var(--good);
+}
+
+.bmo-response-meta .warn,
+.bmo-review-message.warn {
+  color: var(--warn);
+}
+
+.bmo-response-meta .bad,
+.bmo-review-message.bad {
+  color: var(--bad);
+}
+
+.teacher-feedback {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  white-space: pre-wrap;
+}
+
 .answer-actions {
   flex: 0 0 auto;
   min-height: 62px;
@@ -1739,6 +1900,10 @@ body.is-resizing {
   }
 
   .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bmo-review-controls {
     grid-template-columns: 1fr;
   }
 
