@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AMC 10/12 与 BMO1 真题练习 | AMC &amp; BMO Practice</title>
+    <title>AMC 10/12、AIME 与 BMO1 真题练习 | Math Competition Practice</title>
     <link rel="icon" href="./school-logo.jpg" />
     <link rel="stylesheet" href="./styles.css?v=20260718-platform-return1" />
     <script>
@@ -28,14 +28,15 @@
             <div class="brand-lockup">
               <img class="school-logo" src="./school-logo.jpg" alt="学校标识 / School logo" />
               <div>
-                <span class="eyebrow">AMC &amp; BMO Practice Center</span>
-                <h1>AMC 10/12 与 BMO1 真题练习<br />AMC 10/12 &amp; BMO1 Practice</h1>
+                <span class="eyebrow">AMC, AIME &amp; BMO Practice Center</span>
+                <h1>AMC 10/12、AIME 与 BMO1 真题练习<br />AMC, AIME &amp; BMO1 Practice</h1>
               </div>
             </div>
             <p id="entryMeta">加载中 / Loading...</p>
             <div class="entry-stats" aria-label="平台数据 / Platform data">
               <div><strong>68</strong><span>套 AMC 试卷 / AMC papers</span></div>
               <div><strong>1700</strong><span>道真题 / problems</span></div>
+              <div><strong>983</strong><span>道 AIME 真题 / AIME problems</span></div>
               <div><strong>145</strong><span>道 BMO1 分类题 / BMO1 problems</span></div>
             </div>
           </div>
@@ -76,6 +77,16 @@
             </form>
           </section>
 
+          <section id="mathRecommendationCard" class="mode-card mode-card-primary recommendation-mode-card is-hidden" aria-label="每日推荐 AMC / Daily recommended AMC">
+            <div>
+              <span class="eyebrow">每日推荐 / Daily Recommendation</span>
+              <h2>今日 AMC 练习<br />Today's AMC Set</h2>
+              <p id="mathRecommendationMeta">根据正确率、知识点与难度生成 5 道题，每日零点更新。<br />Five problems matched to your accuracy, topics, and level.</p>
+              <div id="mathRecommendationPreview" class="recommendation-preview"></div>
+            </div>
+            <button id="mathRecommendationMode" type="button">开始今日推荐 / Start Daily Set</button>
+          </section>
+
           <section class="mode-card mode-card-primary">
             <div>
               <span class="eyebrow">单题练习 / Single Problems</span>
@@ -105,6 +116,15 @@
               <p>按年份、知识点和难度练习 BMO1 证明题；解析默认隐藏，可在作答后或需要时展开。<br />Practice BMO1 proof problems by year, topic, and difficulty; staged solutions stay hidden until requested.</p>
             </div>
             <button id="bmoPracticeMode" type="button">进入 BMO1 训练 / Start BMO1</button>
+          </section>
+
+          <section class="mode-card mode-card-primary" aria-label="AIME 单题训练 / AIME single-problem practice">
+            <div>
+              <span class="eyebrow">AIME 单题训练 / AIME Practice</span>
+              <h2>开始 AIME 单题练习<br />Start AIME Practice</h2>
+              <p>AIME 难度统一高于 AMC 10/12，使用 000–999 三位整数作答；仅提供单题训练。<br />AIME sits above AMC 10/12 and uses three-digit integer answers in single-problem mode.</p>
+            </div>
+            <button id="aimePracticeMode" type="button">进入 AIME 训练 / Start AIME</button>
           </section>
 
           <section id="assignedPracticeCard" class="mode-card mode-card-primary is-hidden" aria-label="数学社布置题目 / Math Club assignments">
@@ -274,6 +294,14 @@
               <span id="bmoResponseStatus">草稿仅保存在本机 / Draft saved locally</span>
               <span id="bmoResponseCount">0 / 12000</span>
             </div>
+          </section>
+
+          <section id="aimeResponsePanel" class="aime-response-panel is-hidden" aria-label="AIME 三位整数答案 / AIME integer answer">
+            <label for="aimeAnswerInput">
+              <span>AIME 答案 / AIME Answer</span>
+              <input id="aimeAnswerInput" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="000–999" />
+            </label>
+            <p>输入不足三位时会自动补零，例如 7 按 007 核对。</p>
           </section>
 
           <div class="answer-actions">
@@ -655,7 +683,9 @@
       </section>
     </main>
 
+    <div class="site-version">Version 39</div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./app.js?v=20260718-platform-return1"></script>
+    <script src="./recommendation-engine.js?v=39"></script>
+    <script src="./app.js?v=39"></script>
   </body>
 </html>

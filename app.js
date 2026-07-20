@@ -1,6 +1,8 @@
 const DATA_URLS = ["./amc_aops_2010_present.json?v=20260712-figure-fix1", "../amc_aops_2010_present.json?v=20260712-figure-fix1"];
 const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "../bmo1_2000_2023_import.json?v=20260717-bmo-restore2"];
+const AIME_DATA_URLS = ["./aime_question_bank.json?v=39", "../aime_question_bank.json?v=39"];
 const STORAGE_KEY = "amc-practice-progress-v1";
+const AIME_STORAGE_KEY = "aime-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
 const LAYOUT_KEY = "amc-practice-layout-v1";
 const BMO_DRAFTS_KEY = "amc-practice-bmo-drafts-v2";
@@ -69,6 +71,11 @@ const els = {
   reviewAdminDashboardButton: document.querySelector("#reviewAdminDashboardButton"),
   singlePracticeMode: document.querySelector("#singlePracticeMode"),
   bmoPracticeMode: document.querySelector("#bmoPracticeMode"),
+  aimePracticeMode: document.querySelector("#aimePracticeMode"),
+  mathRecommendationCard: document.querySelector("#mathRecommendationCard"),
+  mathRecommendationMeta: document.querySelector("#mathRecommendationMeta"),
+  mathRecommendationPreview: document.querySelector("#mathRecommendationPreview"),
+  mathRecommendationMode: document.querySelector("#mathRecommendationMode"),
   assignedPracticeCard: document.querySelector("#assignedPracticeCard"),
   assignedPracticeMode: document.querySelector("#assignedPracticeMode"),
   assignmentScreen: document.querySelector("#assignmentScreen"),
@@ -176,6 +183,8 @@ const els = {
   bmoResponseText: document.querySelector("#bmoResponseText"),
   bmoResponseStatus: document.querySelector("#bmoResponseStatus"),
   bmoResponseCount: document.querySelector("#bmoResponseCount"),
+  aimeResponsePanel: document.querySelector("#aimeResponsePanel"),
+  aimeAnswerInput: document.querySelector("#aimeAnswerInput"),
   submitAnswer: document.querySelector("#submitAnswer"),
   submitExam: document.querySelector("#submitExam"),
   revealAnswer: document.querySelector("#revealAnswer"),
@@ -198,6 +207,8 @@ const state = {
   data: null,
   problems: [],
   bmoProblems: [],
+  aimeProblems: [],
+  aimeData: null,
   filtered: [],
   currentIndex: 0,
   selectedChoice: null,
@@ -212,6 +223,7 @@ const state = {
   timerRemaining: FULL_EXAM_SECONDS,
   timerId: null,
   progress: loadProgress(),
+  aimeProgress: loadStoredObject(AIME_STORAGE_KEY),
   marks: loadMarks(),
   layout: loadLayout(),
   supabase: null,
@@ -227,6 +239,7 @@ const state = {
   bmoSubmissions: loadStoredArray(BMO_SUBMISSIONS_KEY),
   activeBmoReviewId: null,
   adminData: { profiles: [], attempts: [], bmoSubmissions: [] },
+  dailyRecommendations: [],
 };
 
 function loadStoredObject(key) {
@@ -253,6 +266,10 @@ function loadProgress() {
   } catch {
     return {};
   }
+}
+
+function saveAimeProgress() {
+  localStorage.setItem(AIME_STORAGE_KEY, JSON.stringify(state.aimeProgress));
 }
 
 function loadMarks() {
@@ -397,6 +414,7 @@ function renderAuthState() {
     if (node) node.textContent = label;
   });
   els.assignedPracticeCard.classList.toggle("is-hidden", !isMathClubMember());
+  els.mathRecommendationCard.classList.toggle("is-hidden", !loggedIn);
   els.authGuestPanel.classList.add("is-hidden");
   els.authUserPanel.classList.toggle("is-hidden", !loggedIn);
   els.topLogoutButton.classList.toggle("is-hidden", !loggedIn);
@@ -413,6 +431,52 @@ function renderAuthState() {
     els.authTitle.innerHTML = "共享登录状态<br />Shared Login Session";
     els.authStatusText.textContent = "请在苏州中学国际部竞赛平台入口登录；本页会自动读取同一个 Supabase 会话。 / Sign in from the main entrance; this page reuses the same Supabase session.";
   }
+}
+
+function requestedRecommendationIds() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("mode") !== "recommended") return [];
+  return String(params.get("problems") || "").split(",").map((id) => id.trim()).filter(Boolean);
+}
+
+function refreshDailyRecommendations() {
+  if (!isLoggedIn() || !window.SZZXRecommendations) {
+    state.dailyRecommendations = [];
+    return;
+  }
+  const requested = requestedRecommendationIds().map(problemById).filter(Boolean);
+  state.dailyRecommendations = requested.length
+    ? requested.slice(0, 5)
+    : window.SZZXRecommendations.recommend(state.problems, state.cloudAttempts, {
+      userId: state.user.id,
+      domain: "math",
+      selectedContest: "AMC",
+      count: 5,
+    });
+  els.mathRecommendationPreview.innerHTML = "";
+  state.dailyRecommendations.forEach((problem) => {
+    const chip = document.createElement("span");
+    chip.textContent = `${problem.year} ${problem.level}${problem.form} #${problem.number}`;
+    els.mathRecommendationPreview.append(chip);
+  });
+  const levels = new Set(state.dailyRecommendations.map((problem) => problem.level));
+  els.mathRecommendationMeta.textContent = `${window.SZZXRecommendations.dayKey()} · ${state.dailyRecommendations.length} 题 · ${levels.has(12) ? "AMC 10/12 难度匹配" : "AMC 10 基础进阶"}；明日按最新表现更新。`;
+}
+
+function startDailyRecommendations() {
+  if (!state.dailyRecommendations.length) return;
+  stopTimer();
+  state.mode = "recommended";
+  state.activeExamId = null;
+  state.activeAssignmentId = null;
+  state.examSubmitted = false;
+  state.filtered = state.dailyRecommendations.slice();
+  state.currentIndex = 0;
+  state.selectedChoice = problemProgress(state.filtered[0])?.choice || null;
+  state.revealed = Boolean(problemProgress(state.filtered[0]));
+  setFilterVisibility({ level: false, form: false, exam: false });
+  showPracticeShell();
+  render();
 }
 
 async function ensureProfile(user) {
@@ -492,6 +556,7 @@ function attemptToProgress(problem, attempts) {
 function mergeCloudAttemptsIntoProgress(attempts) {
   const grouped = new Map();
   for (const attempt of attempts || []) {
+    if (attempt.contest_type && attempt.contest_type !== "AMC") continue;
     if (!attempt.problem_id) continue;
     if (!grouped.has(attempt.problem_id)) grouped.set(attempt.problem_id, []);
     grouped.get(attempt.problem_id).push(attempt);
@@ -504,6 +569,23 @@ function mergeCloudAttemptsIntoProgress(attempts) {
   }
   state.progress = next;
   saveProgress();
+}
+
+function mergeCloudAimeAttempts(attempts) {
+  const grouped = new Map();
+  for (const attempt of attempts || []) {
+    if (attempt.contest_type !== "AIME" || !attempt.problem_id) continue;
+    if (!grouped.has(attempt.problem_id)) grouped.set(attempt.problem_id, []);
+    grouped.get(attempt.problem_id).push(attempt);
+  }
+  const next = { ...state.aimeProgress };
+  for (const [problemId, records] of grouped.entries()) {
+    const problem = state.aimeProblems.find((item) => item.id === problemId);
+    const progress = attemptToProgress(problem, records);
+    if (progress) next[problemId] = { ...progress, answer: progress.choice };
+  }
+  state.aimeProgress = next;
+  saveAimeProgress();
 }
 
 function mergeCloudFavoritesIntoMarks(favorites) {
@@ -530,7 +612,7 @@ async function loadCloudState() {
   const [attemptsResult, favoritesResult, bmoResult] = await Promise.all([
     client
       .from("attempts")
-      .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
+      .select("id,user_id,problem_id,contest_type,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
       .eq("user_id", state.user.id)
       .order("submitted_at", { ascending: true }),
     client
@@ -553,6 +635,7 @@ async function loadCloudState() {
   state.bmoSubmissions = [...otherOwners, ...(bmoResult.data || []), ...unsynced];
   saveBmoSubmissions();
   mergeCloudAttemptsIntoProgress(state.cloudAttempts);
+  mergeCloudAimeAttempts(state.cloudAttempts);
   mergeCloudFavoritesIntoMarks(state.cloudFavorites);
   state.cloudReady = true;
   const bmoMessage = bmoResult.error
@@ -574,6 +657,7 @@ async function applySession(session) {
     state.profile = await ensureProfile(state.user);
     renderAuthState();
     await loadCloudState();
+    refreshDailyRecommendations();
     await loadAssignedAssignments();
     renderReviewDashboard();
     render();
@@ -665,6 +749,35 @@ async function saveAttemptCloud(problem, progress, extra = {}) {
   }
   state.cloudAttempts.push({ ...payload, id: crypto.randomUUID?.() || `${payload.problem_id}-${payload.submitted_at}` });
   setCloudStatus("作答已同步。 / Attempt synced.");
+}
+
+async function saveAimeAttemptCloud(problem, progress) {
+  if (!isLoggedIn()) return;
+  const client = cloudClient();
+  if (!client) return;
+  const payload = {
+    user_id: state.user.id,
+    problem_id: problem.id,
+    exam_id: problem.exam_id,
+    year: Number(problem.year) || null,
+    level: null,
+    form: problem.form || null,
+    number: Number(problem.number) || null,
+    topic: problem.primary_topic || problem.topic || null,
+    difficulty: problem.difficulty_label || problem.difficulty || null,
+    selected_answer: progress.answer,
+    correct_answer: problem.answer_value,
+    is_correct: Boolean(progress.correct),
+    time_spent_seconds: null,
+    mode: "single",
+    contest_type: "AIME",
+    platform: "amc-practice-platform",
+    source_url: window.location.href,
+    submitted_at: progress.submittedAt,
+  };
+  const { error } = await client.from("attempts").insert(payload);
+  if (error) setCloudStatus(`AIME 作答云端保存失败，本机记录已保留。 / AIME cloud save failed; local copy kept. ${error.message}`);
+  else state.cloudAttempts.push(payload);
 }
 
 function bmoSubmissionPayload(problem, responseText) {
@@ -870,7 +983,7 @@ function examById(examId) {
 
 function updateDatasetMeta() {
   const text = state.data
-    ? `${state.data.exams.length} 套 AMC 试卷 / AMC papers · ${state.problems.length} 道 AMC 题 · ${state.bmoProblems.length} 道 BMO1 题 · ${state.data.solution_summary?.solution_text_count || 0} 题内嵌解析 / inline solutions`
+    ? `${state.data.exams.length} 套 AMC 试卷 · ${state.problems.length} 道 AMC 题 · ${state.aimeProblems.length} 道 AIME 题 · ${state.bmoProblems.length} 道 BMO1 题`
     : "加载中 / Loading...";
   els.entryMeta.textContent = text;
   els.datasetMeta.textContent = text;
@@ -1099,7 +1212,7 @@ function startAssignment(assignmentId) {
 }
 
 function continuePracticeFromReview() {
-  if (state.mode === "exam" || state.mode === "single" || state.mode === "assignment" || state.mode === "bmo") {
+  if (["exam", "single", "assignment", "bmo", "aime", "recommended"].includes(state.mode)) {
     showPracticeShell();
     render();
   } else {
@@ -1128,6 +1241,20 @@ function enterBmoPractice() {
   state.solutionStage = "idea";
   initFilters("bmo");
   setFilterVisibility({ level: false, form: false, exam: false });
+  showPracticeShell();
+  applyFilters();
+}
+
+function enterAimePractice() {
+  stopTimer();
+  state.mode = "aime";
+  state.activeExamId = null;
+  state.activeAssignmentId = null;
+  state.examSubmitted = false;
+  state.revealed = false;
+  state.solutionStage = "idea";
+  initFilters("aime");
+  setFilterVisibility({ level: false, form: true, exam: true });
   showPracticeShell();
   applyFilters();
 }
@@ -1248,11 +1375,13 @@ function getFilters() {
 }
 
 function activeProblemPool() {
-  return state.mode === "bmo" ? state.bmoProblems : state.problems;
+  if (state.mode === "bmo") return state.bmoProblems;
+  if (state.mode === "aime") return state.aimeProblems;
+  return state.problems;
 }
 
 function initFilters(mode = state.mode === "bmo" ? "bmo" : "amc") {
-  const pool = mode === "bmo" ? state.bmoProblems : state.problems;
+  const pool = mode === "bmo" ? state.bmoProblems : mode === "aime" ? state.aimeProblems : state.problems;
   const years = mode === "bmo"
     ? Array.from(new Map(pool.map((problem) => [problem.year_label || String(problem.year), problem.year])).entries())
       .sort((a, b) => b[1] - a[1] || b[0].localeCompare(a[0], "en"))
@@ -1260,7 +1389,8 @@ function initFilters(mode = state.mode === "bmo" ? "bmo" : "amc") {
     : uniqueValues(pool, (problem) => problem.year)
       .sort((a, b) => b - a)
       .map((year) => [String(year), String(year)]);
-  const exams = state.data.exams
+  const examSource = mode === "aime" ? state.aimeData?.exams || [] : state.data.exams;
+  const exams = examSource
     .slice()
     .sort(examSort)
     .map((exam) => [exam.id, exam.display_name]);
@@ -1270,9 +1400,11 @@ function initFilters(mode = state.mode === "bmo" ? "bmo" : "amc") {
 
   fillSelect(els.yearFilter, years, "全部年份 / All Years");
   fillSelect(els.levelFilter, [["10", "AMC 10"], ["12", "AMC 12"]], "全部考试 / All Contests");
-  fillSelect(els.formFilter, [["A", "A 卷 / Form A"], ["B", "B 卷 / Form B"]], "全部卷别 / All Forms");
+  fillSelect(els.formFilter, mode === "aime"
+    ? [["AIME", "AIME"], ["AIME I", "AIME I"], ["AIME II", "AIME II"]]
+    : [["A", "A 卷 / Form A"], ["B", "B 卷 / Form B"]], "全部卷别 / All Forms");
   fillSelect(els.examFilter, exams, "全部试卷 / All Papers");
-  fillExactSelect(els.fullExamSelect, exams);
+  if (mode !== "aime") fillExactSelect(els.fullExamSelect, state.data.exams.slice().sort(examSort).map((exam) => [exam.id, exam.display_name]));
   fillSelect(els.topicFilter, topics, "全部知识点 / All Topics");
   if (mode === "amc") {
     fillSelect(els.mistakeTopicFilter, topics, "全部知识点 / All Topics");
@@ -1307,6 +1439,12 @@ function initFilters(mode = state.mode === "bmo" ? "bmo" : "amc") {
         ["高难", "高难 / Olympiad"],
         ["未分级", "未分级 / Unrated"],
       ]
+      : mode === "aime"
+        ? [
+          ["基础 / Foundation", "基础 / Foundation"],
+          ["进阶 / Advanced", "进阶 / Advanced"],
+          ["挑战 / Challenge", "挑战 / Challenge"],
+        ]
       : [
         ["1-10", "1-10 题 / Problems 1-10"],
         ["10-18", "10-18 题 / Problems 10-18"],
@@ -1322,11 +1460,13 @@ function applyFilters(keepCurrent = false) {
   state.filtered = activeProblemPool().filter((problem) => {
     const filterYear = state.mode === "bmo" ? problem.year_label || String(problem.year) : String(problem.year);
     if (filters.year !== "all" && filterYear !== filters.year) return false;
-    if (state.mode !== "bmo" && filters.level !== "all" && String(problem.level) !== filters.level) return false;
+    if (!["bmo", "aime"].includes(state.mode) && filters.level !== "all" && String(problem.level) !== filters.level) return false;
     if (state.mode !== "bmo" && filters.form !== "all" && problem.form !== filters.form) return false;
     if (state.mode !== "bmo" && filters.exam !== "all" && problem.exam_id !== filters.exam) return false;
     if (filters.topic !== "all" && !problem.topic_tags.includes(filters.topic)) return false;
-    if (filters.difficulty !== "all" && !inDifficultyRange(problem, filters.difficulty)) return false;
+    if (filters.difficulty !== "all" && (state.mode === "aime"
+      ? problem.difficulty_label !== filters.difficulty
+      : !inDifficultyRange(problem, filters.difficulty))) return false;
     if (filters.search) {
       const haystack = [
         problem.id,
@@ -1357,7 +1497,8 @@ function currentProblem() {
 }
 
 function problemProgress(problem) {
-  return state.progress[problem.id] || null;
+  if (!problem) return null;
+  return (state.mode === "aime" ? state.aimeProgress : state.progress)[problem.id] || null;
 }
 
 function currentProgress(problem) {
@@ -1372,6 +1513,36 @@ function currentProgress(problem) {
 
 function answerMatches(problem, choice) {
   return (problem.answer_choices_accepted || []).includes(choice);
+}
+
+function normalizeAimeAnswer(value) {
+  const digits = String(value || "").replace(/\D/g, "").slice(0, 3);
+  return digits ? digits.padStart(3, "0") : "";
+}
+
+function submitAimeAnswer() {
+  const problem = currentProblem();
+  const answer = normalizeAimeAnswer(state.selectedChoice);
+  if (!problem || !answer) {
+    els.aimeAnswerInput.focus();
+    return;
+  }
+  const previous = state.aimeProgress[problem.id] || {};
+  const progress = {
+    ...previous,
+    answer,
+    choice: answer,
+    correct: answer === problem.answer_value,
+    submittedAt: new Date().toISOString(),
+    attempts: (previous.attempts || 0) + 1,
+    everWrong: Boolean(previous.everWrong || answer !== problem.answer_value),
+  };
+  state.aimeProgress[problem.id] = progress;
+  state.selectedChoice = answer;
+  state.revealed = true;
+  saveAimeProgress();
+  saveAimeAttemptCloud(problem, progress);
+  render();
 }
 
 function markSolutionViewed(problem) {
@@ -1480,6 +1651,10 @@ function setSelected(choice) {
 
 function submitAnswer() {
   const problem = currentProblem();
+  if (state.mode === "aime") {
+    submitAimeAnswer();
+    return;
+  }
   if (state.mode === "bmo") {
     submitBmoResponse();
     return;
@@ -1517,6 +1692,15 @@ function revealAnswer() {
 function clearAnswer() {
   const problem = currentProblem();
   if (!problem) return;
+  if (state.mode === "aime") {
+    delete state.aimeProgress[problem.id];
+    saveAimeProgress();
+    state.selectedChoice = "";
+    state.revealed = false;
+    els.aimeAnswerInput.value = "";
+    render();
+    return;
+  }
   if (state.mode === "bmo") {
     delete state.bmoDrafts[bmoDraftKey(problem.id)];
     saveBmoDrafts();
@@ -2226,7 +2410,11 @@ function renderStats() {
     : String(visibleProgress.filter((item) => item.correct).length);
   els.practiceTitle.textContent = state.mode === "bmo"
     ? "BMO1 证明题训练 / BMO1 Practice"
-    : "AMC 10/12 真题练习 / AMC 10/12 Practice";
+    : state.mode === "aime"
+      ? "AIME 单题训练 / AIME Practice"
+      : state.mode === "recommended"
+        ? "今日推荐 AMC / Daily AMC Set"
+        : "AMC 10/12 真题练习 / AMC 10/12 Practice";
   if (state.mode === "exam") {
     const exam = examById(state.activeExamId);
     els.datasetMeta.textContent = exam ? `全卷练习 / Full Mock · ${exam.display_name} · 75 分钟 / 75 min` : "全卷练习 / Full Mock";
@@ -2237,6 +2425,10 @@ function renderStats() {
       : `老师布置题目 / Assigned Problems · ${state.filtered.length} 题 / problems`;
   } else if (state.mode === "bmo") {
     els.datasetMeta.textContent = `BMO1 训练 / BMO Practice · ${state.bmoProblems.length} 题 · 证明题答案区直接显示来源状态`;
+  } else if (state.mode === "aime") {
+    els.datasetMeta.textContent = `AIME 单题训练 · ${state.aimeProblems.length} 道历年真题 · 难度高于 AMC 12`;
+  } else if (state.mode === "recommended") {
+    els.datasetMeta.textContent = `${window.SZZXRecommendations?.dayKey() || "今日"} · 5 道个性化 AMC 推荐题 · 明日更新`;
   } else {
     updateDatasetMeta();
   }
@@ -2269,11 +2461,13 @@ function renderList() {
     if (progress?.needsReview) button.classList.add("needs-review");
     if (marks.favorite) button.classList.add("favorite");
     if (marks.solutionViewed) button.classList.add("solution-viewed");
-    button.textContent = state.mode === "exam" || state.mode === "assignment"
+    button.textContent = state.mode === "exam" || state.mode === "assignment" || state.mode === "recommended"
       ? `#${problem.number}`
       : state.mode === "bmo"
         ? `${problem.year_label || problem.year} #${problem.number || "?"}`
-        : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
+        : state.mode === "aime"
+          ? `${problem.year} ${problem.form.replace("AIME", "A").trim() || "A"}-${problem.number}`
+          : `${problem.year} ${problem.level}${problem.form}-${problem.number}`;
     button.title = `${problem.display_name} #${problem.number}`;
     button.addEventListener("click", () => {
       state.currentIndex = index;
@@ -2295,6 +2489,7 @@ function renderProblem() {
     els.statement.innerHTML = "";
     els.choicePanel.innerHTML = "";
     els.bmoResponsePanel.classList.add("is-hidden");
+    els.aimeResponsePanel.classList.add("is-hidden");
     els.favoriteProblem.disabled = true;
     setAnswerPanel(null);
     return;
@@ -2316,6 +2511,7 @@ function renderProblem() {
   els.choicePanel.classList.toggle("is-hidden", state.mode === "bmo");
   renderChoices(problem, progress);
   renderBmoResponse(problem);
+  renderAimeResponse(problem, progress);
   setAnswerPanel(problem, progress);
   els.prevProblem.disabled = state.currentIndex === 0;
   els.nextProblem.disabled = state.currentIndex === state.filtered.length - 1;
@@ -2371,13 +2567,22 @@ function renderBmoResponse(problem) {
   updateBmoResponseMeta();
 }
 
+function renderAimeResponse(problem, progress) {
+  const isAime = state.mode === "aime" && problem?.answer_mode === "integer";
+  els.aimeResponsePanel.classList.toggle("is-hidden", !isAime);
+  if (!isAime) return;
+  els.aimeAnswerInput.value = String(state.selectedChoice || progress?.answer || "").replace(/\D/g, "").slice(0, 3);
+}
+
 function renderChoices(problem, progress) {
   els.choicePanel.innerHTML = "";
   const choices = problem.choices || {};
   if (problem.answer_mode === "free_response" || !Object.keys(choices).length) {
     const note = document.createElement("div");
     note.className = "empty";
-    note.textContent = "BMO 题为证明/解答题，不需要选择选项。 / BMO problems are proof-response questions; no choices are needed.";
+    note.textContent = state.mode === "aime"
+      ? "AIME 使用三位整数作答，请在下方输入答案。 / Enter the three-digit AIME answer below."
+      : "BMO 题为证明/解答题，不需要选择选项。 / BMO problems are proof-response questions; no choices are needed.";
     els.choicePanel.appendChild(note);
     return;
   }
@@ -2453,7 +2658,7 @@ function setAnswerPanel(problem, progress = null) {
     if (problem.answer_value) {
       if (els.answerDetail.childNodes.length) els.answerDetail.append(" · ");
       const answerValue = document.createElement("span");
-      answerValue.append(state.mode === "bmo" ? "答案 / Answer: " : "选项值 / Choice value: ");
+      answerValue.append(["bmo", "aime"].includes(state.mode) ? "答案 / Answer: " : "选项值 / Choice value: ");
       const mathValue = document.createElement("span");
       setMathText(mathValue, problem.answer_value);
       answerValue.appendChild(mathValue);
@@ -2750,6 +2955,32 @@ function normalizeBmoProblem(item) {
   };
 }
 
+function normalizeAimeProblem(item) {
+  const solutionText = item.solution_stages?.full_calculation || item.solution_stages?.key_steps || item.solution_stages?.idea || "";
+  return {
+    ...item,
+    contest: "AIME",
+    type: "AIME",
+    contest_type: "AIME",
+    level: null,
+    primary_topic: item.topic_key || item.topic || "AIME",
+    topic_tags: [item.topic || item.topic_key || "AIME"],
+    difficulty_label: item.difficulty || "AIME",
+    statement_text: item.statement || "",
+    statement_html: textToHtml(item.statement || ""),
+    choices: {},
+    answer_mode: "integer",
+    answer_choice: "",
+    answer_choices_accepted: [],
+    answer_value: String(item.answer_value || "").padStart(3, "0"),
+    solution_text: solutionText,
+    solution_source: item.source || "AoPS Wiki / HARP",
+    problem_url: item.problem_url || "#",
+    answer_key_url: item.solution_url || item.problem_url || "#",
+    solution_url: item.solution_url || item.problem_url || "#",
+  };
+}
+
 async function loadJsonFrom(urls) {
   const errors = [];
   for (const url of urls) {
@@ -2778,6 +3009,18 @@ async function loadBmoBank() {
   }
 }
 
+async function loadAimeBank() {
+  try {
+    const data = await loadJsonFrom(AIME_DATA_URLS);
+    state.aimeData = data;
+    return (data.problems || []).map(normalizeAimeProblem);
+  } catch (error) {
+    console.warn("AIME problem bank failed to load; AMC practice will continue.", error);
+    state.aimeData = { exams: [], problems: [] };
+    return [];
+  }
+}
+
 function bindEvents() {
   els.openLogin.addEventListener("click", () => openAuthForm("login"));
   els.openSignup.addEventListener("click", () => openAuthForm("signup"));
@@ -2800,6 +3043,8 @@ function bindEvents() {
   });
   els.singlePracticeMode.addEventListener("click", enterSinglePractice);
   els.bmoPracticeMode.addEventListener("click", enterBmoPractice);
+  els.aimePracticeMode.addEventListener("click", enterAimePractice);
+  els.mathRecommendationMode.addEventListener("click", startDailyRecommendations);
   els.assignedPracticeMode.addEventListener("click", showAssignedAssignments);
   els.assignmentRefresh.addEventListener("click", loadAssignedAssignments);
   els.assignmentToEntry.addEventListener("click", showEntry);
@@ -2839,6 +3084,11 @@ function bindEvents() {
     saveBmoDrafts();
     updateBmoResponseMeta();
   });
+  els.aimeAnswerInput.addEventListener("input", () => {
+    state.selectedChoice = els.aimeAnswerInput.value.replace(/\D/g, "").slice(0, 3);
+    els.aimeAnswerInput.value = state.selectedChoice;
+    state.revealed = false;
+  });
   els.submitExam.addEventListener("click", submitWholeExam);
   els.revealAnswer.addEventListener("click", revealAnswer);
   els.solutionStageControl.querySelectorAll(".solution-stage-button").forEach((button) => {
@@ -2859,7 +3109,7 @@ async function init() {
   bindWorkspaceResize();
   renderAuthState();
   try {
-    const [amcData, bmoProblems] = await Promise.all([loadProblemBank(), loadBmoBank()]);
+    const [amcData, bmoProblems, aimeProblems] = await Promise.all([loadProblemBank(), loadBmoBank(), loadAimeBank()]);
     state.data = amcData;
     state.problems = state.data.problems.slice().sort((a, b) => (
       b.year - a.year ||
@@ -2873,11 +3123,19 @@ async function init() {
       (a.number || 99) - (b.number || 99) ||
       topicName(a.primary_topic).localeCompare(topicName(b.primary_topic), "zh-CN")
     ));
+    state.aimeProblems = aimeProblems.slice().sort((a, b) => (
+      b.year - a.year || a.form.localeCompare(b.form) || a.number - b.number
+    ));
     normalizeStoredProgress();
     initFilters();
     updateDatasetMeta();
     await initAuth();
-    const problemId = new URLSearchParams(window.location.search).get("problem");
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mode") === "recommended" && state.dailyRecommendations.length) {
+      startDailyRecommendations();
+      return;
+    }
+    const problemId = params.get("problem");
     const directProblem = problemById(problemId);
     if (directProblem) {
       enterSinglePractice();
