@@ -1583,6 +1583,16 @@ body.is-resizing {
   vertical-align: middle;
 }
 
+.statement-image-fallback {
+  display: block;
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: var(--soft-green);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
 .statement table {
   max-width: 100%;
   border-collapse: collapse;

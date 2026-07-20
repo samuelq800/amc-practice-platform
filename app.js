@@ -1,6 +1,6 @@
-const DATA_URLS = ["./amc_aops_2010_present.json?v=20260712-figure-fix1", "../amc_aops_2010_present.json?v=20260712-figure-fix1"];
+const DATA_URLS = ["./amc_aops_2010_present.json?v=40", "../amc_aops_2010_present.json?v=40"];
 const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "../bmo1_2000_2023_import.json?v=20260717-bmo-restore2"];
-const AIME_DATA_URLS = ["./aime_question_bank.json?v=39", "../aime_question_bank.json?v=39"];
+const AIME_DATA_URLS = ["./aime_question_bank.json?v=40", "../aime_question_bank.json?v=40"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const AIME_STORAGE_KEY = "aime-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
@@ -1225,6 +1225,7 @@ function enterSinglePractice() {
   state.mode = "single";
   state.activeExamId = null;
   state.activeAssignmentId = null;
+  els.searchFilter.value = "";
   initFilters("amc");
   setFilterVisibility({ level: true, form: true, exam: true });
   showPracticeShell();
@@ -1239,6 +1240,7 @@ function enterBmoPractice() {
   state.examSubmitted = false;
   state.revealed = false;
   state.solutionStage = "idea";
+  els.searchFilter.value = "";
   initFilters("bmo");
   setFilterVisibility({ level: false, form: false, exam: false });
   showPracticeShell();
@@ -1253,6 +1255,7 @@ function enterAimePractice() {
   state.examSubmitted = false;
   state.revealed = false;
   state.solutionStage = "idea";
+  els.searchFilter.value = "";
   initFilters("aime");
   setFilterVisibility({ level: false, form: true, exam: true });
   showPracticeShell();
@@ -1350,16 +1353,47 @@ function sanitizeHtml(html) {
       if (name.startsWith("on") || value.startsWith("javascript:")) node.removeAttribute(attr.name);
     });
   });
+  template.content.querySelectorAll("img").forEach((image) => {
+    const alt = image.getAttribute("alt") || "";
+    const isChoiceImage = !/\[asy\]/i.test(alt)
+      && /\\(?:textbf|mathbf)\s*\{\s*\(A\)/.test(alt)
+      && ["A", "B", "C", "D", "E"].every((letter) => new RegExp(`\\(${letter}\\)`).test(alt));
+    if (isChoiceImage) image.remove();
+  });
   template.content.querySelectorAll("p, div").forEach((node) => {
-    const text = [
-      node.textContent || "",
-      ...[...node.querySelectorAll("img")].map((img) => img.getAttribute("alt") || ""),
-    ].join(" ");
-    if (["A", "B", "C", "D", "E"].every((letter) => new RegExp(`\\(${letter}\\)|\\{${letter}\\}`).test(text))) {
-      node.remove();
-    }
+    if (!(node.textContent || "").trim() && !node.querySelector("img")) node.remove();
   });
   return template.innerHTML;
+}
+
+function fallbackStatementText(value) {
+  const withoutDiagrams = String(value || "").replace(
+    /\[asy\][\s\S]*?\[\/asy\]/gi,
+    "\n[图示暂不可用，请查看右侧题目来源 / Diagram unavailable; see the source link.]\n"
+  );
+  const choiceStart = withoutDiagrams.search(/\\(?:textbf|mathbf)\s*\{\s*\(A\)/);
+  return (choiceStart >= 0 ? withoutDiagrams.slice(0, choiceStart) : withoutDiagrams).trim();
+}
+
+function renderProblemStatement(problem) {
+  els.statement.innerHTML = sanitizeHtml(problem.statement_html || "");
+  const hasContent = Boolean((els.statement.textContent || "").trim() || els.statement.querySelector("img"));
+  if (!hasContent) renderPlainText(els.statement, fallbackStatementText(problem.statement_text));
+
+  els.statement.querySelectorAll("img").forEach((image) => {
+    image.addEventListener("error", () => {
+      const fallback = document.createElement("span");
+      const alt = image.getAttribute("alt") || "";
+      fallback.className = "statement-image-fallback";
+      if (/\[asy\]/i.test(alt)) {
+        fallback.textContent = "图示加载失败，请打开右侧题目来源 / Diagram failed to load; open the source link.";
+      } else {
+        setMathText(fallback, alt);
+      }
+      image.replaceWith(fallback);
+      queueMathTypeset(els.statement);
+    }, { once: true });
+  });
 }
 
 function getFilters() {
@@ -2507,7 +2541,7 @@ function renderProblem() {
   els.problemTitle.textContent = state.mode === "bmo"
     ? `BMO1 ${problem.year_label || problem.year} · Problem ${problem.number || "?"} / ${problem.difficulty_label || "未分级"}`
     : `Problem ${problem.number} / 第 ${problem.number} 题`;
-  els.statement.innerHTML = sanitizeHtml(problem.statement_html || `<p>${problem.statement_text}</p>`);
+  renderProblemStatement(problem);
   els.choicePanel.classList.toggle("is-hidden", state.mode === "bmo");
   renderChoices(problem, progress);
   renderBmoResponse(problem);
