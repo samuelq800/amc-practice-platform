@@ -1,6 +1,6 @@
-const DATA_URLS = ["./amc_aops_2010_present.json?v=41", "../amc_aops_2010_present.json?v=41"];
+const DATA_URLS = ["./amc_aops_2010_present.json?v=42", "../amc_aops_2010_present.json?v=42"];
 const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "../bmo1_2000_2023_import.json?v=20260717-bmo-restore2"];
-const AIME_DATA_URLS = ["./aime_question_bank.json?v=41", "../aime_question_bank.json?v=41"];
+const AIME_DATA_URLS = ["./aime_question_bank.json?v=42", "../aime_question_bank.json?v=42"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const AIME_STORAGE_KEY = "aime-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
