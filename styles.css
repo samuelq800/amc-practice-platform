@@ -1724,6 +1724,121 @@ body.is-resizing {
   color: var(--bad);
 }
 
+.math-assignment-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.math-assignment-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.math-assignment-form input,
+.math-assignment-form select,
+.math-assignment-form textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  color: var(--ink);
+  background: #fff;
+}
+
+.math-assignment-problem-field,
+.math-assignment-notes {
+  grid-column: span 2;
+}
+
+.math-assignment-form textarea {
+  resize: vertical;
+}
+
+.math-assignment-draft {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.math-assignment-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--accent-soft);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.math-assignment-chip button {
+  min-width: 22px;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+}
+
+.math-assignment-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.admin-publish-button {
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  background: var(--accent) !important;
+}
+
+.math-assignment-actions p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.math-admin-assignment-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.math-admin-assignment-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.math-admin-assignment-item strong,
+.math-admin-assignment-item small {
+  display: block;
+}
+
+.math-admin-assignment-item small {
+  margin-top: 3px;
+  color: var(--muted);
+}
+
+@media (max-width: 800px) {
+  .math-assignment-form { grid-template-columns: 1fr; }
+  .math-assignment-problem-field,
+  .math-assignment-notes { grid-column: auto; }
+  .math-admin-assignment-item { align-items: flex-start; flex-direction: column; }
+}
+
 .teacher-feedback {
   margin: 10px 0 0;
   padding: 10px 12px;

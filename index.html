@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AMC 10/12、AIME 与 BMO1 真题练习 | Math Competition Practice</title>
     <link rel="icon" href="./school-logo.jpg" />
-    <link rel="stylesheet" href="./styles.css?v=43" />
+    <link rel="stylesheet" href="./styles.css?v=44" />
     <script>
       window.MathJax = {
         tex: {
@@ -131,7 +131,7 @@
             <div>
               <span class="eyebrow">数学社任务 / Math Club</span>
               <h2>老师布置题目<br />Assigned Problems</h2>
-              <p>完成数学社老师布置的 AMC 题目；提交后可直接查看答案和分阶段解析。<br />Complete assigned AMC problems with answers and staged solutions available after submission.</p>
+              <p>完成数学社老师布置的 AMC、AIME 或 BMO1 题目；客观题提交后显示答案，BMO1 解析可按需展开。<br />Complete assigned AMC, AIME, or BMO1 problems; objective answers appear after submission, while BMO1 solutions can be revealed when needed.</p>
             </div>
             <button id="assignedPracticeMode" type="button">进入布置题目 / Open Assignments</button>
           </section>
@@ -479,7 +479,7 @@
         <div class="admin-summary">
           <div><span id="adminTotalStudents">0</span><small>学生 / Students</small></div>
           <div><span id="adminTotalAttempts">0</span><small>作答 / Attempts</small></div>
-          <div><span id="adminAverageAccuracy">0%</span><small>AMC 正确率 / AMC Accuracy</small></div>
+          <div><span id="adminAverageAccuracy">0%</span><small>AMC/AIME 正确率 / Accuracy</small></div>
           <div><span id="adminActiveUsers">0</span><small>7 日活跃 / Active 7d</small></div>
         </div>
 
@@ -511,7 +511,10 @@
                   <tr>
                     <th>姓名 / Name</th>
                     <th>邮箱 / Email</th>
-                    <th>作答 / Attempts</th>
+                    <th>AMC</th>
+                    <th>AIME</th>
+                    <th>BMO 提交 / Submitted</th>
+                    <th>BMO 成绩 / Grade</th>
                     <th>正确 / Correct</th>
                     <th>正确率 / Accuracy</th>
                     <th>最近活跃 / Last Active</th>
@@ -553,6 +556,27 @@
           <div id="adminRecentList" class="answered-list"></div>
         </section>
 
+        <section class="admin-panel math-assignment-admin">
+          <div class="section-head">
+            <span class="eyebrow">数学社任务 / Math Club Assignments</span>
+            <strong id="mathAdminAssignmentTitle">0 assignments</strong>
+          </div>
+          <div class="math-assignment-form">
+            <label><span>任务标题 / Title</span><input id="mathAdminAssignmentName" type="text" maxlength="100" placeholder="例如：本周 AIME 练习" /></label>
+            <label><span>截止日期 / Due</span><input id="mathAdminAssignmentDue" type="date" /></label>
+            <label><span>竞赛 / Contest</span><select id="mathAdminAssignmentContest"><option value="AMC">AMC</option><option value="AIME">AIME</option><option value="BMO">BMO1</option></select></label>
+            <label class="math-assignment-problem-field"><span>题目 / Problem</span><select id="mathAdminAssignmentProblem"></select></label>
+            <button id="mathAdminAddProblem" type="button">加入题目 / Add</button>
+            <label class="math-assignment-notes"><span>说明 / Instructions</span><textarea id="mathAdminAssignmentNotes" rows="3" maxlength="800"></textarea></label>
+          </div>
+          <div id="mathAdminAssignmentDraft" class="math-assignment-draft"></div>
+          <div class="math-assignment-actions">
+            <button id="mathAdminPublish" class="admin-publish-button" type="button">发布给 Math Club / Publish</button>
+            <p id="mathAdminAssignmentMessage" aria-live="polite"></p>
+          </div>
+          <div id="mathAdminAssignmentList" class="math-admin-assignment-list"></div>
+        </section>
+
         <section class="admin-panel bmo-review-section">
           <div class="section-head">
             <span class="eyebrow">BMO 解答评阅 / BMO Review</span>
@@ -586,7 +610,7 @@
             <div class="bmo-review-controls">
               <label>
                 <span>评分（0–10）/ Score</span>
-                <input id="bmoReviewScore" type="number" min="0" max="10" step="0.5" required />
+                <input id="bmoReviewScore" type="number" min="0" max="10" step="1" required />
               </label>
               <label>
                 <span>教师反馈 / Teacher Feedback</span>
@@ -623,10 +647,10 @@
             <h2>面向 AMC 10/12 与 BMO1 备赛的校内数学训练平台<br />A School-Based AMC 10/12 and BMO1 Training Platform</h2>
             <p>
               本平台由数学社维护，面向准备 AMC 10/12 与 BMO1 的同学提供系统化真题练习、AMC 全卷模拟和学习表现分析。
-              AMC 模块用于选择题训练与限时模拟；BMO1 模块作为独立入口，用于证明题分类训练并直接展示答案与解析。
+              AMC 模块用于选择题训练与限时模拟；AIME 提供三位整数单题训练；BMO1 作为独立证明题入口，解析默认隐藏并可按需展开。
               <br />
-              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12 and BMO1 through structured past-paper practice,
-              AMC full-length mock exams, and performance diagnostics. BMO1 is kept as a separate proof-problem practice mode with answers and solutions shown directly.
+              This platform is maintained by the Math Club. It supports students preparing for AMC 10/12, AIME, and BMO1 through structured past-paper practice,
+              AMC full-length mock exams, and performance diagnostics. BMO1 remains a separate proof-problem mode whose staged solution is hidden until requested.
             </p>
           </div>
           <img class="ib-logo" src="./ib-programme.jpg" alt="IB Diploma Programme" />
@@ -648,7 +672,7 @@
           <section class="about-card">
             <span class="eyebrow">练习方式 / Practice Modes</span>
             <h3>支持 AMC 练习与 BMO 证明题训练<br />AMC Practice and BMO Proof Training</h3>
-            <p>AMC 提供单题练习与 75 分钟全卷模拟；BMO1 按年份、知识点和难度筛选，直接查看答案与分阶段解析。<br />AMC supports single practice and timed mocks; BMO1 supports filtered proof-problem practice with staged solutions.</p>
+            <p>AMC 提供单题练习与 75 分钟全卷模拟；AIME 提供三位整数单题作答；BMO1 按年份、知识点和难度筛选，解析默认隐藏并可主动查看。<br />AMC supports single practice and timed mocks; AIME uses three-digit responses; BMO1 offers filtered proof practice with solutions hidden until revealed.</p>
           </section>
 
           <section class="about-card">
@@ -683,9 +707,10 @@
       </section>
     </main>
 
-    <div class="site-version">Version 43</div>
+    <div class="site-version">Version 44</div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./recommendation-engine.js?v=43"></script>
-    <script src="./app.js?v=43"></script>
+    <script src="./recommendation-engine.js?v=44"></script>
+    <script src="./app.js?v=44"></script>
+    <script src="./math-admin-assignments.js?v=44"></script>
   </body>
 </html>

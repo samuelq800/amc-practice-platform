@@ -1,6 +1,6 @@
-const DATA_URLS = ["./amc_aops_2010_present.json?v=43", "../amc_aops_2010_present.json?v=43"];
+const DATA_URLS = ["./amc_aops_2010_present.json?v=44", "../amc_aops_2010_present.json?v=44"];
 const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "../bmo1_2000_2023_import.json?v=20260717-bmo-restore2"];
-const AIME_DATA_URLS = ["./aime_question_bank.json?v=43", "../aime_question_bank.json?v=43"];
+const AIME_DATA_URLS = ["./aime_question_bank.json?v=44", "../aime_question_bank.json?v=44"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const AIME_STORAGE_KEY = "aime-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
@@ -507,7 +507,7 @@ async function ensureProfile(user) {
 
 function problemById(problemId) {
   const rawId = String(problemId || "").trim();
-  const exact = state.problems.find((problem) => problem.id === rawId);
+  const exact = [...state.problems, ...state.aimeProblems, ...state.bmoProblems].find((problem) => problem.id === rawId);
   if (exact) return exact;
 
   // Older Math Club assignments saved single-digit numbers without the
@@ -1079,6 +1079,7 @@ async function showAdminDashboard() {
   els.adminScreen.classList.remove("is-hidden");
   els.aboutScreen.classList.add("is-hidden");
   await loadAdminDashboard();
+  if (window.loadMathAdminAssignments) await window.loadMathAdminAssignments();
 }
 
 function formatAssignmentDate(value) {
@@ -1096,6 +1097,19 @@ function formatAssignmentDate(value) {
 
 function assignmentProblems(assignment) {
   return (assignment?.problem_ids || []).map(problemById).filter(Boolean);
+}
+
+function assignmentProblemContest(problem) {
+  if (state.bmoProblems.some((item) => item.id === problem?.id)) return "BMO";
+  if (state.aimeProblems.some((item) => item.id === problem?.id)) return "AIME";
+  return "AMC";
+}
+
+function assignmentProblemProgress(problem) {
+  const contest = assignmentProblemContest(problem);
+  if (contest === "BMO") return currentBmoSubmission(problem);
+  if (contest === "AIME") return state.aimeProgress[problem.id] || null;
+  return state.progress[problem.id] || null;
 }
 
 function renderAssignedAssignments(message = "") {
@@ -1120,22 +1134,25 @@ function renderAssignedAssignments(message = "") {
 
   for (const assignment of state.assignments) {
     const problems = assignmentProblems(assignment);
-    const answered = problems.filter((problem) => problemProgress(problem)).length;
-    const correct = problems.filter((problem) => problemProgress(problem)?.correct).length;
+    const contest = problems[0] ? assignmentProblemContest(problems[0]) : "AMC";
+    const answered = problems.filter((problem) => assignmentProblemProgress(problem)).length;
+    const correct = problems.filter((problem) => assignmentProblemProgress(problem)?.correct).length;
     const card = document.createElement("article");
     card.className = "assignment-card";
     const info = document.createElement("div");
     info.className = "assignment-card-copy";
     const eyebrow = document.createElement("span");
     eyebrow.className = "eyebrow";
-    eyebrow.textContent = `AMC 任务 / ${problems.length} 题`;
+    eyebrow.textContent = `${contest} 任务 / ${problems.length} 题`;
     const title = document.createElement("h3");
     title.textContent = assignment.title || "数学社 AMC 练习 / Math Club AMC Practice";
     const instruction = document.createElement("p");
     instruction.textContent = assignment.instructions || "完成题目后可直接查看答案与分阶段解析。 / Answers and staged solutions are available after submission.";
     const meta = document.createElement("div");
     meta.className = "assignment-meta-row";
-    [formatAssignmentDate(assignment.due_at), `${answered}/${problems.length} 已完成 / completed`, `${correct} 正确 / correct`].forEach((label) => {
+    const progressLabels = [formatAssignmentDate(assignment.due_at), `${answered}/${problems.length} 已完成 / completed`];
+    if (contest !== "BMO") progressLabels.push(`${correct} 正确 / correct`);
+    progressLabels.forEach((label) => {
       const chip = document.createElement("span");
       chip.textContent = label;
       meta.appendChild(chip);
@@ -1143,7 +1160,11 @@ function renderAssignedAssignments(message = "") {
     const items = document.createElement("p");
     items.className = "assignment-problems";
     items.textContent = problems.length
-      ? problems.map((problem) => `${problem.year} AMC ${problem.level}${problem.form} #${problem.number}`).join(" · ")
+      ? problems.map((problem) => contest === "BMO"
+        ? `BMO1 ${problem.year_label || problem.year} #${problem.number || "?"}`
+        : contest === "AIME"
+          ? `${problem.year} ${problem.form || "AIME"} #${problem.number}`
+          : `${problem.year} AMC ${problem.level}${problem.form} #${problem.number}`).join(" · ")
       : "本任务中的题目尚未载入，请刷新题库后再试。 / Assigned problems are unavailable; refresh and try again.";
     info.append(eyebrow, title, instruction, meta, items);
     const action = document.createElement("button");
@@ -1198,16 +1219,22 @@ function startAssignment(assignmentId) {
   const assignment = state.assignments.find((item) => item.id === assignmentId);
   const problems = assignmentProblems(assignment);
   if (!assignment || !problems.length) return;
-  stopTimer();
-  state.mode = "assignment";
+  const contest = assignmentProblemContest(problems[0]);
+  if (contest === "BMO") enterBmoPractice();
+  else if (contest === "AIME") enterAimePractice();
+  else {
+    stopTimer();
+    state.mode = "assignment";
+    state.activeExamId = null;
+    state.examSubmitted = false;
+    showPracticeShell();
+  }
   state.activeAssignmentId = assignment.id;
-  state.activeExamId = null;
-  state.examSubmitted = false;
   state.filtered = problems;
   state.currentIndex = 0;
-  state.selectedChoice = problemProgress(problems[0])?.choice || null;
-  state.revealed = Boolean(problemProgress(problems[0]));
-  showPracticeShell();
+  const progress = assignmentProblemProgress(problems[0]);
+  state.selectedChoice = progress?.choice || progress?.answer || null;
+  state.revealed = Boolean(progress);
   render();
 }
 
@@ -1914,7 +1941,8 @@ function filterAdminAttempts() {
     if (level === "BMO1") return false;
     if (student !== "all" && attempt.user_id !== student) return false;
     if (year !== "all" && String(attempt.year) !== year) return false;
-    if (level !== "all" && String(attempt.level) !== level) return false;
+    if (level === "AIME" && attempt.contest_type !== "AIME") return false;
+    if (["10", "12"].includes(level) && (attempt.contest_type !== "AMC" || String(attempt.level) !== level)) return false;
     if (topic !== "all" && attempt.topic !== topic) return false;
     if (difficulty !== "all" && attempt.difficulty !== difficulty) return false;
     const submitted = attempt.submitted_at ? new Date(attempt.submitted_at) : null;
@@ -1964,7 +1992,7 @@ function setupAdminFilters() {
     uniqueValues(allRecords, (record) => record.year).sort((a, b) => b - a).map((year) => [String(year), String(year)]),
     "全部年份 / All Years"
   );
-  fillSelect(els.adminLevelFilter, [["10", "AMC 10"], ["12", "AMC 12"], ["BMO1", "BMO1"]], "全部考试 / All Contests");
+  fillSelect(els.adminLevelFilter, [["10", "AMC 10"], ["12", "AMC 12"], ["AIME", "AIME"], ["BMO1", "BMO1"]], "全部考试 / All Contests");
   fillSelect(
     els.adminTopicFilter,
     uniqueValues(allRecords, (record) => record.topic)
@@ -1993,37 +2021,45 @@ function renderAdminDashboard() {
   els.adminTotalAttempts.textContent = String(totalAttempts + bmoSubmissions.length);
   els.adminAverageAccuracy.textContent = percent(correctAttempts, totalAttempts);
   els.adminActiveUsers.textContent = String(activeUsers.size);
-  els.adminMeta.textContent = `当前筛选 ${totalAttempts} 条 AMC 作答、${bmoSubmissions.length} 份 BMO 解答 / Filtered cloud activity`;
+  els.adminMeta.textContent = `当前筛选 ${totalAttempts} 条 AMC/AIME 作答、${bmoSubmissions.length} 份 BMO 解答 / Filtered cloud activity`;
 
   const byStudent = new Map();
   for (const profile of state.adminData.profiles) {
-    byStudent.set(profile.id, { profile, total: 0, amcTotal: 0, correct: 0, lastActive: "" });
+    byStudent.set(profile.id, { profile, amc: 0, aime: 0, bmo: 0, bmoScore: 0, bmoGraded: 0, bmoPending: 0, autoTotal: 0, correct: 0, lastActive: "" });
   }
   for (const attempt of attempts) {
-    const row = byStudent.get(attempt.user_id) || { profile: profileFor(attempt.user_id), total: 0, amcTotal: 0, correct: 0, lastActive: "" };
-    row.total += 1;
-    row.amcTotal += 1;
+    const row = byStudent.get(attempt.user_id) || { profile: profileFor(attempt.user_id), amc: 0, aime: 0, bmo: 0, bmoScore: 0, bmoGraded: 0, bmoPending: 0, autoTotal: 0, correct: 0, lastActive: "" };
+    if (attempt.contest_type === "AIME") row.aime += 1;
+    else row.amc += 1;
+    row.autoTotal += 1;
     if (attempt.is_correct) row.correct += 1;
     if (String(attempt.submitted_at || "") > String(row.lastActive || "")) row.lastActive = attempt.submitted_at;
     byStudent.set(attempt.user_id, row);
   }
   for (const submission of bmoSubmissions) {
-    const row = byStudent.get(submission.user_id) || { profile: profileFor(submission.user_id), total: 0, correct: 0, amcTotal: 0, lastActive: "" };
-    row.total += 1;
+    const row = byStudent.get(submission.user_id) || { profile: profileFor(submission.user_id), amc: 0, aime: 0, bmo: 0, bmoScore: 0, bmoGraded: 0, bmoPending: 0, autoTotal: 0, correct: 0, lastActive: "" };
+    row.bmo += 1;
+    if (submission.review_status === "reviewed" && Number.isFinite(Number(submission.score))) {
+      row.bmoScore += Number(submission.score);
+      row.bmoGraded += 1;
+    } else row.bmoPending += 1;
     if (String(submission.submitted_at || "") > String(row.lastActive || "")) row.lastActive = submission.submitted_at;
     byStudent.set(submission.user_id, row);
   }
-  const studentRows = [...byStudent.values()].sort((a, b) => b.total - a.total || String(b.lastActive || "").localeCompare(String(a.lastActive || "")));
+  const studentRows = [...byStudent.values()].sort((a, b) => (b.amc + b.aime + b.bmo) - (a.amc + a.aime + a.bmo) || String(b.lastActive || "").localeCompare(String(a.lastActive || "")));
   els.adminStudentTitle.textContent = `${studentRows.length} students`;
-  els.adminStudentRows.innerHTML = studentRows.length ? "" : '<tr><td colspan="6">暂无学生数据 / No student data</td></tr>';
+  els.adminStudentRows.innerHTML = studentRows.length ? "" : '<tr><td colspan="9">暂无学生数据 / No student data</td></tr>';
   for (const row of studentRows) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.profile.display_name || "-"}</td>
       <td>${row.profile.email || "-"}</td>
-      <td>${row.total}</td>
+      <td>${row.amc}</td>
+      <td>${row.aime}</td>
+      <td>${row.bmo}</td>
+      <td>${row.bmoGraded ? `${row.bmoScore}/${row.bmoGraded * 10}${row.bmoPending ? ` · ${row.bmoPending} 待评` : ""}` : row.bmoPending ? `${row.bmoPending} 待评` : "-"}</td>
       <td>${row.correct}</td>
-      <td>${row.amcTotal ? percent(row.correct, row.amcTotal) : "-"}</td>
+      <td>${row.autoTotal ? percent(row.correct, row.autoTotal) : "-"}</td>
       <td>${dateTime(row.lastActive)}</td>
     `;
     els.adminStudentRows.appendChild(tr);
@@ -2138,8 +2174,8 @@ async function saveBmoReview(event) {
   event.preventDefault();
   if (!isAdmin() || !state.activeBmoReviewId) return;
   const score = Number(els.bmoReviewScore.value);
-  if (!Number.isFinite(score) || score < 0 || score > 10) {
-    els.bmoReviewMessage.textContent = "请输入 0–10 分。 / Enter a score from 0 to 10.";
+  if (!Number.isInteger(score) || score < 0 || score > 10) {
+    els.bmoReviewMessage.textContent = "请输入 0–10 的整数分。 / Enter an integer score from 0 to 10.";
     els.bmoReviewMessage.className = "bmo-review-message bad";
     return;
   }
@@ -2181,7 +2217,8 @@ async function loadAdminDashboard() {
     client.from("profiles").select("id,email,display_name,role,created_at").order("created_at", { ascending: false }),
     client
       .from("attempts")
-      .select("id,user_id,problem_id,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
+      .select("id,user_id,problem_id,contest_type,exam_id,year,level,form,number,topic,difficulty,selected_answer,correct_answer,is_correct,time_spent_seconds,mode,submitted_at")
+      .in("contest_type", ["AMC", "AIME"])
       .order("submitted_at", { ascending: false })
       .limit(5000),
     client
@@ -2465,7 +2502,7 @@ function renderStats() {
       ? `老师布置题目 / Assigned Problems · ${assignment.title || "Math Club AMC Practice"} · ${state.filtered.length} 题 / problems`
       : `老师布置题目 / Assigned Problems · ${state.filtered.length} 题 / problems`;
   } else if (state.mode === "bmo") {
-    els.datasetMeta.textContent = `BMO1 训练 / BMO Practice · ${state.bmoProblems.length} 题 · 证明题答案区直接显示来源状态`;
+    els.datasetMeta.textContent = `BMO1 训练 / BMO Practice · ${state.bmoProblems.length} 题 · 解析默认隐藏，可在需要时主动查看`;
   } else if (state.mode === "aime") {
     els.datasetMeta.textContent = `AIME 单题训练 · ${state.aimeProblems.length} 道历年真题 · 难度高于 AMC 12`;
   } else if (state.mode === "recommended") {
@@ -3179,7 +3216,10 @@ async function init() {
     const problemId = params.get("problem");
     const directProblem = problemById(problemId);
     if (directProblem) {
-      enterSinglePractice();
+      const contest = assignmentProblemContest(directProblem);
+      if (contest === "BMO") enterBmoPractice();
+      else if (contest === "AIME") enterAimePractice();
+      else enterSinglePractice();
       state.filtered = [directProblem];
       state.currentIndex = 0;
       state.selectedChoice = problemProgress(directProblem)?.choice || null;
