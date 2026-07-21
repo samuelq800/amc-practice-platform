@@ -1,6 +1,6 @@
-const DATA_URLS = ["./amc_aops_2010_present.json?v=40", "../amc_aops_2010_present.json?v=40"];
+const DATA_URLS = ["./amc_aops_2010_present.json?v=41", "../amc_aops_2010_present.json?v=41"];
 const BMO_DATA_URLS = ["./bmo1_2000_2023_import.json?v=20260717-bmo-restore2", "../bmo1_2000_2023_import.json?v=20260717-bmo-restore2"];
-const AIME_DATA_URLS = ["./aime_question_bank.json?v=40", "../aime_question_bank.json?v=40"];
+const AIME_DATA_URLS = ["./aime_question_bank.json?v=41", "../aime_question_bank.json?v=41"];
 const STORAGE_KEY = "amc-practice-progress-v1";
 const AIME_STORAGE_KEY = "aime-practice-progress-v1";
 const MARKS_KEY = "amc-practice-marks-v1";
@@ -1314,8 +1314,15 @@ function looksLikeLatex(value) {
   return /\\[a-zA-Z]+|[_^{}]/.test(value);
 }
 
+function repairLatexCommands(value) {
+  return String(value || "").replace(
+    /(^|[^\\A-Za-z])(frac|dfrac|tfrac|sqrt)(?=\s*(?:\{|\[))/g,
+    (_, prefix, command) => `${prefix}\\${command}`
+  );
+}
+
 function prepareMathText(value) {
-  const text = String(value || "");
+  const text = repairLatexCommands(value);
   const withDisplayBlocks = text.replace(
     /(\\begin\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\}[\s\S]*?\\end\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\})/g,
     (block) => `\n$$\n${block}\n$$\n`
@@ -1376,7 +1383,7 @@ function fallbackStatementText(value) {
 }
 
 function renderProblemStatement(problem) {
-  els.statement.innerHTML = sanitizeHtml(problem.statement_html || "");
+  els.statement.innerHTML = sanitizeHtml(repairLatexCommands(problem.statement_html || ""));
   const hasContent = Boolean((els.statement.textContent || "").trim() || els.statement.querySelector("img"));
   if (!hasContent) renderPlainText(els.statement, fallbackStatementText(problem.statement_text));
 
