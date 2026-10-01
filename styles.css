@@ -1607,7 +1607,7 @@ body.is-resizing {
 .choice-panel {
   flex: 0 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 10px;
   padding: 14px 16px;
   border-top: 1px solid var(--line);
@@ -1656,6 +1656,7 @@ body.is-resizing {
 .choice-text {
   min-width: 0;
   overflow-wrap: anywhere;
+  overflow-x: auto;
 }
 
 .bmo-response-panel {

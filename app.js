@@ -1343,13 +1343,25 @@ function looksLikeLatex(value) {
 
 function repairLatexCommands(value) {
   return String(value || "").replace(
-    /(^|[^\\A-Za-z])(frac|dfrac|tfrac|sqrt)(?=\s*(?:\{|\[))/g,
+    /(^|[^\\A-Za-z])(frac|dfrac|tfrac|sqrt)(?=\s*(?:\{|\[|[0-9]))/g,
     (_, prefix, command) => `${prefix}\\${command}`
   );
 }
 
+function repairMathDelimiters(value) {
+  return value
+    .replace(
+      /(^|[^\\A-Za-z])left(?=\s*(?:\(|\[|\|))/g,
+      (_, prefix) => `${prefix}\\left`
+    )
+    .replace(
+      /(^|[^\\A-Za-z])right(?=\s*(?:\)|\]|\|))/g,
+      (_, prefix) => `${prefix}\\right`
+    );
+}
+
 function prepareMathText(value) {
-  const text = repairLatexCommands(value);
+  const text = repairMathDelimiters(repairLatexCommands(value));
   const withDisplayBlocks = text.replace(
     /(\\begin\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\}[\s\S]*?\\end\{(?:align\*?|aligned|equation\*?|gather\*?|cases|array)\})/g,
     (block) => `\n$$\n${block}\n$$\n`
